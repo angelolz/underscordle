@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+@source '../node_modules/flowbite-svelte-icons/dist';
+
+body {
+	background-color: #121212;
+	font-family: 'Poppins', sans-serif;
+}
