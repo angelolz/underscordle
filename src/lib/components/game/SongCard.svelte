@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { AngleRightOutline } from "flowbite-svelte-icons";
 
-    const {song, currentRound} = $props();
+    const {song, currentRound, advanceRound, isLastRound = false} = $props();
     $inspect(song);
 </script>
 
@@ -13,8 +13,15 @@
             <span class="italic text-white text-[10px] truncate">{song?.artist || 'artist'}</span>
         </div>
     </div>
-    <button class="text-white rounded-full py-2 px-3 ring ring-white hover:ring-2 transition-all text-[14px] whitespace-nowrap shrink-0 flex flex-row items-center align-middle justify-around">
-        <span>Round {currentRound}</span>
-        <AngleRightOutline class="shrink-0 h-5 w-5" />
-    </button>
+    {#if !isLastRound}
+        <button class="text-white rounded-full py-2 px-3 ring ring-white hover:ring-2 transition-all text-[14px] whitespace-nowrap shrink-0 flex flex-row items-center align-middle justify-around gap-1"
+        onclick={() => {advanceRound?.()}}>
+            <span>Round {currentRound}</span>
+            <AngleRightOutline class="shrink-0 h-5 w-5" />
+        </button>
+    {:else}
+        <div class="text-white font-bold text-[14px] px-3">
+            Final Round
+        </div>
+    {/if}
 </div>

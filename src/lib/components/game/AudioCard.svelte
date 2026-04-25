@@ -22,6 +22,14 @@
         }
     })
 
+    // Reset state when the round changes
+    $effect(() => {
+        // We track 'name' because it's unique per round/guess combination
+        const _ = name;
+        searchTerm = "";
+        suggestionIndex = 0;
+    });
+
     onMount(() => {
         audio = new Audio();
         audio.preload = "auto";

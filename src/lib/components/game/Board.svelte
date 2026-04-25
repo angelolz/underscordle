@@ -96,9 +96,15 @@
         }
     }
 
-</script>
+	function advanceRound() {
+		if (gameState.currentRound < MAX_ROUNDS - 1) {
+			gameState.currentRound = gameState.currentRound + 1;
+		}
+	}
 
-<div class="flex flex-col justify-center align-middle items-center">
+	</script>
+
+	<div class="flex flex-col justify-center align-middle items-center">
 	<div class="flex flex-col gap-1 align-middle items-center">
 		<span class="text-white text-lg font-bold"><b>Day #{day}</b></span>
 		<span class="flex flex-row gap-2">
@@ -124,11 +130,12 @@
 			/>
 		{/each}
 		{#if gameState.roundStatuses[gameState.currentRound] !== "playing"}
-			<SongCard 
-				song={songList.find(s => s.id === dailyMeta?.rounds[gameState.currentRound]?.songId)} 
+			<SongCard
+				song={songList.find(s => s.id === dailyMeta?.rounds[gameState.currentRound]?.songId)}
 				currentRound={gameState.currentRound + 2}
+				{advanceRound}
+				isLastRound={gameState.currentRound === MAX_ROUNDS - 1}
 			/>
 		{/if}
 	</div>
-</div>
-
+	</div>
