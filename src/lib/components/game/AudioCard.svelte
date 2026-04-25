@@ -3,20 +3,21 @@
 	import SearchResults from "./SearchResults.svelte";
 	import type { Song } from "$lib/interfaces";
 	import { onMount } from "svelte";
+    import { playAudio, stopAllAudio } from "$lib/audioState";
 
     const {guessIndex, isActive, guesses, searcher, submitGuess, name, result} = $props();
     let searchTerm = $state("");
     let suggestionIndex = $state(0);
     let results: Song[] = $state([]);
     let audio = $state<HTMLAudioElement | null>(null);
-    
+
 
     $effect(() => {
         results = searcher.search(searchTerm).slice(0,5);
     })
 
     $effect(() => {
-        if (audio && isActive) {
+        if (audio) {
             audio.src = "/snippets/" + name;
             audio.load();
         }
@@ -28,14 +29,13 @@
         const _ = name;
         searchTerm = "";
         suggestionIndex = 0;
+        stopAllAudio();
     });
 
     onMount(() => {
         audio = new Audio();
         audio.preload = "auto";
         audio.volume = 0.10;
-
-        $inspect(result);
     });
 
     function getText() {
@@ -54,13 +54,18 @@
     };
 
     function playClue() {
-        audio?.play().catch(err => console.error("Playback failed:", err));
+        if (audio && (isCurrentGuess() || result !== 'playing')) {
+            console.log("playClue button clicked for", name);
+            playAudio(audio);
+        } else {
+            console.log("ignored");
+        }
     }
 
     function getBackgroundColor() {
-        if(!result[guessIndex]) return "border-white";
+        if(!guesses[guessIndex]) return "border-white";
 
-        switch(result[guessIndex].status) {
+        switch(guesses[guessIndex].status) {
             case "correct":
                 return 'bg-green-700/50 border-green-500';
             case "wrong":
@@ -73,10 +78,10 @@
     }
 
     function getGuess() {
-        if(!result[guessIndex])
+        if(!guesses[guessIndex])
             return searchTerm;
 
-        switch(result[guessIndex].status) {
+        switch(guesses[guessIndex].status) {
             case "correct":
             case "wrong":
                 return guesses[guessIndex]?.title;
@@ -88,10 +93,10 @@
     }
 </script>
 
-<div class={`relative flex items-center ${!isCurrentGuess() ? "border" : "border-3"} rounded-lg ${getBackgroundColor()} w-[400px] h-[80px] ${!isActive ? "opacity-50" : ""}`}>
+<div class={`relative flex items-center ${!isCurrentGuess() || result !== 'playing' ? "border" : "border-3"} rounded-lg ${getBackgroundColor()} w-[400px] h-[80px] ${!isActive && result === 'playing' ? "opacity-50" : ""}`}>
     <span class="flex flex-row gap-2 items-center px-3 w-full">
         <button onclick={playClue}>
-            <PlaySolid class={`h-[40px] w-[40px] shrink-0 ${isActive ? "hover:scale-110 active:scale-95 transition-all" : ""}`} color="white"/>
+            <PlaySolid class={`h-[40px] w-[40px] shrink-0 ${isActive || result !== 'playing' ? "hover:scale-110 active:scale-95 transition-all" : ""}`} color="white"/>
         </button>
         <div class="border relative border-white rounded-3xl flex-1 focus-within:ring-2 focus-within:ring-white">
             {#if isCurrentGuess()}
@@ -101,7 +106,7 @@
                 class="w-full text-white my-1 px-4 bg-transparent border-none focus:ring-0 outline-none"
                 type="text"
                 autocomplete="off"
-                disabled={!isCurrentGuess()}
+                disabled={!isCurrentGuess() || (result && result !== 'playing')}
                 value={getGuess()}
                 oninput={(e) => { searchTerm = e.currentTarget.value }}
                 onkeydown={(event) => {

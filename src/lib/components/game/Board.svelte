@@ -123,12 +123,15 @@
 				guessIndex={i}
 				isActive={i <= gameState.roundGuesses[gameState.currentRound].length}
 				guesses={gameState.roundGuesses[gameState.currentRound]}
-				result={gameState.roundGuesses[gameState.currentRound] || null}
+				result={gameState.roundStatuses[gameState.currentRound] || null}
 				name={`${date}/round-${gameState.currentRound + 1}-guess-${i + 1}.opus`}
 				{searcher}
 				{submitGuess}
 			/>
 		{/each}
+	</div>
+
+	<div class="my-4">
 		{#if gameState.roundStatuses[gameState.currentRound] !== "playing"}
 			<SongCard
 				song={songList.find(s => s.id === dailyMeta?.rounds[gameState.currentRound]?.songId)}
