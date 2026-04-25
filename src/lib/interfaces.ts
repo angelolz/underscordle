@@ -1,0 +1,31 @@
+export interface Song {
+	id: string;
+	artist: string;
+	title: string;
+	album: string;
+}
+
+export interface Guess {
+	status: GuessStatus;
+	id: string;
+	title: string;
+}
+
+export type RoundStatus = 'playing' | 'won' | 'lost';
+export type GuessStatus = 'skip' | 'wrong' | 'correct';
+
+export interface GameState {
+	currentRound: number;
+	roundGuesses: Guess[][];
+	roundStatuses: RoundStatus[];
+}
+
+export interface DailyMeta {
+	date: string;
+	rounds: RoundInfo[];
+}
+
+export interface RoundInfo {
+	round: number;
+	songId: string;
+}

@@ -79,7 +79,7 @@ async function generateDaily() {
 					startTime = min + random() * (max - min);
 				}
 
-				const outputName = `round-${round}-guess-${snip.id}.mp3`;
+				const outputName = `round-${round}-guess-${snip.id}.opus`;
 				const outputPath = path.join(dayDir, outputName);
 
 				await new Promise((resolve, reject) => {
@@ -87,6 +87,8 @@ async function generateDaily() {
 						.setStartTime(startTime)
 						.setDuration(snip.duration)
 						.output(outputPath)
+						.audioCodec('libopus')
+						.outputFormat('opus')
 						.on('end', resolve)
 						.on('error', (err) => {
 							console.error(`Error processing snippet ${outputName}:`, err);
@@ -103,9 +105,7 @@ async function generateDaily() {
 			date: dateArg,
 			rounds: selectedSongs.map((s, i) => ({
 				round: i + 1,
-				songId: s.id,
-				title: s.title, // In a real game, you might want to obfuscate this
-				artist: s.artist
+				songId: s.id
 			}))
 		};
 

@@ -1,6 +1,7 @@
 import * as mm from 'music-metadata';
 import fs from 'fs/promises';
 import path from 'path';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,13 +26,15 @@ async function scanSongs() {
 
 				const metadata = await mm.parseFile(fullPath);
 
+				const id = crypto.createHash('sha256').update(file).digest('hex').substring(0, 12);
+
 				songList.push({
-					id: Buffer.from(file).toString('base64').substring(0, 12), // Stable ID based on filename
+					id,
 					filename: file,
 					title: metadata.common.title || path.basename(file, ext),
 					artist: metadata.common.artist || 'Unknown Artist',
 					album: metadata.common.album || 'Unknown Album',
-					duration: metadata.format.duration,
+					duration: Math.floor(metadata.format.duration * 1000) / 1000,
 					year: metadata.common.year
 				});
 			}
