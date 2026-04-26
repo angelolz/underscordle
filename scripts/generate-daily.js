@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configuration
-const SONGS_JSON = path.resolve(__dirname, '../data/songs.json');
+const SONGS_JSON = path.resolve(__dirname, '../data/songs-full.json');
 const MASTERS_DIR = path.resolve(__dirname, '../masters');
 const OUTPUT_BASE_DIR = path.resolve(__dirname, '../static/snippets'); // Local testing
 
@@ -37,7 +37,7 @@ async function generateDaily() {
         // 2. Load songs
         const songs = JSON.parse(await fs.readFile(SONGS_JSON, 'utf-8'));
         if (songs.length < 5) {
-            throw new Error('Not enough songs in songs.json (need at least 5)');
+            throw new Error('Not enough songs in songs-full.json (need at least 5)');
         }
 
         // 3. Setup seeded RNG

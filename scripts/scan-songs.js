@@ -10,7 +10,8 @@ const __dirname = path.dirname(__filename);
 
 // configuration
 const MASTERS_DIR = path.resolve(__dirname, '../masters');
-const SONGLIST_OUTPUT_FILE = path.resolve(__dirname, '../data/songs.json');
+const SONGLIST_FULL_OUTPUT_FILE = path.resolve(__dirname, '../data/songs-full.json');
+const SONGLIST_LITE_OUTPUT_FILE = path.resolve(__dirname, '../data/songs-lite.json');
 const ALBUMS_OUTPUT_FILE = path.resolve(__dirname, '../data/albums.json');
 const ART_DIR = path.resolve(__dirname, '../static/art');
 const SUPPORTED_EXTENSIONS = ['.mp3', '.wav', '.m4a', '.flac', '.ogg'];
@@ -21,7 +22,6 @@ async function extractArt(songPath, albumName) {
 
     try {
         await fs.access(outputPath);
-        return `/art/${slug}.webp`; // already exists
     } catch {
         // does not exist, extract it
         return new Promise((resolve) => {
@@ -47,7 +47,7 @@ async function scanSongs() {
         const albumsMap = new Map();
 
         // Ensure directories exist
-        await fs.mkdir(path.dirname(SONGLIST_OUTPUT_FILE), { recursive: true });
+        await fs.mkdir(path.dirname(SONGLIST_FULL_OUTPUT_FILE), { recursive: true });
         await fs.mkdir(ART_DIR, { recursive: true });
 
         for (const file of files) {
@@ -61,14 +61,19 @@ async function scanSongs() {
                 const slug = albumName.toLowerCase().replace(/[^a-z0-9]/g, '-');
                 const id = crypto.createHash('sha256').update(file).digest('hex').substring(0, 12);
 
-                const albumArt = await extractArt(fullPath, albumName);
+                await extractArt(fullPath, albumName);
 
                 // Add to album map if not already present
                 if (!albumsMap.has(slug)) {
                     albumsMap.set(slug, {
                         name: albumName,
                         file: `${slug}.webp`,
+                        isSingle: true,
                     });
+                } else {
+                    let album = albumsMap.get(slug);
+                    album.isSingle = false;
+                    albumsMap.set(slug, album);
                 }
 
                 songList.push({
@@ -77,7 +82,6 @@ async function scanSongs() {
                     title: metadata.common.title || path.basename(file, ext),
                     artist: metadata.common.artist || 'Unknown Artist',
                     album: albumName,
-                    albumArt,
                     duration: Math.floor(metadata.format.duration * 1000) / 1000,
                 });
             }
@@ -85,13 +89,22 @@ async function scanSongs() {
 
         const albums = Array.from(albumsMap.values());
 
-        await fs.writeFile(SONGLIST_OUTPUT_FILE, JSON.stringify(songList, null, 2));
+        await fs.writeFile(SONGLIST_FULL_OUTPUT_FILE, JSON.stringify(songList, null, 2));
         await fs.writeFile(ALBUMS_OUTPUT_FILE, JSON.stringify(albums, null, 2));
+
+        songList.forEach((song) => {
+            delete song.filename;
+            delete song.duration;
+        });
+
+        await fs.writeFile(SONGLIST_LITE_OUTPUT_FILE, JSON.stringify(songList, null, 2));
 
         console.log(
             `\nSuccess! Generated manifest for ${songList.length} songs and ${albums.length} albums.`
         );
-        console.log(`Output saved to: ${SONGLIST_OUTPUT_FILE}`);
+        console.log(
+            `Output saved to: ${SONGLIST_FULL_OUTPUT_FILE} and ${SONGLIST_LITE_OUTPUT_FILE}`
+        );
     } catch (error) {
         console.error('Error scanning songs:', error);
         process.exit(1);
