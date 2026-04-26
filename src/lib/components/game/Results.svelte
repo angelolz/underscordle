@@ -60,43 +60,57 @@
     function getResultEmoji(guessStatus: GuessStatus) {
         switch (guessStatus) {
             case 'skip':
-                return '◼️';
+                return '⏩';
             case 'wrong':
                 return '🟥';
             case 'correct':
                 return '🟩';
+            default:
+                return '⬜';
         }
     }
 
-    function copyResults() {
-        if (!navigator.clipboard) {
-            const text: string[] = [];
+    async function copyResults() {
+        const text: string[] = [];
+        text.push(`underscordle #${day} - ${getPoints()}/${MAX_ROUNDS * GUESSES_PER_ROUND}`);
+        text.push('');
 
-            text.push(`underscordle #${day} - ${getPoints()}/${MAX_ROUNDS * GUESSES_PER_ROUND}`);
-            text.push(
-                gameState.roundGuesses.each((round: Guess[]) =>
-                    round.map((r) => getResultEmoji(r.status)).join('')
-                )
-            );
-            const textarea = document.createElement('textarea');
-            textarea.value = text.join('\n');
-            textarea.style.position = 'fixed';
-            document.body.appendChild(textarea);
-            textarea.focus();
-            textarea.select();
+        const grid = gameState.roundGuesses
+            .map((round: Guess[]) => {
+                const emojis = round.map((r) => getResultEmoji(r.status));
+                while (emojis.length < GUESSES_PER_ROUND) {
+                    emojis.push('⬜');
+                }
+                return emojis.join('');
+            })
+            .join('\n');
 
-            try {
+        text.push(grid);
+        text.push("<https://underscordle.com>")
+        const fullText = text.join('\n');
+
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(fullText);
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.value = fullText;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
                 document.execCommand('copy');
-                copyText = 'Copied!';
-                setTimeout(() => {
-                    copyText = SHARE_TEXT;
-                }, 3000);
-            } catch (err) {
-                console.error('Failed to copy: ', err);
-            } finally {
                 document.body.removeChild(textarea);
             }
-            return;
+
+            copyText = 'Copied!';
+            setTimeout(() => {
+                copyText = SHARE_TEXT;
+            }, 3000);
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+            copyText = 'Error!';
         }
     }
 
