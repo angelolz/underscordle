@@ -6,6 +6,7 @@
     import type { DailyMeta, GameState, GuessStatus, Song } from '$lib/interfaces';
     import Board from './Board.svelte';
     import Results from './Results.svelte';
+    import { SvelteDate } from 'svelte/reactivity';
 
     const songList: Song[] = songs.map((song) => ({
         artist: song.artist,
@@ -19,7 +20,7 @@
         threshold: 0.7,
     });
 
-    // const date = new Date().toISOString().split('T')[0];
+    // const date = new SvelteDate().toISOString().split('T')[0];
     const date = '2026-04-25';
 
     let day = 915;

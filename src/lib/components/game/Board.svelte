@@ -1,4 +1,5 @@
 <script lang="ts">
+    import type { Song } from '$lib/interfaces';
     import { GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
     import AudioCard from './AudioCard.svelte';
     import SongCard from './SongCard.svelte';
@@ -55,7 +56,9 @@
 <div class="my-4">
     {#if gameState.roundStatuses[gameState.currentRound] !== 'playing'}
         <SongCard
-            song={songList.find((s) => s.id === dailyMeta?.rounds[gameState.currentRound]?.songId)}
+            song={songList.find(
+                (s: Song) => s.id === dailyMeta?.rounds[gameState.currentRound]?.songId
+            )}
             currentRound={gameState.currentRound + 2}
             {advanceRound}
             isLastRound={gameState.currentRound === MAX_ROUNDS - 1}
