@@ -2,24 +2,17 @@
     import { PlaySolid } from 'flowbite-svelte-icons';
     import SearchResults from './SearchResults.svelte';
     import type { Song } from '$lib/interfaces';
-    import { onMount } from 'svelte';
-    import { playAudio, stopAllAudio } from '$lib/audioState';
+    import { useAudioPlayer } from '$lib/player.svelte';
 
     const { guessIndex, isActive, guesses, searcher, submitGuess, name, result } = $props();
     let searchTerm = $state('');
     let suggestionIndex = $state(0);
     let results: Song[] = $state([]);
-    let audio = $state<HTMLAudioElement | null>(null);
+    
+    const player = useAudioPlayer(() => name);
 
     $effect(() => {
         results = searcher.search(searchTerm).slice(0, 5);
-    });
-
-    $effect(() => {
-        if (audio) {
-            audio.src = '/snippets/' + name;
-            audio.load();
-        }
     });
 
     // Reset state when the round changes
@@ -28,13 +21,6 @@
         const _ = name;
         searchTerm = '';
         suggestionIndex = 0;
-        stopAllAudio();
-    });
-
-    onMount(() => {
-        audio = new Audio();
-        audio.preload = 'auto';
-        audio.volume = 0.1;
     });
 
     function getText() {
@@ -53,8 +39,8 @@
     }
 
     function playClue() {
-        if (audio && (isCurrentGuess() || result !== 'playing')) {
-            playAudio(audio);
+        if (isCurrentGuess() || result !== 'playing') {
+            player.play();
         } else {
             console.log('ignored');
         }

@@ -2,15 +2,12 @@
     import type { Guess, GuessStatus, RoundStatus, Song } from '$lib/interfaces';
     import { GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
     import {
-        CheckOutline,
-        ChevronDoubleRightOutline,
-        CloseOutline,
-        MinusOutline,
         ShareNodesOutline,
     } from 'flowbite-svelte-icons';
     import { onDestroy, onMount } from 'svelte';
     import { SvelteDate } from 'svelte/reactivity';
     import AlbumArt from './AlbumArt.svelte';
+    import ResultIcon from './ResultIcon.svelte';
 
     const { day, date, songList, dailyMeta, gameState } = $props();
     const SHARE_TEXT = 'Copy Results';
@@ -66,7 +63,7 @@
             case 'correct':
                 return '🟩';
             default:
-                return '⬜';
+                return '';
         }
     }
 
@@ -78,9 +75,6 @@
         const grid = gameState.roundGuesses
             .map((round: Guess[]) => {
                 const emojis = round.map((r) => getResultEmoji(r.status));
-                while (emojis.length < GUESSES_PER_ROUND) {
-                    emojis.push('⬜');
-                }
                 return emojis.join('');
             })
             .join('\n');
@@ -150,15 +144,10 @@
                     </div>
                     <div class="flex flex-row items-center">
                         {#each { length: GUESSES_PER_ROUND } as _, j (j)}
-                            {#if !gameState.roundGuesses[i][j]}
-                                <MinusOutline class="h-6 w-6 shrink-0 text-gray-800" />
-                            {:else if gameState.roundGuesses[i][j].status === 'correct'}
-                                <CheckOutline class="h-6 w-6 shrink-0 text-green-500" />
-                            {:else if gameState.roundGuesses[i][j].status === 'wrong'}
-                                <CloseOutline class="h-6 w-6 shrink-0 text-red-500" />
-                            {:else}
-                                <ChevronDoubleRightOutline class="h-6 w-6 shrink-0" />
-                            {/if}
+                            <ResultIcon 
+                                status={gameState.roundGuesses[i][j]?.status} 
+                                name={`${date}/round-${i + 1}-guess-${j + 1}.opus`}
+                            />
                         {/each}
                     </div>
                 </div>

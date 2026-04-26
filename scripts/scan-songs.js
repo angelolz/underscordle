@@ -79,7 +79,6 @@ async function scanSongs() {
                     album: albumName,
                     albumArt,
                     duration: Math.floor(metadata.format.duration * 1000) / 1000,
-                    year: metadata.common.year,
                 });
             }
         }

@@ -15,7 +15,8 @@
         "lint:write": "prettier --check --write . && eslint .",
         "format": "prettier --write .",
         "scan": "node scripts/scan-songs.js",
-        "generate": "node scripts/generate-daily.js"
+        "generate": "node scripts/generate-daily.js",
+        "convert": "node scripts/convert-masters.js"
     },
     "devDependencies": {
         "@eslint/compat": "^2.0.3",
