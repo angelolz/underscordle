@@ -5,14 +5,14 @@ export function playAudio(audio: HTMLAudioElement) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
     }
-    
+
     currentAudio = audio;
     currentAudio.currentTime = 0;
-    
+
     const playPromise = currentAudio.play();
     if (playPromise !== undefined) {
-        playPromise.catch(error => {
-            console.error("Playback failed:", error);
+        playPromise.catch((error) => {
+            console.error('Playback failed:', error);
         });
     }
 }
