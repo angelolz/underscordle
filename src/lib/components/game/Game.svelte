@@ -26,6 +26,7 @@
     let day = 915;
     let loading = $state(true);
     let dailyMeta = $state<DailyMeta | null>(null);
+    let showResults = $state<boolean>(false);
     let gameState: GameState = $state({
         currentRound: 0,
         roundGuesses: Array.from({ length: MAX_ROUNDS }, () => []),
@@ -65,6 +66,10 @@
                 ) {
                     gameState.currentRound = gameState.currentRound + 1;
                 }
+
+				if(gameState.roundStatuses.every(s => s !== "playing")) {
+					showResults = true;
+				}
             }
         }
         loading = false;
@@ -89,6 +94,7 @@
             gameState.roundStatuses[gameState.currentRound] = 'lost';
         }
     });
+
     function submitGuess(title: string, id: string) {
         console.log('submitted: ' + id);
         let status: GuessStatus;
@@ -107,11 +113,15 @@
             gameState.currentRound = gameState.currentRound + 1;
         }
     }
+
+    function toggleResults() {
+        showResults = !showResults;
+    }
 </script>
 
 {#if !loading}
     <div class="flex flex-col items-center justify-center">
-        {#if gameState.roundStatuses.some((e) => e === 'playing')}
+        {#if !showResults}
             <Board
                 {day}
                 {date}
@@ -121,9 +131,10 @@
                 {searcher}
                 {submitGuess}
                 {advanceRound}
+                {toggleResults}
             />
         {:else}
-            <Results {songList} {dailyMeta} {gameState} />
+            <Results {day} {date} {songList} {dailyMeta} {gameState} />
         {/if}
     </div>
 {:else}

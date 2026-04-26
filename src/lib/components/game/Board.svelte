@@ -3,8 +3,17 @@
     import { GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
     import AudioCard from './AudioCard.svelte';
     import SongCard from './SongCard.svelte';
-    const { day, date, songList, gameState, dailyMeta, searcher, submitGuess, advanceRound } =
-        $props();
+    const {
+        day,
+        date,
+        songList,
+        gameState,
+        dailyMeta,
+        searcher,
+        submitGuess,
+        advanceRound,
+        toggleResults,
+    } = $props();
 
     function getBackgroundColor(i: number) {
         if (i === gameState.currentRound) {
@@ -60,8 +69,9 @@
                 (s: Song) => s.id === dailyMeta?.rounds[gameState.currentRound]?.songId
             )}
             currentRound={gameState.currentRound + 2}
-            {advanceRound}
             isLastRound={gameState.currentRound === MAX_ROUNDS - 1}
+            {advanceRound}
+            {toggleResults}
         />
     {/if}
 </div>
