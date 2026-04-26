@@ -67,9 +67,9 @@
                     gameState.currentRound = gameState.currentRound + 1;
                 }
 
-				if(gameState.roundStatuses.every(s => s !== "playing")) {
-					showResults = true;
-				}
+                if (gameState.roundStatuses.every((s) => s !== 'playing')) {
+                    showResults = true;
+                }
             }
         }
         loading = false;
