@@ -9,10 +9,9 @@ import { encode } from '@msgpack/msgpack';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// configuration
 const MASTERS_DIR = process.env.MASTERS_DIR || path.resolve(__dirname, '../out/masters');
 const DATA_DIR = process.env.DATA_DIR || path.resolve(__dirname, '../out/data');
-const COVER_DIR = process.env.COVER_DIR || path.resolve(__dirname, '../out/covers');
+const COVER_DIR = process.env.COVERS_DIR || path.resolve(__dirname, '../out/covers');
 
 const SONGLIST_FULL_OUTPUT_FILE = path.join(DATA_DIR, 'songs-full.json');
 const SONGLIST_LITE_OUTPUT_FILE = path.join(DATA_DIR, 'songs-lite.json');

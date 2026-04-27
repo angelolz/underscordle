@@ -34,9 +34,9 @@ jobs:
             - name: Scan Songs & Extract Art
               run: node scripts/scan-songs.js
               env:
-                  MASTERS_DIR: ./masters
-                  DATA_DIR: ./data
-                  ART_DIR: ./static/art
+                  MASTERS_DIR: ./out/masters
+                  DATA_DIR: ./out/data
+                  COVERS_DIR: ./out/covers
 
             - name: Push Metadata & Art to R2
               run: node scripts/sync-r2.js push-data

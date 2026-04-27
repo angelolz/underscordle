@@ -15,7 +15,6 @@
         results = searcher.search(searchTerm).slice(0, 5);
     });
 
-    // Reset state when the round changes
     $effect(() => {
         const _ = name;
         searchTerm = '';
