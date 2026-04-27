@@ -41,9 +41,9 @@ jobs:
                   echo "Generating for date: $TOMORROW"
                   node scripts/generate-daily.js $TOMORROW
               env:
-                  MASTERS_DIR: ./masters
-                  DATA_DIR: ./data
-                  OUTPUT_DIR: ./static/snippets
+                  MASTERS_DIR: ./out/masters
+                  DATA_DIR: ./out/data
+                  OUTPUT_DIR: ./out/dailies
 
             - name: Push Snippets to R2
               run: node scripts/sync-r2.js push-challenges
