@@ -1,9 +1,7 @@
 <script lang="ts">
     import type { Guess, GuessStatus, RoundStatus, Song } from '$lib/interfaces';
     import { GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
-    import {
-        ShareNodesOutline,
-    } from 'flowbite-svelte-icons';
+    import { ShareNodesOutline } from 'flowbite-svelte-icons';
     import { onDestroy, onMount } from 'svelte';
     import { SvelteDate } from 'svelte/reactivity';
     import AlbumArt from './AlbumArt.svelte';
@@ -80,7 +78,7 @@
             .join('\n');
 
         text.push(grid);
-        text.push("<https://underscordle.com>")
+        text.push('<https://underscordle.com>');
         const fullText = text.join('\n');
 
         try {
@@ -144,8 +142,8 @@
                     </div>
                     <div class="flex flex-row items-center">
                         {#each { length: GUESSES_PER_ROUND } as _, j (j)}
-                            <ResultIcon 
-                                status={gameState.roundGuesses[i][j]?.status} 
+                            <ResultIcon
+                                status={gameState.roundGuesses[i][j]?.status}
                                 name={`${date}/round-${i + 1}-guess-${j + 1}.opus`}
                             />
                         {/each}

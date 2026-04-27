@@ -8,7 +8,7 @@
     let searchTerm = $state('');
     let suggestionIndex = $state(0);
     let results: Song[] = $state([]);
-    
+
     const player = useAudioPlayer(() => name);
 
     $effect(() => {
@@ -17,7 +17,6 @@
 
     // Reset state when the round changes
     $effect(() => {
-        // We track 'name' because it's unique per round/guess combination
         const _ = name;
         searchTerm = '';
         suggestionIndex = 0;

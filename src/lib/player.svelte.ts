@@ -36,6 +36,6 @@ export function useAudioPlayer(getName: () => string | undefined) {
             if (audio && audio.src) {
                 playAudio(audio);
             }
-        }
+        },
     };
 }

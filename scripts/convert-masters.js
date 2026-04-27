@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readdirSync } from 'fs';
 import { join, parse, resolve } from 'path';
 
 const MASTERS_DIR = resolve('masters');
-const OUTPUT_DIR = resolve('static', 'audio');
+const OUTPUT_DIR = resolve('out', 'masters');
 
 if (!existsSync(OUTPUT_DIR)) {
     console.log(`Creating output directory: ${OUTPUT_DIR}`);
@@ -24,14 +24,16 @@ async function convertFile(file) {
 
     return new Promise((resolvePromise, reject) => {
         ffmpeg(inputPath)
-            .noVideo() // This fixes the error by ignoring the embedded cover art
+            .outputOptions('-map', '0:a') // map audio
+            .outputOptions('-map', '0:v?') // map video/art if it exists
+            .outputOptions('-c:v', 'copy') // copy the image without re-encoding
             .audioCodec('aac')
             .audioBitrate('192k')
             .outputOptions('-movflags', 'faststart')
             .on('start', () => {
                 console.log(`Converting: ${file}`);
             })
-            .on('error', (err, stdout, stderr) => {
+            .on('error', (err, _, __) => {
                 console.error(`Failed to convert ${file}:`, err.message);
                 reject(err);
             })
@@ -47,8 +49,8 @@ async function run() {
     for (const file of files) {
         try {
             await convertFile(file);
-        } catch (e) {
-            // Error already logged in convertFile
+        } catch (_) {
+            /* ignored */
         }
     }
     console.log('All conversions complete!');

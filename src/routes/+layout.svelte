@@ -5,7 +5,6 @@
 
     let { children } = $props();
 
-    // Automatically find all artwork in static/art
     const artwork = import.meta.glob('../../static/art/*.webp');
     const artPaths = Object.keys(artwork).map((path) => path.replace('../../static', ''));
 </script>

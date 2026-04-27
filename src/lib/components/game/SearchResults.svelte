@@ -11,16 +11,13 @@
     >
         <div class="flex flex-col">
             {#each results as result, i (result.id)}
-                    <button
-                        class={`text-white ${i === suggestionIndex ? 'font-bold' : ''} px-2 py-1 text-left text-[12px] hover:font-bold ${i === suggestionIndex ? 'bg-white/20' : ''} w-full transition-colors hover:bg-white/20 flex flex-row items-center gap-2`}
-                        onclick={() => submitGuess(result.title, result.id)}
-                    >
-                        <AlbumArt
-                            albumName={result?.album}
-                            class="h-[24px] w-[24px] rounded-md"
-                        />
-                        {result.title}
-                    </button>
+                <button
+                    class={`text-white ${i === suggestionIndex ? 'font-bold' : ''} px-2 py-1 text-left text-[12px] hover:font-bold ${i === suggestionIndex ? 'bg-white/20' : ''} flex w-full flex-row items-center gap-2 transition-colors hover:bg-white/20`}
+                    onclick={() => submitGuess(result.title, result.id)}
+                >
+                    <AlbumArt albumName={result?.album} class="h-[24px] w-[24px] rounded-md" />
+                    {result.title}
+                </button>
             {/each}
         </div>
     </div>

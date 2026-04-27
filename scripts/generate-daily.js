@@ -7,12 +7,11 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configuration
-const SONGS_JSON = path.resolve(__dirname, '../data/songs-full.json');
-const MASTERS_DIR = path.resolve(__dirname, '../masters');
-const OUTPUT_BASE_DIR = path.resolve(__dirname, '../static/snippets'); // Local testing
+const DATA_DIR = process.env.DATA_DIR || path.resolve(__dirname, '../out/data');
+const SONGS_JSON = process.env.SONGS_JSON || path.join(DATA_DIR, 'songs-full.json');
+const MASTERS_DIR = process.env.MASTERS_DIR || path.resolve(__dirname, '../out/masters');
+const OUTPUT_BASE_DIR = process.env.OUTPUT_DIR || path.resolve(__dirname, '../out/dailies');
 
-// Deterministic random number generator based on a seed (the date)
 function createSeededRandom(seed) {
     let hash = crypto.createHash('sha256').update(seed).digest('hex');
     let index = 0;
@@ -30,20 +29,16 @@ function createSeededRandom(seed) {
 
 async function generateDaily() {
     try {
-        // 1. Get the date (default to today YYYY-MM-DD)
         const dateArg = process.argv[2] || new Date().toISOString().split('T')[0];
         console.log(`Generating challenge for: ${dateArg}`);
 
-        // 2. Load songs
         const songs = JSON.parse(await fs.readFile(SONGS_JSON, 'utf-8'));
         if (songs.length < 5) {
             throw new Error('Not enough songs in songs-full.json (need at least 5)');
         }
 
-        // 3. Setup seeded RNG
         const random = createSeededRandom(dateArg);
 
-        // 4. Select 5 unique songs deterministically
         const selectedSongs = [];
         const availableSongs = [...songs];
         for (let i = 0; i < 5; i++) {
@@ -51,13 +46,11 @@ async function generateDaily() {
             selectedSongs.push(availableSongs.splice(idx, 1)[0]);
         }
 
-        // 5. Create output directory
         const dayDir = path.join(OUTPUT_BASE_DIR, dateArg);
         await fs.mkdir(dayDir, { recursive: true });
 
         console.log('\nGenerating Snippets...');
 
-        // 6. Process each song
         for (let i = 0; i < selectedSongs.length; i++) {
             const song = selectedSongs[i];
             const round = i + 1;
@@ -100,7 +93,6 @@ async function generateDaily() {
             }
         }
 
-        // 7. Generate a small metadata file for the frontend to know which songs were used (encrypted or hidden if needed)
         const challengeMeta = {
             date: dateArg,
             rounds: selectedSongs.map((s, i) => ({

@@ -1,0 +1,53 @@
+name: Daily Challenges
+
+on:
+    # schedule:
+    #     - cron: '0 18 * * *'
+    workflow_dispatch:
+
+jobs:
+    generate:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: 'pnpm'
+
+            - name: Install dependencies
+              run: pnpm install
+
+            - name: Install ffmpeg
+              run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+            - name: Pull Masters & Data from R2
+              run: |
+                  node scripts/sync-r2.js pull-masters
+                  node scripts/sync-r2.js pull-data
+              env:
+                  R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+                  R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+                  R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+
+            - name: Generate Tomorrow's Snippets
+              run: |
+                  TOMORROW=$(date -d "tomorrow" +%Y-%m-%d)
+                  echo "Generating for date: $TOMORROW"
+                  node scripts/generate-daily.js $TOMORROW
+              env:
+                  MASTERS_DIR: ./masters
+                  DATA_DIR: ./data
+                  OUTPUT_DIR: ./static/snippets
+
+            - name: Push Snippets to R2
+              run: node scripts/sync-r2.js push-challenges
+              env:
+                  R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+                  R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+                  R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
