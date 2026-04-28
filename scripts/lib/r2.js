@@ -70,8 +70,19 @@ export async function syncPull(bucket, prefix, localDir) {
         const relativeKey = prefix ? obj.Key.replace(prefix, '').replace(/^\//, '') : obj.Key;
         const localPath = path.join(localDir, relativeKey);
 
-        console.log(`  Downloading ${obj.Key} -> ${localPath}`);
-        await downloadFile(bucket, obj.Key, localPath);
+        try {
+            const stats = await fs.stat(localPath);
+            if (stats.size === obj.Size) {
+                console.log(`  Skipping (existing & same size): ${relativeKey}`);
+                continue;
+            }
+
+            console.log(`   Updating (size mismatch): ${relativeKey}`);
+            await downloadFile(bucket, obj.Key, localPath);
+        } catch {
+            console.log(`  Downloading ${obj.Key} -> ${localPath}`);
+            await downloadFile(bucket, obj.Key, localPath);
+        }
     }
 }
 
