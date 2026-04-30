@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { PlaySolid } from 'flowbite-svelte-icons';
+    import { ChevronDoubleRightOutline, PlaySolid } from 'flowbite-svelte-icons';
     import SearchResults from './SearchResults.svelte';
     import type { Song } from '$lib/interfaces';
     import { useAudioPlayer } from '$lib/player.svelte';
@@ -37,7 +37,7 @@
     }
 
     function playClue() {
-        if (isCurrentGuess() || result !== 'playing') {
+        if (guesses.length >= guessIndex || result !== 'playing') {
             player.play();
         } else {
             console.log('ignored');
@@ -85,13 +85,13 @@
             />
         </button>
         <div
-            class="relative flex-1 rounded-3xl border border-white focus-within:ring-2 focus-within:ring-white"
+            class="relative flex-1 rounded-3xl border border-white focus-within:ring-2 focus-within:ring-white flex flex-row"
         >
             {#if isCurrentGuess()}
                 <SearchResults {results} {suggestionIndex} {submitGuess} />
             {/if}
             <input
-                class="my-1 w-full border-none bg-transparent px-4 text-white outline-none focus:ring-0"
+                class="my-1 w-full border-none bg-transparent pl-4 text-white outline-none focus:ring-0"
                 type="text"
                 autocomplete="off"
                 disabled={!isCurrentGuess() || (result && result !== 'playing')}
@@ -105,14 +105,12 @@
                         return;
                     }
                     if (event.key === 'ArrowUp') {
-                        console.log('up');
                         event.preventDefault();
                         suggestionIndex--;
                         if (suggestionIndex < 0) suggestionIndex = results.length - 1;
                         return;
                     }
                     if (event.key === 'ArrowDown') {
-                        console.log('down');
                         event.preventDefault();
                         suggestionIndex++;
                         if (suggestionIndex >= results.length) suggestionIndex = 0;
@@ -120,6 +118,12 @@
                     }
                 }}
             />
+            {#if isCurrentGuess()}
+                <button class="bg-gray-500 hover:bg-white rounded-full px-1 m-1 flex flex-row transition-colors" onclick={() => submitGuess("", "")}>
+                    <ChevronDoubleRightOutline class="shrink-0 h-6 w-6" />
+                    <span>Skip</span>
+                </button>
+            {/if}
         </div>
     </span>
     <div class="absolute right-4 bottom-1 text-[10px] text-white opacity-50">

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Searcher } from 'fast-fuzzy';
-    import songs from '../../../../data/songs-lite.json';
+    import songs from '../../../../out/data/songs-lite.json';
     import { GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
     import { onMount } from 'svelte';
     import type { DailyMeta, GameState, GuessStatus, Song } from '$lib/interfaces';
@@ -37,17 +37,17 @@
     //when page loads
     onMount(async () => {
         //get daily meta
-        const res = await fetch(`snippets/${date}/meta.json`);
+        const res = await fetch(`out/dailies/${date}/meta.json`);
         if (res.ok) {
             dailyMeta = await res.json();
+        } else {
+            console.log("couldn't load dailyMeta")
         }
 
         //get current game
         const saved = localStorage.getItem(`underscordle-${date}`);
-        console.log('saved: ' + saved);
         if (saved) {
             const parsed = JSON.parse(saved);
-            console.log('parsed: ' + saved);
 
             if (parsed.roundGuesses && parsed.roundStatuses) {
                 gameState.currentRound =
@@ -88,6 +88,7 @@
     $effect(() => {
         if (dailyMeta === null) return;
 
+        $inspect("length: " + gameState.roundGuesses[gameState.currentRound].length);
         if (gameState.roundGuesses[gameState.currentRound].some((g) => g.status === 'correct')) {
             gameState.roundStatuses[gameState.currentRound] = 'won';
         } else if (gameState.roundGuesses[gameState.currentRound].length === GUESSES_PER_ROUND) {
@@ -96,7 +97,6 @@
     });
 
     function submitGuess(title: string, id: string) {
-        console.log('submitted: ' + id);
         let status: GuessStatus;
         if (title === '') {
             status = 'skip';

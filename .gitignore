@@ -23,6 +23,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 #songs stuff
-out/**
+out
 masters/
 todo.md

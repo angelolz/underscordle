@@ -1,10 +1,10 @@
 <script lang="ts">
-    import albums from '../../../../data/albums.json';
+    import albums from '../../../../out/data/albums.json';
 
     const { albumName, class: className = '' } = $props();
 
     const albumFile = albums.find((a) => a.name === albumName)?.file;
-    const src = albumFile ? `/art/${albumFile}` : '';
+    const src = albumFile ? `/out/art/${albumFile}` : '';
 </script>
 
 {#if src}

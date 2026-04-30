@@ -49,7 +49,7 @@ async function generateDaily() {
         const dayDir = path.join(OUTPUT_BASE_DIR, dateArg);
         await fs.mkdir(dayDir, { recursive: true });
 
-        console.log('\nGenerating Snippets...');
+        console.log('\nGenerating Daily Challenge...');
 
         for (let i = 0; i < selectedSongs.length; i++) {
             const song = selectedSongs[i];

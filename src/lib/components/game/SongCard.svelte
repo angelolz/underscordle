@@ -3,7 +3,6 @@
     import AlbumArt from './AlbumArt.svelte';
 
     const { song, currentRound, advanceRound, isLastRound = false, toggleResults } = $props();
-    $inspect(song);
 </script>
 
 <div

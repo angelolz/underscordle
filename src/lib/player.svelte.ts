@@ -17,7 +17,7 @@ export function useAudioPlayer(getName: () => string | undefined) {
     $effect(() => {
         const name = getName();
         if (audio && name) {
-            audio.src = '/snippets/' + name;
+            audio.src = '/out/dailies/' + name;
             audio.load();
         }
     });
