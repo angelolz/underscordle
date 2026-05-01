@@ -1,5 +1,5 @@
 <script lang="ts">
-    import albums from '../../../../out/data/albums.json';
+    import albums from '../../../../out/data/covers.json';
 
     const { albumName, class: className = '' } = $props();
 

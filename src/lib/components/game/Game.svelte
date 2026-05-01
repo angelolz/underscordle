@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Searcher } from 'fast-fuzzy';
-    import songs from '../../../../out/data/songs-lite.json';
+    import songs from '../../../../out/data/songs.json';
     import { GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
     import { onMount } from 'svelte';
     import type { DailyMeta, GameState, GuessStatus, Song } from '$lib/interfaces';
@@ -21,7 +21,7 @@
     });
 
     // const date = new SvelteDate().toISOString().split('T')[0];
-    const date = '2026-04-26';
+    const date = '2026-05-01';
 
     let day = 915;
     let loading = $state(true);

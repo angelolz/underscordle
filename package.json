@@ -16,7 +16,8 @@
         "format": "prettier --write .",
         "scan": "node scripts/scan-songs.js",
         "generate": "node scripts/generate-daily.js",
-        "convert": "node scripts/convert-masters.js"
+        "convert": "node scripts/convert-masters.js",
+        "bootstrap": "node scripts/bootstrap-registry.js"
     },
     "devDependencies": {
         "@eslint/compat": "^2.0.3",

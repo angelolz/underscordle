@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const DATA_DIR = process.env.DATA_DIR || path.resolve(__dirname, '../out/data');
-const SONGS_JSON = process.env.SONGS_JSON || path.join(DATA_DIR, 'songs-full.json');
+const REGISTRY_FILE = path.join(DATA_DIR, 'song-registry.json');
 const MASTERS_DIR = process.env.MASTERS_DIR || path.resolve(__dirname, '../out/masters');
 const OUTPUT_BASE_DIR = process.env.OUTPUT_DIR || path.resolve(__dirname, '../out/dailies');
 
@@ -32,18 +32,20 @@ async function generateDaily() {
         const dateArg = process.argv[2] || new Date().toISOString().split('T')[0];
         console.log(`Generating challenge for: ${dateArg}`);
 
-        const songs = JSON.parse(await fs.readFile(SONGS_JSON, 'utf-8'));
-        if (songs.length < 5) {
-            throw new Error('Not enough songs in songs-full.json (need at least 5)');
+        const registry = JSON.parse(await fs.readFile(REGISTRY_FILE, 'utf-8'));
+        const songIds = Object.keys(registry);
+        
+        if (songIds.length < 5) {
+            throw new Error('Not enough songs in registry (need at least 5)');
         }
 
         const random = createSeededRandom(dateArg);
 
-        const selectedSongs = [];
-        const availableSongs = [...songs];
+        const selectedIds = [];
+        const availableIds = [...songIds];
         for (let i = 0; i < 5; i++) {
-            const idx = Math.floor(random() * availableSongs.length);
-            selectedSongs.push(availableSongs.splice(idx, 1)[0]);
+            const idx = Math.floor(random() * availableIds.length);
+            selectedIds.push(availableIds.splice(idx, 1)[0]);
         }
 
         const dayDir = path.join(OUTPUT_BASE_DIR, dateArg);
@@ -51,8 +53,11 @@ async function generateDaily() {
 
         console.log('\nGenerating Daily Challenge...');
 
-        for (let i = 0; i < selectedSongs.length; i++) {
-            const song = selectedSongs[i];
+        const roundsMeta = [];
+
+        for (let i = 0; i < selectedIds.length; i++) {
+            const songId = selectedIds[i];
+            const song = registry[songId];
             const round = i + 1;
             const masterPath = path.join(MASTERS_DIR, song.filename);
 
@@ -91,14 +96,16 @@ async function generateDaily() {
                 });
                 console.log(`  - Generated: ${outputName} (Start: ${startTime.toFixed(2)}s)`);
             }
+
+            roundsMeta.push({
+                round,
+                songId,
+            });
         }
 
         const challengeMeta = {
             date: dateArg,
-            rounds: selectedSongs.map((s, i) => ({
-                round: i + 1,
-                songId: s.id,
-            })),
+            rounds: roundsMeta,
         };
 
         await fs.writeFile(path.join(dayDir, 'meta.json'), JSON.stringify(challengeMeta, null, 2));

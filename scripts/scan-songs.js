@@ -12,14 +12,20 @@ const __dirname = path.dirname(__filename);
 const MASTERS_DIR = process.env.MASTERS_DIR || path.resolve(__dirname, '../out/masters');
 const DATA_DIR = process.env.DATA_DIR || path.resolve(__dirname, '../out/data');
 const COVER_DIR = process.env.COVERS_DIR || path.resolve(__dirname, '../out/covers');
+const REGISTRY_FILE = path.join(DATA_DIR, 'song-registry.json');
 
-const SONGLIST_FULL_OUTPUT_FILE = path.join(DATA_DIR, 'songs-full.json');
-const SONGLIST_LITE_OUTPUT_FILE = path.join(DATA_DIR, 'songs-lite.json');
-const ALBUMS_OUTPUT_FILE = path.join(DATA_DIR, 'covers.json');
-const SONGLIST_FULL_MIN_OUTPUT_FILE = path.join(DATA_DIR, 'songs-full.min.json');
-const SONGLIST_LITE_MIN_OUTPUT_FILE = path.join(DATA_DIR, 'songs-lite.min.json');
-const ALBUMS_MIN_OUTPUT_FILE = path.join(DATA_DIR, 'covers.min.json');
+const SONGLIST_OUTPUT_FILE = path.join(DATA_DIR, 'songs.json');
+const SONGLIST_MIN_OUTPUT_FILE = path.join(DATA_DIR, 'songs.min.json');
+const COVERS_OUTPUT_FILE = path.join(DATA_DIR, 'covers.json');
+const COVERS_MIN_OUTPUT_FILE = path.join(DATA_DIR, 'covers.min.json');
+
 const SUPPORTED_EXTENSIONS = ['.mp3', '.wav', '.m4a', '.flac', '.ogg'];
+
+async function getFileHash(filePath) {
+    const content = await fs.readFile(filePath);
+    return crypto.createHash('sha256').update(content).digest('hex');
+}
+
 async function extractArt(songPath, albumName, metadata) {
     const slug = albumName.toLowerCase().replace(/[^a-z0-9]/g, '-');
     const outputPath = path.join(COVER_DIR, `${slug}.webp`);
@@ -74,11 +80,22 @@ async function scanSongs() {
     try {
         console.log(`Scanning directory: ${MASTERS_DIR}`);
         const files = await fs.readdir(MASTERS_DIR);
+
+        let registry = {};
+        try {
+            registry = JSON.parse(await fs.readFile(REGISTRY_FILE, 'utf-8'));
+        } catch (e) {
+            console.warn('No registry found. Please run bootstrap-registry.js first.');
+            process.exit(1);
+        }
+
         const songList = [];
         const albumsMap = new Map();
 
-        await fs.mkdir(path.dirname(SONGLIST_FULL_OUTPUT_FILE), { recursive: true });
+        await fs.mkdir(path.dirname(SONGLIST_OUTPUT_FILE), { recursive: true });
         await fs.mkdir(COVER_DIR, { recursive: true });
+
+        const currentFiles = new Set(files);
 
         for (const file of files) {
             const ext = path.extname(file).toLowerCase();
@@ -88,9 +105,64 @@ async function scanSongs() {
 
                 const metadata = await mm.parseFile(fullPath);
                 const albumName = metadata.common.album || 'Unknown Album';
-                const slug = albumName.toLowerCase().replace(/[^a-z0-9]/g, '-');
-                const id = crypto.createHash('sha256').update(file).digest('hex').substring(0, 12);
+                const title = metadata.common.title || path.basename(file, ext);
+                const artist = metadata.common.artist || 'Unknown Artist';
+                const duration = Math.floor(metadata.format.duration * 1000) / 1000;
+                const contentHash = await getFileHash(fullPath);
 
+                let foundId = null;
+
+                // Step A: Exact Filename Match
+                for (const [id, entry] of Object.entries(registry)) {
+                    if (entry.filename === file) {
+                        foundId = id;
+                        break;
+                    }
+                }
+
+                // Step B: Content Hash Match (Rename Detection)
+                if (!foundId) {
+                    for (const [id, entry] of Object.entries(registry)) {
+                        if (entry.contentHash === contentHash) {
+                            foundId = id;
+                            console.log(
+                                `  Detected rename (hash match): ${entry.filename} -> ${file}`
+                            );
+                            break;
+                        }
+                    }
+                }
+
+                // Step C: Metadata Match (Rename + Modification Detection)
+                if (!foundId) {
+                    for (const [id, entry] of Object.entries(registry)) {
+                        if (entry.title === title && entry.artist === artist) {
+                            foundId = id;
+                            console.log(
+                                `  Detected rename/mod (metadata match): ${entry.filename} -> ${file}`
+                            );
+                            break;
+                        }
+                    }
+                }
+
+                // Step D: New Song
+                if (!foundId) {
+                    foundId = crypto.randomBytes(6).toString('hex');
+                    console.log(`  New song detected. Assigned ID: ${foundId}`);
+                }
+
+                // Update registry entry
+                registry[foundId] = {
+                    filename: file,
+                    title,
+                    artist,
+                    album: albumName,
+                    duration,
+                    contentHash,
+                };
+
+                const slug = albumName.toLowerCase().replace(/[^a-z0-9]/g, '-');
                 await extractArt(fullPath, albumName, metadata);
 
                 if (!albumsMap.has(slug)) {
@@ -106,38 +178,28 @@ async function scanSongs() {
                 }
 
                 songList.push({
-                    id,
-                    filename: file,
-                    title: metadata.common.title || path.basename(file, ext),
-                    artist: metadata.common.artist || 'Unknown Artist',
+                    id: foundId,
+                    title,
+                    artist,
                     album: albumName,
-                    duration: Math.floor(metadata.format.duration * 1000) / 1000,
                 });
             }
         }
 
+        // Save updated registry
+        await fs.writeFile(REGISTRY_FILE, JSON.stringify(registry, null, 2));
+
         const albums = Array.from(albumsMap.values());
 
-        await fs.writeFile(SONGLIST_FULL_OUTPUT_FILE, JSON.stringify(songList, null, 2));
-        await fs.writeFile(SONGLIST_FULL_MIN_OUTPUT_FILE, encode(songList));
+        // Save public songs.json
+        await fs.writeFile(SONGLIST_OUTPUT_FILE, JSON.stringify(songList, null, 2));
+        await fs.writeFile(SONGLIST_MIN_OUTPUT_FILE, encode(songList));
 
-        await fs.writeFile(ALBUMS_OUTPUT_FILE, JSON.stringify(albums, null, 2));
-        await fs.writeFile(ALBUMS_MIN_OUTPUT_FILE, encode(albums));
+        await fs.writeFile(COVERS_OUTPUT_FILE, JSON.stringify(albums, null, 2));
+        await fs.writeFile(COVERS_MIN_OUTPUT_FILE, encode(albums));
 
-        songList.forEach((song) => {
-            delete song.filename;
-            delete song.duration;
-        });
-
-        await fs.writeFile(SONGLIST_LITE_OUTPUT_FILE, JSON.stringify(songList, null, 2));
-        await fs.writeFile(SONGLIST_LITE_MIN_OUTPUT_FILE, encode(songList));
-
-        console.log(
-            `\nSuccess! Generated manifest for ${songList.length} songs and ${albums.length} albums.`
-        );
-        console.log(
-            `Output saved to: ${SONGLIST_FULL_OUTPUT_FILE} and ${SONGLIST_LITE_OUTPUT_FILE}`
-        );
+        console.log(`\nSuccess! Generated manifest for ${songList.length} songs.`);
+        console.log(`Output saved to: ${SONGLIST_OUTPUT_FILE}`);
     } catch (error) {
         console.error('Error scanning songs:', error);
         process.exit(1);
