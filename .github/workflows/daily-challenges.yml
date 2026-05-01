@@ -4,6 +4,11 @@ on:
     schedule:
         - cron: '0 18 * * *'
     workflow_dispatch:
+        inputs:
+            target_date:
+                description: 'Date to generate (YYYY-MM-DD)'
+                required: false
+                default: ''
 
 jobs:
     generate:
@@ -36,11 +41,14 @@ jobs:
                   R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
                   R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
 
-            - name: Generate Tomorrow's Snippets
+            - name: Generate Snippets
               run: |
-                  TOMORROW=$(date -d "tomorrow" +%Y-%m-%d)
-                  echo "Generating for date: $TOMORROW"
-                  node scripts/generate-daily.js $TOMORROW
+                  DATE="${{ github.event.inputs.target_date }}"
+                  if [ -z "$DATE" ]; then
+                      DATE=$(date -d "tomorrow" +%Y-%m-%d)
+                  fi
+                  echo "Generating for date: $DATE"
+                  node scripts/generate-daily.js $DATE
               env:
                   MASTERS_DIR: ./out/masters
                   DATA_DIR: ./out/data

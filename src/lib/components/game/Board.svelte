@@ -33,7 +33,11 @@
 </script>
 
 <div class="flex w-full flex-col items-center gap-1 align-middle">
-    <span class="text-lg font-bold text-white"><b>Day #{day}</b></span>
+    <span class="flex flex-row items-center justify-center gap-1.5 text-lg font-bold text-white">
+        <span><b>Day #{day}</b></span>
+        <hr class="w-[4px] border border-gray-400" />
+        <span class="text-sm text-gray-400">{date}</span>
+    </span>
     <span class="flex flex-row items-center gap-2">
         <span class="border-r-2 pr-2 text-sm text-white"
             ><b>Round {gameState.currentRound + 1} of {MAX_ROUNDS}</b></span

@@ -138,7 +138,7 @@
                             albumName={song?.album}
                             class="h-[20px] w-[20px] shrink-0 rounded-md border border-white sm:h-[24px] sm:w-[24px]"
                         />
-                        <span class="truncate text-xs sm:text-sm">{song?.title}</span>
+                        <span class="text-xs sm:text-sm">{song?.title}</span>
                     </div>
                     <div class="flex shrink-0 flex-row items-center">
                         {#each { length: GUESSES_PER_ROUND } as _, j (j)}

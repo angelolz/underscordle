@@ -14,5 +14,5 @@ export function calculateDays(startDate: string, endDate: string) {
     const end = new Date(endDate);
     const timeDifference = end - start;
     const daysDifference = timeDifference / (1000 * 3600 * 24);
-    return daysDifference;
+    return daysDifference + 1;
 }

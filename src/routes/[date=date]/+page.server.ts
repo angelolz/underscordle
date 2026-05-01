@@ -12,9 +12,6 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     }
 
     const dailyMeta = await loadChallengeByDate(fetch, date);
-    if (!dailyMeta) {
-        throw error(404, 'Challenge not found');
-    }
 
     return {
         date,
