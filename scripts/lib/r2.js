@@ -8,6 +8,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { Readable } from 'stream';
 import mime from 'mime';
+import 'dotenv/config';
 
 const { R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY } = process.env;
 
