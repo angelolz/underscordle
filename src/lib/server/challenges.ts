@@ -46,7 +46,7 @@ export async function loadChallengeByDate(
 }
 
 export async function loadSongCatalog(fetchFn: typeof fetch): Promise<Song[]> {
-    const res = await fetchFn(`${R2_BASE_URL}/data/songs-lite.v1.json`);
+    const res = await fetchFn(`${R2_BASE_URL}/data/songs.json`);
     if (!res.ok) throw new Error('Failed to load song catalog');
     return res.json();
 }
