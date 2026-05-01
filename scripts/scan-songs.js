@@ -84,7 +84,7 @@ async function scanSongs() {
         let registry = {};
         try {
             registry = JSON.parse(await fs.readFile(REGISTRY_FILE, 'utf-8'));
-        } catch (e) {
+        } catch (_) {
             console.warn('No registry found. Please run bootstrap-registry.js first.');
             process.exit(1);
         }
@@ -94,8 +94,6 @@ async function scanSongs() {
 
         await fs.mkdir(path.dirname(SONGLIST_OUTPUT_FILE), { recursive: true });
         await fs.mkdir(COVER_DIR, { recursive: true });
-
-        const currentFiles = new Set(files);
 
         for (const file of files) {
             const ext = path.extname(file).toLowerCase();
@@ -112,7 +110,7 @@ async function scanSongs() {
 
                 let foundId = null;
 
-                // Step A: Exact Filename Match
+                // match file name
                 for (const [id, entry] of Object.entries(registry)) {
                     if (entry.filename === file) {
                         foundId = id;
@@ -120,7 +118,7 @@ async function scanSongs() {
                     }
                 }
 
-                // Step B: Content Hash Match (Rename Detection)
+                // match file hash
                 if (!foundId) {
                     for (const [id, entry] of Object.entries(registry)) {
                         if (entry.contentHash === contentHash) {
@@ -133,7 +131,7 @@ async function scanSongs() {
                     }
                 }
 
-                // Step C: Metadata Match (Rename + Modification Detection)
+                // match title + artist
                 if (!foundId) {
                     for (const [id, entry] of Object.entries(registry)) {
                         if (entry.title === title && entry.artist === artist) {
@@ -146,13 +144,12 @@ async function scanSongs() {
                     }
                 }
 
-                // Step D: New Song
+                // it is a new song
                 if (!foundId) {
                     foundId = crypto.randomBytes(6).toString('hex');
                     console.log(`  New song detected. Assigned ID: ${foundId}`);
                 }
 
-                // Update registry entry
                 registry[foundId] = {
                     filename: file,
                     title,
@@ -186,12 +183,10 @@ async function scanSongs() {
             }
         }
 
-        // Save updated registry
         await fs.writeFile(REGISTRY_FILE, JSON.stringify(registry, null, 2));
 
         const albums = Array.from(albumsMap.values());
 
-        // Save public songs.json
         await fs.writeFile(SONGLIST_OUTPUT_FILE, JSON.stringify(songList, null, 2));
         await fs.writeFile(SONGLIST_MIN_OUTPUT_FILE, encode(songList));
 

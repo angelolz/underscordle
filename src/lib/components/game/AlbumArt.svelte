@@ -1,10 +1,13 @@
 <script lang="ts">
-    import albums from '../../../../out/data/covers.json';
+    import { page } from '$app/state';
+    import type { AlbumArt } from '$lib/interfaces';
+    import { ASSETS_URL } from '$lib/statics';
 
     const { albumName, class: className = '' } = $props();
 
-    const albumFile = albums.find((a) => a.name === albumName)?.file;
-    const src = albumFile ? `/out/art/${albumFile}` : '';
+    const albums = $derived(page.data.albums || []);
+    const albumFile = $derived(albums.find((a: AlbumArt) => a.name === albumName)?.file);
+    const src = $derived(albumFile ? `${ASSETS_URL}/art/${albumFile}` : '');
 </script>
 
 {#if src}

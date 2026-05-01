@@ -23,8 +23,8 @@ function getOldId(filename) {
 async function bootstrap() {
     try {
         console.log(`Bootstrapping registry from: ${MASTERS_DIR}`);
-        
-        // Ensure out/data directory exists
+
+        // check if out/data exists
         await fs.mkdir(path.dirname(REGISTRY_FILE), { recursive: true });
 
         const files = await fs.readdir(MASTERS_DIR);

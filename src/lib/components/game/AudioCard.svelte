@@ -85,7 +85,7 @@
             />
         </button>
         <div
-            class="relative flex-1 rounded-3xl border border-white focus-within:ring-2 focus-within:ring-white flex flex-row"
+            class="relative flex flex-1 flex-row rounded-3xl border border-white focus-within:ring-2 focus-within:ring-white"
         >
             {#if isCurrentGuess()}
                 <SearchResults {results} {suggestionIndex} {submitGuess} />
@@ -118,9 +118,12 @@
                     }
                 }}
             />
-            {#if isCurrentGuess()}
-                <button class="bg-gray-500 hover:bg-white rounded-full px-1 m-1 flex flex-row transition-colors items-center" onclick={() => submitGuess("", "")}>
-                    <ChevronDoubleRightOutline class="shrink-0 h-4 w-4" />
+            {#if isCurrentGuess() && result === 'playing'}
+                <button
+                    class="m-1 flex flex-row items-center rounded-full bg-gray-500 px-1 transition-colors hover:bg-white"
+                    onclick={() => submitGuess('', '')}
+                >
+                    <ChevronDoubleRightOutline class="h-4 w-4 shrink-0" />
                     <span class="text-sm">skip</span>
                 </button>
             {/if}

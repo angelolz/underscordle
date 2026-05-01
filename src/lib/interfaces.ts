@@ -29,3 +29,9 @@ export interface RoundInfo {
     round: number;
     songId: string;
 }
+
+export interface AlbumArt {
+    name: string;
+    file: string;
+    isSingle: boolean;
+}

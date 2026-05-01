@@ -172,7 +172,7 @@
                 <span>AVG. POINTS</span>
             </div>
             <button
-                class="flex shrink-0 flex-row items-center justify-around gap-1 rounded-full px-3 py-2 align-middle text-[14px] whitespace-nowrap text-white ring ring-white transition-all hover:ring-2 hover:bg-white/25"
+                class="flex shrink-0 flex-row items-center justify-around gap-1 rounded-full px-3 py-2 align-middle text-[14px] whitespace-nowrap text-white ring ring-white transition-all hover:bg-white/25 hover:ring-2"
                 onclick={() => {
                     copyResults();
                 }}

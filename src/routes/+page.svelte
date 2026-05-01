@@ -1,5 +1,6 @@
 <script lang="ts">
+    import { page } from '$app/state';
     import Game from '$lib/components/game/Game.svelte';
 </script>
 
-<Game />
+<Game data={page.data} />

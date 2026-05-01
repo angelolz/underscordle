@@ -1,5 +1,6 @@
 import { onMount } from 'svelte';
 import { playAudio, stopAllAudio } from '$lib/audioState';
+import { CHALLENGES_URL } from '$lib/statics';
 
 export function useAudioPlayer(getName: () => string | undefined) {
     let audio = $state<HTMLAudioElement | null>(null);
@@ -17,12 +18,11 @@ export function useAudioPlayer(getName: () => string | undefined) {
     $effect(() => {
         const name = getName();
         if (audio && name) {
-            audio.src = '/out/dailies/' + name;
+            audio.src = `${CHALLENGES_URL}/${name}`;
             audio.load();
         }
     });
 
-    // Reset audio when name changes (stop whatever was playing)
     $effect(() => {
         getName();
         stopAllAudio();

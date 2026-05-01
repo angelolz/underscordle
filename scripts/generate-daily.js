@@ -34,7 +34,7 @@ async function generateDaily() {
 
         const registry = JSON.parse(await fs.readFile(REGISTRY_FILE, 'utf-8'));
         const songIds = Object.keys(registry);
-        
+
         if (songIds.length < 5) {
             throw new Error('Not enough songs in registry (need at least 5)');
         }

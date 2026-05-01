@@ -42,11 +42,22 @@ export async function uploadFile(bucket, key, localPath) {
     const content = await fs.readFile(localPath);
     const contentType = mime.getType(localPath) || 'application/octet-stream';
 
+    let cacheControl = 'public, max-age=3600'; // 1 hour for json
+
+    if (key.includes('/round-')) {
+        // 1 year for snippets, won't change
+        cacheControl = 'public, max-age=31536000, immutable';
+    } else if (key.startsWith('art/')) {
+        // 1 day for album covers
+        cacheControl = 'public, max-age=86400';
+    }
+
     const command = new PutObjectCommand({
         Bucket: bucket,
         Key: key,
         Body: content,
         ContentType: contentType,
+        CacheControl: cacheControl,
     });
 
     await s3.send(command);
