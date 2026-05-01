@@ -19,10 +19,10 @@
             class="h-[60px] w-[60px] shrink-0 rounded-xl border border-white"
         />
         <div class="flex min-w-0 flex-col overflow-hidden">
-            <span class="truncate text-[14px] font-bold text-white">{song?.title || 'title'}</span>
-            <span class="truncate text-[12px] text-white">{song?.artist || 'artist'}</span>
+            <span class="text-[14px] font-bold text-white">{song?.title || 'title'}</span>
+            <span class="text-[12px] text-white">{song?.artist || 'artist'}</span>
             {#if album && !album.isSingle}
-                <span class="truncate text-[10px] text-white italic">{song?.album}</span>
+                <span class="text-[10px] text-white italic">{song?.album}</span>
             {/if}
         </div>
     </div>
