@@ -17,9 +17,7 @@
     {/if}
 </svelte:head>
 
-<div class="flex flex-col items-center">
-    <div class="w-full max-w-[800px] px-4">
-        <Header />
-        {@render children()}
-    </div>
+<div class="m-auto flex w-full max-w-[800px] flex-col items-center p-2 align-middle">
+    <Header />
+    {@render children()}
 </div>

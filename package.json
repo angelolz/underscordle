@@ -6,6 +6,7 @@
     "description": "Daily guessing challenge game for Underscores music!",
     "scripts": {
         "dev": "vite dev",
+        "dev:host": "vite dev --host",
         "build": "vite build",
         "preview": "vite preview",
         "prepare": "svelte-kit sync || echo ''",
@@ -46,6 +47,11 @@
     "author": "angelolz",
     "license": "ISC",
     "packageManager": "pnpm@10.33.0",
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "esbuild"
+        ]
+    },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.1037.0",
         "@fontsource/poppins": "^5.2.7",

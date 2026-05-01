@@ -121,26 +121,26 @@
     $inspect('gameState inspect: ' + gameState);
 </script>
 
-<div class="flex flex-col gap-6">
+<div class="flex w-full flex-col items-center gap-6 px-1 sm:px-2">
     <div
-        class="flex w-[500px] flex-col items-center justify-center gap-6 rounded-xl border border-white p-4 align-middle text-white"
+        class="flex w-full max-w-[500px] flex-col items-center justify-center gap-4 rounded-xl border border-white p-3 align-middle text-white sm:gap-6 sm:p-4"
     >
         <div class="flex flex-col text-center">
-            <span class="text-2xl font-bold">Results</span>
-            <span class="text-sm text-gray-500">{`Day #${day} - ${date}`}</span>
+            <span class="text-xl font-bold sm:text-2xl">Results</span>
+            <span class="text-[10px] text-gray-500 sm:text-sm">{`Day #${day} - ${date}`}</span>
         </div>
         <div class="flex w-full flex-col gap-2">
             {#each { length: MAX_ROUNDS } as _, i (i)}
                 {@const song = getSong(i)}
-                <div class="flex w-full flex-row items-center justify-between">
-                    <div class="flex flex-row items-center gap-2">
+                <div class="flex w-full flex-row items-center justify-between gap-2">
+                    <div class="flex min-w-0 flex-row items-center gap-2">
                         <AlbumArt
                             albumName={song?.album}
-                            class="h-[24px] w-[24px] rounded-md border border-white"
+                            class="h-[20px] w-[20px] shrink-0 rounded-md border border-white sm:h-[24px] sm:w-[24px]"
                         />
-                        <span>{song?.title}</span>
+                        <span class="truncate text-xs sm:text-sm">{song?.title}</span>
                     </div>
-                    <div class="flex flex-row items-center">
+                    <div class="flex shrink-0 flex-row items-center">
                         {#each { length: GUESSES_PER_ROUND } as _, j (j)}
                             <ResultIcon
                                 status={gameState.roundGuesses[i][j]?.status}
@@ -150,34 +150,36 @@
                     </div>
                 </div>
                 {#if i < MAX_ROUNDS - 1}
-                    <hr class="ml-8 text-gray-500" />
+                    <hr class="text-gray-500" />
                 {/if}
             {/each}
         </div>
-        <div class="flex flex-row items-center gap-6">
-            <div class="flex flex-col text-center">
-                <span class="text-2xl font-bold">{`${getRoundsCorrect()}/${MAX_ROUNDS}`}</span>
-                <span>CORRECT</span>
+        <div class="flex w-full flex-row flex-wrap items-center justify-center gap-2 sm:gap-6">
+            <div class="flex min-w-[50px] flex-col text-center">
+                <span class="text-base font-bold sm:text-2xl"
+                    >{`${getRoundsCorrect()}/${MAX_ROUNDS}`}</span
+                >
+                <span class="text-[8px] sm:text-sm">CORRECT</span>
             </div>
-            <div class="flex flex-col text-center">
-                <span class="text-2xl font-bold"
+            <div class="flex min-w-[50px] flex-col text-center">
+                <span class="text-base font-bold sm:text-2xl"
                     >{`${getPoints()}/${MAX_ROUNDS * GUESSES_PER_ROUND}`}</span
                 >
-                <span>POINTS</span>
+                <span class="text-[8px] sm:text-sm">POINTS</span>
             </div>
-            <div class="flex flex-col text-center">
-                <span class="text-2xl font-bold"
-                    >{`${getPoints()}/${MAX_ROUNDS * GUESSES_PER_ROUND}`}</span
+            <div class="flex min-w-[50px] flex-col text-center">
+                <span class="text-base font-bold sm:text-2xl"
+                    >{(getPoints() / MAX_ROUNDS).toFixed(1)}</span
                 >
-                <span>AVG. POINTS</span>
+                <span class="text-[8px] sm:text-sm">AVG. PTS</span>
             </div>
             <button
-                class="flex shrink-0 flex-row items-center justify-around gap-1 rounded-full px-3 py-2 align-middle text-[14px] whitespace-nowrap text-white ring ring-white transition-all hover:bg-white/25 hover:ring-2"
+                class="mt-2 flex shrink-0 flex-row items-center justify-around gap-1 rounded-full px-3 py-2 align-middle text-[10px] whitespace-nowrap text-white ring ring-white transition-all hover:bg-white/25 hover:ring-2 sm:mt-0 sm:text-[14px]"
                 onclick={() => {
                     copyResults();
                 }}
             >
-                <ShareNodesOutline class="h-5 w-5 shrink-0" />
+                <ShareNodesOutline class="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
                 <span>{copyText}</span>
             </button>
         </div>

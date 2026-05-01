@@ -75,25 +75,26 @@
 </script>
 
 <div
-    class={`relative flex items-center ${!isCurrentGuess() || result !== 'playing' ? 'border' : 'border-3'} rounded-lg ${getBackgroundColor()} h-[80px] w-[400px] ${!isActive && result === 'playing' ? 'opacity-50' : ''}`}
+    class={`relative flex shrink-0 items-center ${!isCurrentGuess() || result !== 'playing' ? 'border' : 'border-3'} h-[80px] w-full max-w-[400px] rounded-lg ${getBackgroundColor()} ${!isActive && result === 'playing' ? 'opacity-50' : ''}`}
 >
-    <span class="flex w-full flex-row items-center gap-2 px-3">
-        <button onclick={playClue}>
+    <span class="flex w-full flex-row items-center gap-2 px-2 sm:px-3">
+        <button onclick={playClue} class="shrink-0">
             <PlaySolid
-                class={`h-[40px] w-[40px] shrink-0 ${isActive || result !== 'playing' ? 'transition-all hover:scale-110 active:scale-95' : ''}`}
+                class={`h-[32px] w-[32px] sm:h-[40px] sm:w-[40px] ${isActive || result !== 'playing' ? 'transition-all hover:scale-110 active:scale-95' : ''}`}
                 color="white"
             />
         </button>
         <div
-            class="relative flex flex-1 flex-row rounded-3xl border border-white focus-within:ring-2 focus-within:ring-white"
+            class="relative flex min-w-0 flex-1 flex-row rounded-3xl border border-white focus-within:ring-2 focus-within:ring-white"
         >
             {#if isCurrentGuess()}
                 <SearchResults {results} {suggestionIndex} {submitGuess} />
             {/if}
             <input
-                class="my-1 w-full border-none bg-transparent px-2 text-white outline-none focus:ring-0"
+                class="my-1 w-full min-w-0 border-none bg-transparent px-2 text-sm text-white outline-none focus:ring-0 sm:text-base"
                 type="text"
                 autocomplete="off"
+                placeholder={isCurrentGuess() ? 'Guess the song...' : ''}
                 disabled={!isCurrentGuess() || (result && result !== 'playing')}
                 value={getGuess()}
                 oninput={(e) => {
@@ -101,7 +102,14 @@
                 }}
                 onkeydown={(event) => {
                     if (event.key === 'Enter') {
-                        submitGuess(results[suggestionIndex].title, results[suggestionIndex].id);
+                        if (results[suggestionIndex]) {
+                            submitGuess(
+                                results[suggestionIndex].title,
+                                results[suggestionIndex].id
+                            );
+                        } else {
+                            // Optional: handle enter with no results
+                        }
                         return;
                     }
                     if (event.key === 'ArrowUp') {
@@ -120,16 +128,16 @@
             />
             {#if isCurrentGuess() && result === 'playing'}
                 <button
-                    class="m-1 flex flex-row items-center rounded-full bg-gray-500 px-1 transition-colors hover:bg-white"
+                    class="m-1 flex flex-row items-center rounded-full bg-gray-500 px-2 transition-colors hover:bg-white"
                     onclick={() => submitGuess('', '')}
                 >
-                    <ChevronDoubleRightOutline class="h-4 w-4 shrink-0" />
-                    <span class="text-sm">skip</span>
+                    <ChevronDoubleRightOutline class="h-3 w-3 shrink-0 sm:h-4 sm:w-4" />
+                    <span class="ml-0.5 text-[10px] sm:text-sm">skip</span>
                 </button>
             {/if}
         </div>
     </span>
-    <div class="absolute right-4 bottom-1 text-[10px] text-white opacity-50">
+    <div class="absolute right-4 bottom-1 text-[8px] text-white opacity-50 sm:text-[10px]">
         {getText()}
     </div>
 </div>

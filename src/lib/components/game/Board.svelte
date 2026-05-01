@@ -32,9 +32,9 @@
     }
 </script>
 
-<div class="flex flex-col items-center gap-1 align-middle">
+<div class="flex w-full flex-col items-center gap-1 align-middle">
     <span class="text-lg font-bold text-white"><b>Day #{day}</b></span>
-    <span class="flex flex-row gap-2">
+    <span class="flex flex-row items-center gap-2">
         <span class="border-r-2 pr-2 text-sm text-white"
             ><b>Round {gameState.currentRound + 1} of {MAX_ROUNDS}</b></span
         >
@@ -48,7 +48,7 @@
     </span>
 </div>
 
-<div class="my-4 flex flex-col gap-3">
+<div class="my-4 flex w-full flex-col items-center gap-3">
     {#each { length: GUESSES_PER_ROUND } as _, i (i)}
         <AudioCard
             guessIndex={i}
@@ -60,18 +60,17 @@
             {submitGuess}
         />
     {/each}
-</div>
-
-<div class="my-4">
     {#if gameState.roundStatuses[gameState.currentRound] !== 'playing'}
-        <SongCard
-            song={songList.find(
-                (s: Song) => s.id === dailyMeta?.rounds[gameState.currentRound]?.songId
-            )}
-            currentRound={gameState.currentRound + 2}
-            isLastRound={gameState.currentRound === MAX_ROUNDS - 1}
-            {advanceRound}
-            {toggleResults}
-        />
+        <div class="my-4 flex w-full justify-center">
+            <SongCard
+                song={songList.find(
+                    (s: Song) => s.id === dailyMeta?.rounds[gameState.currentRound]?.songId
+                )}
+                currentRound={gameState.currentRound + 2}
+                isLastRound={gameState.currentRound === MAX_ROUNDS - 1}
+                {advanceRound}
+                {toggleResults}
+            />
+        </div>
     {/if}
 </div>

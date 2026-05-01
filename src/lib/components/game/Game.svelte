@@ -91,8 +91,7 @@
             if (gameState.roundStatuses[currentRound] !== 'won') {
                 gameState.roundStatuses[currentRound] = 'won';
             }
-        }
-        else if (guesses.length === GUESSES_PER_ROUND) {
+        } else if (guesses.length === GUESSES_PER_ROUND) {
             if (gameState.roundStatuses[currentRound] !== 'lost') {
                 gameState.roundStatuses[currentRound] = 'lost';
             }
@@ -125,7 +124,7 @@
 </script>
 
 {#if !loading && dailyMeta}
-    <div class="flex flex-col items-center justify-center">
+    <div class="flex w-full flex-col items-center justify-center">
         {#if !showResults}
             <Board
                 {day}
