@@ -5,6 +5,8 @@
     import type { GameState, GuessStatus, Song } from '$lib/interfaces';
     import Board from './Board.svelte';
     import Results from './Results.svelte';
+    import { AngleLeftOutline } from 'flowbite-svelte-icons';
+    import { resolve } from '$app/paths';
 
     const { data } = $props();
 
@@ -142,8 +144,17 @@
         {/if}
     </div>
 {:else if !loading && !dailyMeta}
-    <div class="p-10 text-center text-white">
+    <div
+        class="flex flex-col items-center justify-center gap-4 p-10 text-center align-middle text-white"
+    >
         <p>No challenge found for this date. Please let Angel know about this!</p>
+        <a
+            class="flex flex-row items-center gap-1 text-sm hover:underline"
+            href={resolve('/archive')}
+        >
+            <AngleLeftOutline class="h-4 w-4 shrink-0" />
+            <p>Play past games</p>
+        </a>
     </div>
 {:else}
     <div class="flex w-full items-center justify-center">

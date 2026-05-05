@@ -32,7 +32,7 @@
     }
 </script>
 
-<div class="relative flex w-96 flex-col items-center gap-1 text-white align-middle">
+<div class="relative flex w-96 flex-col items-center gap-1 align-middle text-white">
     <span class="flex flex-row items-center justify-center gap-1.5 text-lg font-bold text-white">
         <span><b>Day #{day}</b></span>
         <hr class="w-[4px] border border-gray-400" />

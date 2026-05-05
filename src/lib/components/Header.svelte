@@ -5,7 +5,7 @@
     import Modal from './Modal.svelte';
 
     let showHelpModal = $state(true);
-    let showSettingsModal = $state(false)
+    let showSettingsModal = $state(false);
 </script>
 
 <div class="flex w-full flex-col items-center justify-center gap-2 pt-4 align-middle">
@@ -16,22 +16,46 @@
             by <a class="hover:underline" target="_blank" href="https://angelolz.one">angelolz</a>
         </p>
     </span>
-    <div class="flex flex-row gap-2 items-center text-white">
-        <span class="hover:scale-105 active:scale-95 transition-all flex items-center"><a href={resolve('/archive')}><ArchiveOutline class="shrink-0 h-5 w-5"/></a></span>
-        <span class="hover:scale-105 active:scale-95 transition-all flex items-center"><button onclick={() => {showHelpModal = true}}><QuestionCircleOutline class="shrink-0 h-5 w-5"/></button></span>
-        <span class="hover:scale-105 active:scale-95 transition-all flex items-center"><button onclick={() => {showSettingsModal = true}}><CogOutline class="shrink-0 h-5 w-5"/></button></span>
+    <div class="flex flex-row items-center gap-2 text-white">
+        <span class="flex items-center transition-all hover:scale-105 active:scale-95"
+            ><a href={resolve('/archive')}><ArchiveOutline class="h-5 w-5 shrink-0" /></a></span
+        >
+        <span class="flex items-center transition-all hover:scale-105 active:scale-95"
+            ><button
+                onclick={() => {
+                    showHelpModal = true;
+                }}><QuestionCircleOutline class="h-5 w-5 shrink-0" /></button
+            ></span
+        >
+        <span class="flex items-center transition-all hover:scale-105 active:scale-95"
+            ><button
+                onclick={() => {
+                    showSettingsModal = true;
+                }}><CogOutline class="h-5 w-5 shrink-0" /></button
+            ></span
+        >
     </div>
     <hr class="h-3 w-full max-w-[280px] border-gray-500 sm:max-w-sm" />
 </div>
 
-<Modal revealed={showHelpModal} onClose={() => {showHelpModal = false}}>
+<Modal
+    revealed={showHelpModal}
+    onClose={() => {
+        showHelpModal = false;
+    }}
+>
     <div class="flex flex-col items-center gap-4">
-        <span class="font-bold text-white text-xl">How to Play:</span>
-        <ul class="text-sm text-left text-white list-outside list-disc space-y-2 pl-4">
+        <span class="text-xl font-bold text-white">How to Play:</span>
+        <ul class="list-outside list-disc space-y-2 pl-4 text-left text-sm text-white">
             <li>Each day you will have 5 songs to guess, with 3 guesses each.</li>
             <li>Click the play button to hear the clue and type in the box to make your guess.</li>
             <li>Feel free to come back later, progress is always saved.</li>
         </ul>
     </div>
 </Modal>
-<Modal revealed={showSettingsModal} onClose={() => {showSettingsModal = false}}>Test Settings</Modal>
+<Modal
+    revealed={showSettingsModal}
+    onClose={() => {
+        showSettingsModal = false;
+    }}>Test Settings</Modal
+>
