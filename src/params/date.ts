@@ -12,7 +12,7 @@ export const match: ParamMatcher = (param) => {
 export function calculateDays(startDate: string, endDate: string) {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    const timeDifference = end - start;
+    const timeDifference = end.valueOf() - start.valueOf();
     const daysDifference = timeDifference / (1000 * 3600 * 24);
     return daysDifference + 1;
 }

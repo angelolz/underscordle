@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { onDestroy, onMount } from "svelte";
-    import { SvelteDate } from "svelte/reactivity";
+    import { onDestroy, onMount } from 'svelte';
+    import { SvelteDate } from 'svelte/reactivity';
 
     let timeLeft: string | null = $state(getTimeUntilMidnight());
     let timer: NodeJS.Timeout | null = null;
@@ -10,7 +10,7 @@
             timeLeft = getTimeUntilMidnight();
         }, 1000);
     });
-    
+
     onDestroy(() => {
         if (timer) {
             clearInterval(timer);
@@ -38,6 +38,7 @@
         return `${hours}:${minutes}:${seconds}`;
     }
 </script>
+
 <div class="flex flex-col text-center text-white">
     <span>Next Challenge in:</span>
     <span class="text-2xl font-bold">{timeLeft}</span>

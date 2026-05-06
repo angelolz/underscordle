@@ -7,9 +7,8 @@
 
     const { day, date, songList, dailyMeta, gameState, player } = $props();
     const SHARE_TEXT = 'Copy Results';
-    
+
     let copyText = $state(SHARE_TEXT);
-    
 
     function getSong(roundIndex: number) {
         const songId = dailyMeta.rounds[roundIndex].songId;

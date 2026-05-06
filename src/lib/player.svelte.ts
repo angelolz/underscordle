@@ -65,5 +65,5 @@ export function createSharedSnippetPlayer(): SharedSnippetPlayer {
         return currentSrc;
     }
 
-    return { mount, destroy, play, stop, setVolume, getCurrentSrc};
+    return { mount, destroy, play, stop, setVolume, getCurrentSrc };
 }
