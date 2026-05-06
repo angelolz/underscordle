@@ -12,7 +12,10 @@
     const player = useAudioPlayer(() => name);
 
     $effect(() => {
-        results = searcher.search(searchTerm).slice(0, 5);
+        // only run searcher if current guess and search is non-empty
+        if(isCurrentGuess() && searchTerm.trim().length > 0) { 
+            results = searcher.search(searchTerm).slice(0, 5);
+        }
     });
 
     $effect(() => {
@@ -39,8 +42,6 @@
     function playClue() {
         if (guesses.length >= guessIndex || result !== 'playing') {
             player.play();
-        } else {
-            console.log('ignored');
         }
     }
 

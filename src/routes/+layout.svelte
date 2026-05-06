@@ -27,7 +27,6 @@
     $effect(() => {
         const stateToSave = JSON.stringify(settings);
         localStorage.setItem(`underscordle-settings`, stateToSave);
-        console.log('saved settings');
     });
 </script>
 

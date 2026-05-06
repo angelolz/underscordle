@@ -2,16 +2,14 @@
     import type { Guess, GuessStatus, RoundStatus, Song } from '$lib/interfaces';
     import { GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
     import { ShareNodesOutline } from 'flowbite-svelte-icons';
-    import { onDestroy, onMount } from 'svelte';
-    import { SvelteDate } from 'svelte/reactivity';
     import AlbumArt from './AlbumArt.svelte';
     import ResultIcon from './ResultIcon.svelte';
 
     const { day, date, songList, dailyMeta, gameState } = $props();
     const SHARE_TEXT = 'Copy Results';
-    let timeLeft: string | null = $state(getTimeUntilMidnight());
+    
     let copyText = $state(SHARE_TEXT);
-    let timer: NodeJS.Timeout | null = null;
+    
 
     function getSong(roundIndex: number) {
         const songId = dailyMeta.rounds[roundIndex].songId;
@@ -29,27 +27,6 @@
             }
             return total;
         }, 0);
-    }
-
-    function getTimeUntilMidnight() {
-        const now = new SvelteDate();
-        const tomorrowUtc = new SvelteDate(now.getTime());
-        tomorrowUtc.setUTCDate(now.getUTCDate() + 1);
-        tomorrowUtc.setUTCHours(0, 0, 0, 0);
-
-        const timeLeft = tomorrowUtc.getTime() - now.getTime();
-
-        const hours = Math.floor((timeLeft / 1000 / 60 / 60) % 24)
-            .toString()
-            .padStart(2, '0');
-        const minutes = Math.floor((timeLeft / 1000 / 60) % 60)
-            .toString()
-            .padStart(2, '0');
-        const seconds = Math.floor((timeLeft / 1000) % 60)
-            .toString()
-            .padStart(2, '0');
-
-        return `${hours}:${minutes}:${seconds}`;
     }
 
     function getResultEmoji(guessStatus: GuessStatus) {
@@ -105,18 +82,6 @@
             copyText = 'Error!';
         }
     }
-
-    onMount(() => {
-        timer = setInterval(() => {
-            timeLeft = getTimeUntilMidnight();
-        }, 1000);
-    });
-
-    onDestroy(() => {
-        if (timer) {
-            clearInterval(timer);
-        }
-    });
 
     $inspect('gameState inspect: ' + gameState);
 </script>
@@ -183,9 +148,5 @@
                 <span>{copyText}</span>
             </button>
         </div>
-    </div>
-    <div class="flex flex-col text-center text-white">
-        <span>Next Challenge in:</span>
-        <span class="text-2xl font-bold">{timeLeft}</span>
     </div>
 </div>

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { resolve } from '$app/paths';
+    import type { ArchiveEntry } from '$lib/interfaces.js';
     import { onMount } from 'svelte';
     const { data } = $props();
 
@@ -8,7 +9,7 @@
     let clearedDates: string[] = $state([]);
 
     onMount(() => {
-        data.archiveEntries.forEach((entry: any) => {
+        data.archiveEntries.forEach((entry: ArchiveEntry) => {
             const saved = localStorage.getItem(`underscordle-${entry.date}`);
             if (saved) {
                 try {

@@ -39,3 +39,8 @@ export interface AlbumArt {
 export type AppSettings = {
     volume: number;
 };
+
+export type ArchiveEntry = {
+    date: string;
+    day: number;
+};
