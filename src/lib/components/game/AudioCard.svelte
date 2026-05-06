@@ -2,24 +2,23 @@
     import { ChevronDoubleRightOutline, PlaySolid } from 'flowbite-svelte-icons';
     import SearchResults from './SearchResults.svelte';
     import type { Song } from '$lib/interfaces';
-    import { useAudioPlayer } from '$lib/player.svelte';
 
-    const { guessIndex, isActive, guesses, searcher, submitGuess, name, result } = $props();
+    const { guessIndex, isActive, guesses, searcher, submitGuess, src, result, player } = $props();
     let searchTerm = $state('');
     let suggestionIndex = $state(0);
     let results: Song[] = $state([]);
 
-    const player = useAudioPlayer(() => name);
-
     $effect(() => {
         // only run searcher if current guess and search is non-empty
-        if(isCurrentGuess() && searchTerm.trim().length > 0) { 
+        if (isCurrentGuess() && searchTerm.trim().length > 0) {
             results = searcher.search(searchTerm).slice(0, 5);
+        } else {
+            results = [];
         }
     });
 
     $effect(() => {
-        const _ = name;
+        const _ = src;
         searchTerm = '';
         suggestionIndex = 0;
     });
@@ -41,7 +40,7 @@
 
     function playClue() {
         if (guesses.length >= guessIndex || result !== 'playing') {
-            player.play();
+            player.play(src);
         }
     }
 

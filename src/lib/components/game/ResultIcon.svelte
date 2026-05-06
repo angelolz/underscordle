@@ -7,12 +7,9 @@
         PlaySolid,
     } from 'flowbite-svelte-icons';
     import { fade } from 'svelte/transition';
-    import { useAudioPlayer } from '$lib/player.svelte';
 
-    const { status, name } = $props();
+    const { status, src, player } = $props();
     let showPlay = $state(false);
-
-    const player = useAudioPlayer(() => name);
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -22,12 +19,12 @@
     onmouseleave={() => (showPlay = false)}
     onclick={(e) => {
         e.stopPropagation();
-        player.play();
+        player.play(src);
     }}
     role="button"
     tabindex="0"
 >
-    {#if showPlay && name}
+    {#if showPlay && src}
         <div in:fade={{ duration: 150 }} out:fade={{ duration: 150 }} class="absolute inset-0">
             <PlaySolid class="h-6 w-6" color="white" />
         </div>

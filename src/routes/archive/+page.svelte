@@ -2,31 +2,35 @@
     import { resolve } from '$app/paths';
     import type { ArchiveEntry } from '$lib/interfaces.js';
     import { onMount } from 'svelte';
+    import { SvelteSet } from 'svelte/reactivity';
     const { data } = $props();
 
-    const todayEntry = data.archiveEntries[0];
-    const pastEntries = data.archiveEntries.slice(1);
-    let clearedDates: string[] = $state([]);
+    const todayEntry = $derived(data.archiveEntries[0] ?? null);
+    const pastEntries = $derived(data.archiveEntries.slice(1));
+    let clearedDates = $state(new SvelteSet<string>());
 
     onMount(() => {
-        data.archiveEntries.forEach((entry: ArchiveEntry) => {
+        const nextClearedDates = new SvelteSet<string>();
+
+        for (const entry of data.archiveEntries as ArchiveEntry[]) {
             const saved = localStorage.getItem(`underscordle-${entry.date}`);
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    // A game is cleared if all rounds are finished (won or lost)
-                    if (parsed.roundStatuses?.every((s: string) => s !== 'playing')) {
-                        clearedDates.push(entry.date);
-                    }
-                } catch (e) {
-                    console.error(`Failed to parse saved game for ${entry.date}:`, e);
+            if (!saved) continue;
+
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed.roundStatuses?.every((s: string) => s !== 'playing')) {
+                    nextClearedDates.add(entry.date);
                 }
+            } catch (e) {
+                console.error(`Failed to parse saved game for ${entry.date}:`, e);
             }
-        });
+        }
+
+        clearedDates = nextClearedDates;
     });
 
     function isCleared(date: string) {
-        return clearedDates.includes(date);
+        return clearedDates.has(date);
     }
 </script>
 

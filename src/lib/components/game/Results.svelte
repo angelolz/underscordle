@@ -1,11 +1,11 @@
 <script lang="ts">
     import type { Guess, GuessStatus, RoundStatus, Song } from '$lib/interfaces';
-    import { GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
+    import { CHALLENGES_URL, GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
     import { ShareNodesOutline } from 'flowbite-svelte-icons';
     import AlbumArt from './AlbumArt.svelte';
     import ResultIcon from './ResultIcon.svelte';
 
-    const { day, date, songList, dailyMeta, gameState } = $props();
+    const { day, date, songList, dailyMeta, gameState, player } = $props();
     const SHARE_TEXT = 'Copy Results';
     
     let copyText = $state(SHARE_TEXT);
@@ -109,7 +109,8 @@
                         {#each { length: GUESSES_PER_ROUND } as _, j (j)}
                             <ResultIcon
                                 status={gameState.roundGuesses[i][j]?.status}
-                                name={`${date}/round-${i + 1}-guess-${j + 1}.opus`}
+                                src={`${CHALLENGES_URL}/${date}/round-${i + 1}-guess-${j + 1}.opus`}
+                                {player}
                             />
                         {/each}
                     </div>

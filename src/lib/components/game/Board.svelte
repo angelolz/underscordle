@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Song } from '$lib/interfaces';
-    import { GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
+    import { CHALLENGES_URL, GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
     import AudioCard from './AudioCard.svelte';
     import SongCard from './SongCard.svelte';
     const {
@@ -13,6 +13,7 @@
         submitGuess,
         advanceRound,
         toggleResults,
+        player,
     } = $props();
 
     function getBackgroundColor(i: number) {
@@ -59,9 +60,10 @@
             isActive={i <= gameState.roundGuesses[gameState.currentRound].length}
             guesses={gameState.roundGuesses[gameState.currentRound]}
             result={gameState.roundStatuses[gameState.currentRound] || null}
-            name={`${date}/round-${gameState.currentRound + 1}-guess-${i + 1}.opus`}
+            src={`${CHALLENGES_URL}/${date}/round-${gameState.currentRound + 1}-guess-${i + 1}.opus`}
             {searcher}
             {submitGuess}
+            {player}
         />
     {/each}
     {#if gameState.roundStatuses[gameState.currentRound] !== 'playing'}

@@ -1,50 +1,69 @@
-import { onMount } from 'svelte';
-import { playAudio, stopAllAudio } from '$lib/audioState';
-import { CHALLENGES_URL } from '$lib/statics';
-import { getSettingsContext } from '$lib/settings.svelte';
+export type SharedSnippetPlayer = {
+    mount(): void;
+    destroy(): void;
+    play(src: string): Promise<void>;
+    stop(): void;
+    setVolume(volume: number): void;
+    getCurrentSrc(): string | null;
+};
 
-export function useAudioPlayer(getName: () => string | undefined) {
-    let audio = $state<HTMLAudioElement | null>(null);
-    const settings = getSettingsContext();
+export function createSharedSnippetPlayer(): SharedSnippetPlayer {
+    let audio: HTMLAudioElement | null = null;
+    let currentSrc: string | null = null;
 
-    onMount(() => {
+    function getClampedVolume(volume: number) {
+        return Math.min(Math.max(volume / 100, 0), 1);
+    }
+
+    function mount() {
+        if (audio) return;
+
         audio = new Audio();
-        audio.preload = 'auto';
-        audio.volume = (settings?.volume ?? 10) / 100;
+        audio.preload = 'none';
+    }
 
-        return () => {
-            stopAllAudio();
-        };
-    });
+    function destroy() {
+        if (!audio) return;
 
-    $effect(() => {
-        const name = getName();
-        if (audio && name) {
-            audio.src = `${CHALLENGES_URL}/${name}`;
-            audio.load();
+        audio.pause();
+        audio.currentTime = 0;
+        audio.removeAttribute('src');
+        currentSrc = null;
+        audio = null;
+    }
+
+    async function play(src: string) {
+        if (!audio) return;
+
+        if (currentSrc !== src) {
+            audio.src = src;
+            currentSrc = src;
         }
-    });
 
-    $effect(() => {
-        if (audio) {
-            const volume = settings?.volume ?? 10;
-            audio.volume = Math.min(Math.max(volume / 100, 0), 1);
+        audio.currentTime = 0;
+
+        try {
+            await audio.play();
+        } catch (error) {
+            console.error('Playback failed:', error);
         }
-    });
+    }
 
-    $effect(() => {
-        getName();
-        stopAllAudio();
-    });
+    function stop() {
+        if (!audio) return;
 
-    return {
-        get instance() {
-            return audio;
-        },
-        play: () => {
-            if (audio && audio.src) {
-                playAudio(audio);
-            }
-        },
-    };
+        audio.pause();
+        audio.currentTime = 0;
+    }
+
+    function setVolume(volume: number) {
+        if (!audio) return;
+        audio.volume = getClampedVolume(volume);
+    }
+
+    function getCurrentSrc() {
+        return currentSrc;
+    }
+
+    return { mount, destroy, play, stop, setVolume, getCurrentSrc};
 }

@@ -1,12 +1,14 @@
 <script lang="ts">
     import { Searcher } from 'fast-fuzzy';
     import { GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
-    import { untrack } from 'svelte';
+    import { onDestroy, onMount, untrack } from 'svelte';
     import type { GameState, GuessStatus, Song } from '$lib/interfaces';
     import Board from './Board.svelte';
     import Results from './Results.svelte';
     import { AngleLeftOutline } from 'flowbite-svelte-icons';
     import { resolve } from '$app/paths';
+    import { createSharedSnippetPlayer } from '$lib/player.svelte';
+    import { getSettingsContext } from '$lib/settings.svelte';
 
     const { data } = $props();
 
@@ -14,6 +16,8 @@
     const dailyMeta = $derived(data.dailyMeta);
     const date = $derived(data.date);
     const day = $derived(data.day);
+    const settings = getSettingsContext();
+    const player = createSharedSnippetPlayer();
 
     const searcher = $derived(
         new Searcher(songList, {
@@ -28,6 +32,25 @@
         currentRound: 0,
         roundGuesses: Array.from({ length: MAX_ROUNDS }, () => []),
         roundStatuses: Array(MAX_ROUNDS).fill('playing'),
+    });
+
+    onMount(() => {
+        player.mount();
+        player.setVolume(settings?.volume ?? 10);
+    });
+
+    onDestroy(() => {
+        player.destroy();
+    });
+
+    $effect(() => {
+        player.setVolume(settings?.volume ?? 10);
+    });
+
+    //stop playing when changing dates
+    $effect(() => {
+        const _ = date;
+        player.stop();
     });
 
     $effect(() => {
@@ -138,9 +161,10 @@
                 {submitGuess}
                 {advanceRound}
                 {toggleResults}
+                {player}
             />
         {:else}
-            <Results {day} {date} {songList} {dailyMeta} {gameState} />
+            <Results {day} {date} {songList} {dailyMeta} {gameState} {player} />
         {/if}
     </div>
 {:else if !loading && !dailyMeta}
