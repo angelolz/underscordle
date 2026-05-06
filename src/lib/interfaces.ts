@@ -35,3 +35,7 @@ export interface AlbumArt {
     file: string;
     isSingle: boolean;
 }
+
+export type AppSettings = {
+    volume: number;
+};

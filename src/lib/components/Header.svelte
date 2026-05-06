@@ -1,11 +1,21 @@
 <script lang="ts">
     import logo from '$lib/assets/underscordle.svg';
     import { resolve } from '$app/paths';
-    import { ArchiveOutline, CogOutline, QuestionCircleOutline } from 'flowbite-svelte-icons';
+    import {
+        ArchiveOutline,
+        CogOutline,
+        ExclamationCircleOutline,
+        QuestionCircleOutline,
+    } from 'flowbite-svelte-icons';
     import Modal from './Modal.svelte';
 
-    let showHelpModal = $state(true);
+    let { volume = $bindable() } = $props();
+    let showHelpModal = $state(false);
     let showSettingsModal = $state(false);
+
+    function setVolume(value: number) {
+        volume = value;
+    }
 </script>
 
 <div class="flex w-full flex-col items-center justify-center gap-2 pt-4 align-middle">
@@ -57,5 +67,28 @@
     revealed={showSettingsModal}
     onClose={() => {
         showSettingsModal = false;
-    }}>Test Settings</Modal
+    }}
 >
+    <div class="flex flex-col gap-2 text-white">
+        <span class="text-xl font-bold">Settings</span>
+        <div class="flex flex-col items-center justify-center align-middle">
+            <span>Volume: <b>{volume}%</b></span>
+            <input
+                class="w-[200px]"
+                type="range"
+                min="1"
+                max="100"
+                value={volume}
+                onchange={(e) => {
+                    setVolume(Number(e.currentTarget.value));
+                }}
+            />
+            {#if volume > 35}
+                <span class="flex flex-row items-center justify-center gap-1 text-sm text-red-500">
+                    <ExclamationCircleOutline class="h-6 w-6 shrink-0" /> This may be too loud, please
+                    take caution.
+                </span>
+            {/if}
+        </div>
+    </div>
+</Modal>
