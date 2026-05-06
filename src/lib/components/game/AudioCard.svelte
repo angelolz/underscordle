@@ -77,10 +77,10 @@
 <div
     class={`relative flex shrink-0 items-center ${!isCurrentGuess() || result !== 'playing' ? 'border' : 'border-3'} h-[80px] w-full max-w-[400px] rounded-lg ${getBackgroundColor()} ${!isActive && result === 'playing' ? 'opacity-50' : ''}`}
 >
-    <span class="flex w-full flex-row items-center gap-2 px-2 sm:px-3">
+    <span class="flex w-full flex-row items-center gap-2 px-2">
         <button onclick={playClue} class="shrink-0">
             <PlaySolid
-                class={`h-[32px] w-[32px] sm:h-[40px] sm:w-[40px] ${isActive || result !== 'playing' ? 'transition-all hover:scale-110 active:scale-95' : ''}`}
+                class={`h-[42px] w-[42px] ${isActive || result !== 'playing' ? 'transition-all hover:scale-110 active:scale-95' : ''}`}
                 color="white"
             />
         </button>
@@ -91,7 +91,7 @@
                 <SearchResults {results} {suggestionIndex} {submitGuess} />
             {/if}
             <input
-                class="my-1 w-full min-w-0 border-none bg-transparent px-2 text-sm text-white outline-none focus:ring-0 sm:text-base"
+                class="my-1 w-full min-w-0 border-none bg-transparent px-2 text-sm text-white outline-none focus:ring-0 sm:text-md"
                 type="text"
                 autocomplete="off"
                 placeholder={isCurrentGuess() ? 'Guess the song...' : ''}
@@ -131,8 +131,8 @@
                     class="m-1 flex flex-row items-center rounded-full bg-gray-500 px-2 transition-colors hover:bg-white"
                     onclick={() => submitGuess('', '')}
                 >
-                    <ChevronDoubleRightOutline class="h-3 w-3 shrink-0 sm:h-4 sm:w-4" />
-                    <span class="ml-0.5 text-[10px] sm:text-sm">skip</span>
+                    <ChevronDoubleRightOutline class="h-4 w-4 shrink-0" />
+                    <span class="ml-0.5 text-sm">skip</span>
                 </button>
             {/if}
         </div>

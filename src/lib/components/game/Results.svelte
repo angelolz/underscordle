@@ -81,8 +81,6 @@
             copyText = 'Error!';
         }
     }
-
-    $inspect('gameState inspect: ' + gameState);
 </script>
 
 <div class="flex w-full flex-col items-center gap-6 px-1 sm:px-2">

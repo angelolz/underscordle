@@ -23,11 +23,12 @@
             }
         }
     });
+
     // save everytime theres a change to settings
-    $effect(() => {
+    function saveSettings() {
         const stateToSave = JSON.stringify(settings);
         localStorage.setItem(`underscordle-settings`, stateToSave);
-    });
+    }
 </script>
 
 <svelte:head>
@@ -40,6 +41,6 @@
 </svelte:head>
 
 <div class="m-auto flex w-full max-w-[800px] flex-col items-center p-2 align-middle">
-    <Header bind:volume={settings.volume} />
+    <Header bind:volume={settings.volume} {saveSettings} />
     {@render children()}
 </div>

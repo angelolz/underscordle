@@ -9,39 +9,45 @@
     } from 'flowbite-svelte-icons';
     import Modal from './Modal.svelte';
 
-    let { volume = $bindable() } = $props();
+    let { volume = $bindable(), saveSettings } = $props();
     let showHelpModal = $state(false);
     let showSettingsModal = $state(false);
+    let inputVolume = $state(volume);
+
+    $effect(() => {
+        inputVolume = volume;
+    });
 
     function setVolume(value: number) {
+        inputVolume = value;
         volume = value;
     }
 </script>
 
 <div class="flex w-full flex-col items-center justify-center gap-2 pt-4 align-middle">
-    <img src={logo} alt="underscordle" class="h-8 w-auto sm:h-10" />
+    <img src={logo} alt="underscordle" class="h-full w-auto sm:h-20" />
     <span class="px-4 text-center">
-        <p class="text-sm text-white">A daily underscores song guessing game!</p>
+        <p class="text-lg text-white">A daily underscores song guessing game!</p>
         <p class="text-sm text-white">
             by <a class="hover:underline" target="_blank" href="https://angelolz.one">angelolz</a>
         </p>
     </span>
     <div class="flex flex-row items-center gap-2 text-white">
         <span class="flex items-center transition-all hover:scale-105 active:scale-95"
-            ><a href={resolve('/archive')}><ArchiveOutline class="h-5 w-5 shrink-0" /></a></span
+            ><a href={resolve('/archive')}><ArchiveOutline class="h-8 w-8 shrink-0" /></a></span
         >
         <span class="flex items-center transition-all hover:scale-105 active:scale-95"
             ><button
                 onclick={() => {
                     showHelpModal = true;
-                }}><QuestionCircleOutline class="h-5 w-5 shrink-0" /></button
+                }}><QuestionCircleOutline class="h-8 w-8 shrink-0" /></button
             ></span
         >
         <span class="flex items-center transition-all hover:scale-105 active:scale-95"
             ><button
                 onclick={() => {
                     showSettingsModal = true;
-                }}><CogOutline class="h-5 w-5 shrink-0" /></button
+                }}><CogOutline class="h-8 w-8 shrink-0" /></button
             ></span
         >
     </div>
@@ -72,18 +78,21 @@
     <div class="flex flex-col gap-2 text-white">
         <span class="text-xl font-bold">Settings</span>
         <div class="flex flex-col items-center justify-center align-middle">
-            <span>Volume: <b>{volume}%</b></span>
+            <span>Volume: <b>{inputVolume}%</b></span>
             <input
                 class="w-[200px]"
                 type="range"
                 min="1"
                 max="100"
-                value={volume}
-                onchange={(e) => {
+                value={inputVolume}
+                oninput={(e) => {
                     setVolume(Number(e.currentTarget.value));
                 }}
+                onchange={() => {
+                    saveSettings();
+                }}
             />
-            {#if volume > 35}
+            {#if inputVolume > 35}
                 <span class="flex flex-row items-center justify-center gap-1 text-sm text-red-500">
                     <ExclamationCircleOutline class="h-6 w-6 shrink-0" /> This may be too loud, please
                     take caution.
