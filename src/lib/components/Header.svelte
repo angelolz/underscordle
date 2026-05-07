@@ -25,7 +25,7 @@
 </script>
 
 <div class="flex w-full flex-col items-center justify-center gap-2 pt-4 align-middle">
-    <img src={logo} alt="underscordle" class="h-full w-auto sm:h-20" />
+    <img src={logo} alt="underscordle" class="h-full w-auto sm:h-15" />
     <span class="px-4 text-center">
         <p class="text-lg text-white">A daily underscores song guessing game!</p>
         <p class="text-sm text-white">

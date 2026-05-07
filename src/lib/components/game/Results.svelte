@@ -100,7 +100,7 @@
                             albumName={song?.album}
                             class="h-[20px] w-[20px] shrink-0 rounded-md border border-white sm:h-[24px] sm:w-[24px]"
                         />
-                        <span class="text-xs sm:text-sm">{song?.title}</span>
+                        <span class="text-sm">{song?.title}</span>
                     </div>
                     <div class="flex shrink-0 flex-row items-center">
                         {#each { length: GUESSES_PER_ROUND } as _, j (j)}
@@ -117,24 +117,24 @@
                 {/if}
             {/each}
         </div>
-        <div class="flex w-full flex-row flex-wrap items-center justify-center gap-2 sm:gap-6">
+        <div class="flex w-full flex-row flex-wrap items-center justify-center gap-6">
             <div class="flex min-w-[50px] flex-col text-center">
-                <span class="text-base font-bold sm:text-2xl"
+                <span class="font-bold text-2xl"
                     >{`${getRoundsCorrect()}/${MAX_ROUNDS}`}</span
                 >
-                <span class="text-[8px] sm:text-sm">CORRECT</span>
+                <span class="text-sm">CORRECT</span>
             </div>
             <div class="flex min-w-[50px] flex-col text-center">
-                <span class="text-base font-bold sm:text-2xl"
+                <span class="font-bold text-2xl"
                     >{`${getPoints()}/${MAX_ROUNDS * GUESSES_PER_ROUND}`}</span
                 >
-                <span class="text-[8px] sm:text-sm">POINTS</span>
+                <span class="text-sm">POINTS</span>
             </div>
             <div class="flex min-w-[50px] flex-col text-center">
-                <span class="text-base font-bold sm:text-2xl"
+                <span class="font-bold text-2xl"
                     >{(getPoints() / MAX_ROUNDS).toFixed(1)}</span
                 >
-                <span class="text-[8px] sm:text-sm">AVG. PTS</span>
+                <span class="text-sm">AVG. PTS</span>
             </div>
             <button
                 class="mt-2 flex shrink-0 flex-row items-center justify-around gap-1 rounded-full px-3 py-2 align-middle text-[10px] whitespace-nowrap text-white ring ring-white transition-all hover:bg-white/25 hover:ring-2 sm:mt-0 sm:text-[14px]"

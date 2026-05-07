@@ -91,7 +91,7 @@
                 <SearchResults {results} {suggestionIndex} {submitGuess} />
             {/if}
             <input
-                class="my-1 w-full min-w-0 border-none bg-transparent px-2 text-sm text-white outline-none focus:ring-0 sm:text-md"
+                class="my-1 w-full min-w-0 border-none bg-transparent px-2 text-white outline-none focus:ring-0 text-md"
                 type="text"
                 autocomplete="off"
                 placeholder={isCurrentGuess() ? 'Guess the song...' : ''}
