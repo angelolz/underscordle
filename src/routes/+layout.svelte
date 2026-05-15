@@ -1,6 +1,12 @@
 <script lang="ts">
     import './layout.css';
-    import favicon from '$lib/assets/favicon.svg';
+    import favicon from '$lib/assets/favicon.ico';
+    import favicon16 from '$lib/assets/favicon-16x16.png';
+    import favicon32 from '$lib/assets/favicon-32x32.png';
+    import favicon180 from '$lib/assets/favicon-180x180.png';
+    import favicon192 from '$lib/assets/favicon-192x192.png';
+    import favicon512 from '$lib/assets/favicon-512x512.png';
+
     import '@fontsource/poppins';
     import Header from '$lib/components/Header.svelte';
     import { ASSETS_URL } from '$lib/statics.js';
@@ -32,7 +38,11 @@
 </script>
 
 <svelte:head>
-    <link rel="icon" href={favicon} />
+    <link rel="icon" href={favicon32} />
+    <link rel="icon" type="image/png" sizes="32x32" href={favicon32}>
+    <link rel="apple-touch-icon" sizes="180x180" href={favicon180}>
+    <link rel="icon" type="image/png" sizes="192x192" href={favicon192}>
+    <link rel="icon" type="image/png" sizes="512x512" href={favicon512}>
     {#if data.albums && data.albums.length > 0}
         {#each data.albums as album (album.file)}
             <link rel="preload" as="image" href="{ASSETS_URL}/art/{album.file}" type="image/webp" />
