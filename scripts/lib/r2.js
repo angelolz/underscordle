@@ -49,8 +49,8 @@ export async function uploadFile(bucket, key, localPath) {
         // 1 year for snippets, won't change
         cacheControl = 'public, max-age=31536000, immutable';
     } else if (key.startsWith('art/')) {
-        // 1 day for album covers
-        cacheControl = 'public, max-age=86400';
+        // 1 week for album covers
+        cacheControl = 'public, max-age=604800';
     }
 
     const command = new PutObjectCommand({
@@ -78,18 +78,32 @@ export async function syncPull(bucket, prefix, localDir) {
     console.log(`Pulling s3://${bucket}/${prefix} to ${localDir}...`);
     const objects = await listObjects(bucket, prefix);
 
-    for (const obj of objects) {
-        const relativeKey = prefix ? obj.Key.replace(prefix, '').replace(/^\//, '') : obj.Key;
-        const localPath = path.join(localDir, relativeKey);
+    await Promise.all(
+        objects.map(async (obj) => {
+            if (obj.Key.endsWith('/')) return;
 
-        console.log(`  Downloading ${obj.Key} -> ${localPath}`);
-        await downloadFile(bucket, obj.Key, localPath);
-    }
+            const relativeKey = prefix ? obj.Key.replace(prefix, '').replace(/^\//, '') : obj.Key;
+            const localPath = path.join(localDir, relativeKey);
+
+            try {
+                const stats = await fs.stat(localPath);
+                if (stats.size === obj.Size) {
+                    return;
+                }
+            } catch (_) {
+                // File missing
+            }
+
+            console.log(`  Downloading ${obj.Key} -> ${localPath}`);
+            await downloadFile(bucket, obj.Key, localPath);
+        })
+    );
 }
 
 export async function syncPush(localDir, bucket, prefix = '') {
     console.log(`Pushing ${localDir} to s3://${bucket}/${prefix}...`);
 
+    const files = [];
     async function walk(dir) {
         const entries = await fs.readdir(dir, { withFileTypes: true });
         for (const entry of entries) {
@@ -97,16 +111,22 @@ export async function syncPush(localDir, bucket, prefix = '') {
             if (entry.isDirectory()) {
                 await walk(res);
             } else {
-                const relativePath = path.relative(localDir, res);
-                const key = prefix
-                    ? path.join(prefix, relativePath).replace(/\\/g, '/')
-                    : relativePath.replace(/\\/g, '/');
-
-                console.log(`  Uploading ${relativePath} -> s3://${bucket}/${key}`);
-                await uploadFile(bucket, key, res);
+                files.push(res);
             }
         }
     }
 
     await walk(localDir);
+
+    await Promise.all(
+        files.map(async (filePath) => {
+            const relativePath = path.relative(localDir, filePath);
+            const key = prefix
+                ? path.join(prefix, relativePath).replace(/\\/g, '/')
+                : relativePath.replace(/\\/g, '/');
+
+            console.log(`  Uploading ${relativePath} -> s3://${bucket}/${key}`);
+            await uploadFile(bucket, key, filePath);
+        })
+    );
 }

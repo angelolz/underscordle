@@ -25,6 +25,16 @@ jobs:
             - name: Install ffmpeg
               run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
+            - name: Set up cache
+              uses: actions/cache@v5
+              with:
+                  path: |
+                      out/data
+                      out/masters
+                      out/covers
+                  key: underscordle-cache-${{ github.run_id }}
+                  restore-keys: underscordle-cache-
+
             - name: Pull Masters from R2
               run: node scripts/sync-r2.js pull-masters
               env:

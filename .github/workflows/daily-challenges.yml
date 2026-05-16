@@ -32,7 +32,18 @@ jobs:
             - name: Install ffmpeg
               run: sudo apt-get update && sudo apt-get install -y ffmpeg
 
+            - name: Restore cache
+              id: cache-restore
+              uses: actions/cache@v5
+              with:
+                  path: |
+                      out/data
+                      out/masters
+                  key: underscordle-cache-${{ github.run_id }}
+                  restore-keys: underscordle-cache-
+
             - name: Pull Masters & Data from R2
+              if: steps.cache-restore.outputs.cache-matched-key == ''
               run: |
                   node scripts/sync-r2.js pull-masters
                   node scripts/sync-r2.js pull-data
