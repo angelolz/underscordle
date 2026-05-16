@@ -16,3 +16,7 @@ export function calculateDays(startDate: string, endDate: string) {
     const daysDifference = timeDifference / (1000 * 3600 * 24);
     return daysDifference + 1;
 }
+
+export function getTodayDate() {
+    return new Date().toISOString().split('T')[0];
+}

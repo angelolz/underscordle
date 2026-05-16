@@ -5,10 +5,11 @@
     import AlbumArt from './AlbumArt.svelte';
     import ResultIcon from './ResultIcon.svelte';
     import TimerLeft from './TimerLeft.svelte';
+    import { getTodayDate } from '../../../params/date';
 
     const { day, date, songList, dailyMeta, gameState, player } = $props();
     const SHARE_TEXT = 'Copy Results';
-
+    const isToday = $derived(date === getTodayDate());
     let copyText = $state(SHARE_TEXT);
 
     function getSong(roundIndex: number) {
@@ -144,6 +145,7 @@
             </button>
         </div>
     </div>
-
-    <TimerLeft />
+    {#if isToday}
+        <TimerLeft />
+    {/if}
 </div>
