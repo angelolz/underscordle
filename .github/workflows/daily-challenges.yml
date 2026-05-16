@@ -2,7 +2,7 @@ name: Daily Challenges
 
 on:
     schedule:
-        - cron: '0 18 * * *'
+        - cron: '0 23 * * *'
     workflow_dispatch:
         inputs:
             target_date:
