@@ -74,13 +74,14 @@ export async function listObjects(bucket, prefix = '') {
     return response.Contents || [];
 }
 
-export async function syncPull(bucket, prefix, localDir) {
+export async function syncPull(bucket, prefix, localDir, excludePrefix = null) {
     console.log(`Pulling s3://${bucket}/${prefix} to ${localDir}...`);
     const objects = await listObjects(bucket, prefix);
 
     await Promise.all(
         objects.map(async (obj) => {
-            if (obj.Key.endsWith('/')) return;
+            if (obj.Key.endsWith('/')) return; //ignore folders
+            if (excludePrefix && obj.Key.startsWith(excludePrefix)) return; //ignore excluded files
 
             const relativeKey = prefix ? obj.Key.replace(prefix, '').replace(/^\//, '') : obj.Key;
             const localPath = path.join(localDir, relativeKey);

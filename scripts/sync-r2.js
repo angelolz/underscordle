@@ -24,7 +24,11 @@ async function main() {
                 break;
 
             case 'pull-data':
-                await syncPull(BUCKETS.data, '', DIRS.data);
+                await syncPull(BUCKETS.data, '', DIRS.data, 'art/');
+                break;
+
+            case 'pull-art':
+                await syncPull(BUCKETS.data, 'art/', DIRS.art);
                 break;
 
             case 'push-data':
@@ -38,7 +42,7 @@ async function main() {
 
             default:
                 console.log(
-                    'Usage: node scripts/sync-r2.js [pull-masters|pull-data|push-data|push-challenges]'
+                    'Usage: node scripts/sync-r2.js [pull-masters|pull-data|pull-art|push-data|push-challenges]'
                 );
                 process.exit(1);
         }
