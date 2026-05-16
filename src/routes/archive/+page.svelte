@@ -7,7 +7,7 @@
 
     const todayEntry = $derived(data.archiveEntries[0] ?? null);
     const pastEntries = $derived(data.archiveEntries.slice(1));
-    let clearedDates = $state(new SvelteSet<string>());
+    let clearedDates = new SvelteSet<string>();
 
     onMount(() => {
         const nextClearedDates = new SvelteSet<string>();

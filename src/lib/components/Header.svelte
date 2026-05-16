@@ -13,11 +13,7 @@
     let { volume = $bindable(), saveSettings } = $props();
     let showHelpModal = $state(false);
     let showSettingsModal = $state(false);
-    let inputVolume = $state(volume);
-
-    $effect(() => {
-        inputVolume = volume;
-    });
+    let inputVolume = $derived(volume);
 
     function setVolume(value: number) {
         inputVolume = value;
@@ -71,10 +67,24 @@
         <hr class="h-3 w-full max-w-[280px] border-gray-500 sm:max-w-sm" />
         <span class="text-xl font-bold text-white">Credits</span>
         <div class="flex flex-col items-center justify-center">
-            <img src={icon128} alt="underscordle icon" class="h-[100px]"/>
-            <p class="text-white">Icon created by <a class="hover:underline" target="_blank" href="https://youtube.com/@augeagora">douglas</a>!</p>
+            <img src={icon128} alt="underscordle icon" class="h-[100px]" />
+            <p class="text-white">
+                Icon created by <a
+                    class="hover:underline"
+                    target="_blank"
+                    href="https://youtube.com/@augeagora">douglas</a
+                >!
+            </p>
         </div>
-        <p class="text-white"><b>underscordle</b> is heavily inspired by <a class="hover:underline" target="_blank" href="https://twitch.tv/ottomated">Ottomated</a>'s <a class="hover:underline" target="_blank" href="https://porterrobinsle.com/"><i>PORTER ROBINSONLE</i></a>.</p>
+        <p class="text-white">
+            <b>underscordle</b> is heavily inspired by
+            <a class="hover:underline" target="_blank" href="https://twitch.tv/ottomated"
+                >Ottomated</a
+            >'s
+            <a class="hover:underline" target="_blank" href="https://porterrobinsle.com/"
+                ><i>PORTER ROBINSONLE</i></a
+            >.
+        </p>
     </div>
 </Modal>
 

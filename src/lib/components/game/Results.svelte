@@ -120,21 +120,17 @@
         </div>
         <div class="flex w-full flex-row flex-wrap items-center justify-center gap-6">
             <div class="flex min-w-[50px] flex-col text-center">
-                <span class="font-bold text-2xl"
-                    >{`${getRoundsCorrect()}/${MAX_ROUNDS}`}</span
-                >
+                <span class="text-2xl font-bold">{`${getRoundsCorrect()}/${MAX_ROUNDS}`}</span>
                 <span class="text-sm">CORRECT</span>
             </div>
             <div class="flex min-w-[50px] flex-col text-center">
-                <span class="font-bold text-2xl"
+                <span class="text-2xl font-bold"
                     >{`${getPoints()}/${MAX_ROUNDS * GUESSES_PER_ROUND}`}</span
                 >
                 <span class="text-sm">POINTS</span>
             </div>
             <div class="flex min-w-[50px] flex-col text-center">
-                <span class="font-bold text-2xl"
-                    >{(getPoints() / MAX_ROUNDS).toFixed(1)}</span
-                >
+                <span class="text-2xl font-bold">{(getPoints() / MAX_ROUNDS).toFixed(1)}</span>
                 <span class="text-sm">AVG. PTS</span>
             </div>
             <button
@@ -149,5 +145,5 @@
         </div>
     </div>
 
-    <TimerLeft/>
+    <TimerLeft />
 </div>
