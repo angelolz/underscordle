@@ -39,6 +39,7 @@ jobs:
                   path: |
                       out/data
                       out/masters
+                      out/covers
                   key: underscordle-cache-${{ github.run_id }}
                   restore-keys: underscordle-cache-
 
