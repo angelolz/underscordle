@@ -4,6 +4,7 @@
     import { ShareNodesOutline } from 'flowbite-svelte-icons';
     import AlbumArt from './AlbumArt.svelte';
     import ResultIcon from './ResultIcon.svelte';
+    import TimerLeft from './TimerLeft.svelte';
 
     const { day, date, songList, dailyMeta, gameState, player } = $props();
     const SHARE_TEXT = 'Copy Results';
@@ -147,4 +148,6 @@
             </button>
         </div>
     </div>
+
+    <TimerLeft/>
 </div>
