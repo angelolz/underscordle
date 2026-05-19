@@ -106,7 +106,7 @@
                                 results[suggestionIndex].title,
                                 results[suggestionIndex].id
                             );
-                        } 
+                        }
                         return;
                     }
                     if (event.key === 'ArrowUp') {
@@ -134,7 +134,7 @@
             {/if}
         </div>
     </span>
-    <div class="absolute right-4 bottom-1 text-[8px] text-theme-muted opacity-75 sm:text-[10px]">
+    <div class="absolute right-4 bottom-1 text-[8px] text-theme-text opacity-75 sm:text-[10px]">
         {getText()}
     </div>
 </div>

@@ -83,15 +83,11 @@
         </div>
         <p class="text-theme-text">
             <b>underscordle</b> is heavily inspired by
-            <a
-                class="hover:underline"
-                target="_blank"
-                href="https://twitch.tv/ottomated">Ottomated</a
+            <a class="hover:underline" target="_blank" href="https://twitch.tv/ottomated"
+                >Ottomated</a
             >'s
-            <a
-                class="hover:underline"
-                target="_blank"
-                href="https://porterrobinsle.com/"><i>PORTER ROBINSONLE</i></a
+            <a class="hover:underline" target="_blank" href="https://porterrobinsle.com/"
+                ><i>PORTER ROBINSONLE</i></a
             >.
         </p>
     </div>
@@ -122,18 +118,17 @@
             </select>
         </div>
 
-
         <div class="flex flex-col items-center justify-around gap-2 align-middle">
-            <span class="w-full text-sm font-bold flex flex-row gap-1">
+            <span class="flex w-full flex-row gap-1 text-sm font-bold">
                 <p>Volume: <b>{inputVolume}%</b></p>
                 {#if inputVolume > 35}
-                <span
-                    class="flex flex-row items-center justify-between gap-1 text-[10px] text-red-500"
-                >
-                    <ExclamationCircleOutline class="h-4 w-4 shrink-0" /> This may be too loud, please
-                    take caution.
-                </span>
-            {/if}
+                    <span
+                        class="flex flex-row items-center justify-between gap-1 text-[10px] text-red-500"
+                    >
+                        <ExclamationCircleOutline class="h-4 w-4 shrink-0" /> This may be too loud, please
+                        take caution.
+                    </span>
+                {/if}
             </span>
             <input
                 class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-theme-accent accent-theme-text"

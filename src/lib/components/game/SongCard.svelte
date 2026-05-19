@@ -27,7 +27,7 @@
         </div>
     </div>
     <button
-        class="flex shrink-0 flex-row items-center justify-around gap-1 rounded-full bg-theme-accent px-3 py-2 align-middle text-[12px] whitespace-nowrap text-white transition-all hover:opacity-90 active:scale-95 sm:text-[14px]"
+        class="flex shrink-0 flex-row items-center justify-around gap-1 rounded-full bg-theme-accent px-3 py-2 align-middle text-[12px] whitespace-nowrap text-theme-text ring transition-all hover:opacity-90 hover:ring-2 active:scale-95 sm:text-[14px]"
         onclick={() => {
             if (!isLastRound) advanceRound?.();
             else toggleResults();

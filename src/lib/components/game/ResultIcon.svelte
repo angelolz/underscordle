@@ -25,7 +25,11 @@
     tabindex="0"
 >
     {#if showPlay && src}
-        <div in:fade={{ duration: 150 }} out:fade={{ duration: 150 }} class="absolute inset-0 text-theme-accent">
+        <div
+            in:fade={{ duration: 150 }}
+            out:fade={{ duration: 150 }}
+            class="absolute inset-0 text-theme-accent"
+        >
             <PlaySolid class="h-6 w-6 text-theme-text" />
         </div>
     {:else}
