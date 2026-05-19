@@ -11,6 +11,8 @@ const DATA_DIR = process.env.DATA_DIR || path.resolve(__dirname, '../out/data');
 const REGISTRY_FILE = path.join(DATA_DIR, 'song-registry.json');
 const MASTERS_DIR = process.env.MASTERS_DIR || path.resolve(__dirname, '../out/masters');
 const OUTPUT_BASE_DIR = process.env.OUTPUT_DIR || path.resolve(__dirname, '../out/dailies');
+const VOLUME_THRESHOLD = -35;
+const MAX_RETRIES = 5;
 
 function createSeededRandom(seed) {
     let hash = crypto.createHash('sha256').update(seed).digest('hex');
@@ -27,6 +29,32 @@ function createSeededRandom(seed) {
     };
 }
 
+async function getMeanVolume(masterPath, startTime, duration) {
+    return new Promise((resolve) => {
+        let meanVolume = -100;
+        ffmpeg(masterPath)
+            .setStartTime(startTime)
+            .setDuration(duration)
+            .audioFilters('volumedetect')
+            .addOption('-f', 'null')
+            .output('-')
+            .on('stderr', (line) => {
+                const match = line.match(/mean_volume: ([-\d.]+) dB/);
+                if (match) {
+                    meanVolume = parseFloat(match[1]);
+                }
+            })
+            .on('end', () => {
+                resolve(meanVolume);
+            })
+            .on('error', (err) => {
+                console.error(`    Volume detection error: ${err.message}`);
+                resolve(-100);
+            })
+            .run();
+    });
+}
+
 async function generateDaily() {
     try {
         const dateArg = process.argv[2] || new Date().toISOString().split('T')[0];
@@ -41,48 +69,95 @@ async function generateDaily() {
 
         const random = createSeededRandom(dateArg);
 
-        const selectedIds = [];
         const availableIds = [...songIds];
-        for (let i = 0; i < 5; i++) {
+        const selectedRounds = [];
+
+        console.log('\nSelecting and Validating Songs...');
+
+        while (selectedRounds.length < 5 && availableIds.length > 0) {
             const idx = Math.floor(random() * availableIds.length);
-            selectedIds.push(availableIds.splice(idx, 1)[0]);
-        }
-
-        const dayDir = path.join(OUTPUT_BASE_DIR, dateArg);
-        await fs.mkdir(dayDir, { recursive: true });
-
-        console.log('\nGenerating Daily Challenge...');
-
-        const roundsMeta = [];
-
-        for (let i = 0; i < selectedIds.length; i++) {
-            const songId = selectedIds[i];
+            const songId = availableIds.splice(idx, 1)[0];
             const song = registry[songId];
-            const round = i + 1;
             const masterPath = path.join(MASTERS_DIR, song.filename);
 
-            console.log(`Round ${round}: ${song.title}`);
+            const songRandom = createSeededRandom(dateArg + songId);
 
-            const snippets = [
+            const snippetConfigs = [
                 { id: 1, duration: 0.5, type: 'random' },
                 { id: 2, duration: 1.0, type: 'random' },
                 { id: 3, duration: 3.0, type: 'start' },
             ];
 
-            for (const snip of snippets) {
+            const validatedSnippets = [];
+            let songOk = true;
+
+            for (const config of snippetConfigs) {
                 let startTime = 0;
-                if (snip.type === 'random') {
-                    const min = song.duration * 0.1;
-                    const max = song.duration * 0.9 - snip.duration;
-                    startTime = min + random() * (max - min);
+                let snippetOk = false;
+
+                for (let retry = 0; retry <= MAX_RETRIES; retry++) {
+                    if (config.type === 'random' || retry > 0) {
+                        const min = song.duration * 0.1;
+                        const max = song.duration * 0.9 - config.duration;
+                        startTime = min + songRandom() * (max - min);
+                    } else {
+                        startTime = 0;
+                    }
+
+                    const volume = await getMeanVolume(masterPath, startTime, config.duration);
+                    if (volume >= VOLUME_THRESHOLD) {
+                        validatedSnippets.push({ ...config, startTime });
+                        snippetOk = true;
+                        break;
+                    }
+                    console.log(
+                        `  - [${song.title}] Snippet ${config.id} too quiet (${volume}dB) at ${startTime.toFixed(2)}s. Retry ${retry + 1}/${MAX_RETRIES}`
+                    );
                 }
 
+                if (!snippetOk) {
+                    songOk = false;
+                    break;
+                }
+            }
+
+            if (songOk) {
+                selectedRounds.push({
+                    songId,
+                    song,
+                    snippets: validatedSnippets,
+                });
+                console.log(`  + Accepted: ${song.title}`);
+            } else {
+                console.log(`  ! Rejected: ${song.title} (too quiet after retries)`);
+            }
+        }
+
+        if (selectedRounds.length < 5) {
+            throw new Error('Could not find 5 valid songs with audible snippets');
+        }
+
+        const dayDir = path.join(OUTPUT_BASE_DIR, dateArg);
+        await fs.mkdir(dayDir, { recursive: true });
+
+        console.log('\nGenerating Snippets...');
+
+        const roundsMeta = [];
+
+        for (let i = 0; i < selectedRounds.length; i++) {
+            const { songId, song, snippets } = selectedRounds[i];
+            const round = i + 1;
+            const masterPath = path.join(MASTERS_DIR, song.filename);
+
+            console.log(`Round ${round}: ${song.title}`);
+
+            for (const snip of snippets) {
                 const outputName = `round-${round}-guess-${snip.id}.opus`;
                 const outputPath = path.join(dayDir, outputName);
 
                 await new Promise((resolve, reject) => {
                     ffmpeg(masterPath)
-                        .setStartTime(startTime)
+                        .setStartTime(snip.startTime)
                         .setDuration(snip.duration)
                         .output(outputPath)
                         .audioCodec('libopus')
@@ -94,7 +169,7 @@ async function generateDaily() {
                         })
                         .run();
                 });
-                console.log(`  - Generated: ${outputName} (Start: ${startTime.toFixed(2)}s)`);
+                console.log(`  - Generated: ${outputName} (Start: ${snip.startTime.toFixed(2)}s)`);
             }
 
             roundsMeta.push({
