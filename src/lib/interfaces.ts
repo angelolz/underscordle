@@ -1,3 +1,5 @@
+import type { ThemeName } from './themes';
+
 export interface Song {
     id: string;
     artist: string;
@@ -38,6 +40,7 @@ export interface AlbumArt {
 
 export type AppSettings = {
     volume: number;
+    theme: ThemeName;
 };
 
 export type ArchiveEntry = {

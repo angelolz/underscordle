@@ -18,7 +18,7 @@
 
     function getBackgroundColor(i: number) {
         if (i === gameState.currentRound) {
-            return 'bg-white/50';
+            return 'bg-theme-text/50';
         }
 
         switch (gameState.roundStatuses[i]) {
@@ -27,26 +27,28 @@
             case 'lost':
                 return 'bg-red-500';
             default:
-                if (i === gameState.currentRound) return 'bg-white/50';
+                if (i === gameState.currentRound) return 'bg-theme-text/50';
                 else return '';
         }
     }
 </script>
 
-<div class="relative flex w-96 flex-col items-center gap-1 align-middle text-white">
-    <span class="flex flex-row items-center justify-center gap-1.5 text-lg font-bold text-white">
+<div class="relative flex w-96 flex-col items-center gap-1 align-middle text-theme-text">
+    <span
+        class="flex flex-row items-center justify-center gap-1.5 text-lg font-bold text-theme-text"
+    >
         <span><b>Day #{day}</b></span>
-        <hr class="w-[4px] border border-gray-400" />
-        <span class="text-sm text-gray-400">{date}</span>
+        <hr class="w-[4px] border border-theme-muted" />
+        <span class="text-sm text-theme-muted">{date}</span>
     </span>
     <span class="flex flex-row items-center gap-2">
-        <span class="border-r-2 pr-2 text-sm text-white"
+        <span class="border-r-2 pr-2 text-sm text-theme-text"
             ><b>Round {gameState.currentRound + 1} of {MAX_ROUNDS}</b></span
         >
         <div class="flex flex-row gap-2">
             {#each { length: MAX_ROUNDS } as _, i (i)}
                 <div
-                    class={`h-[16px] w-[16px] ${i === gameState.currentRound ? 'border-3' : 'border'} ${getBackgroundColor(i)} bg-red rounded-full border-white`}
+                    class={`h-[16px] w-[16px] ${i === gameState.currentRound ? 'border-3' : 'border'} ${getBackgroundColor(i)} rounded-full border-theme-text`}
                 ></div>
             {/each}
         </div>

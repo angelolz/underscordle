@@ -10,10 +10,14 @@
     import { ASSETS_URL } from '$lib/statics.js';
     import { onMount } from 'svelte';
     import { setSettingsContext } from '$lib/settings.svelte';
+    import { themes } from '$lib/themes';
+
+    import type { AppSettings } from '$lib/interfaces';
 
     let { children, data } = $props();
-    let settings = $state({
+    let settings: AppSettings = $state({
         volume: 10,
+        theme: 'dark',
     });
     setSettingsContext(settings);
 
@@ -25,7 +29,18 @@
             if (!isNaN(volumeNumber) && volumeNumber >= 1 && volumeNumber <= 100) {
                 settings.volume = volumeNumber;
             }
+            if (parsed.theme && parsed.theme in themes) {
+                settings.theme = parsed.theme;
+            }
         }
+    });
+
+    $effect(() => {
+        const root = document.documentElement;
+        // Remove all possible theme classes
+        Object.keys(themes).forEach((t) => root.classList.remove(t));
+        // Add current theme class
+        root.classList.add(settings.theme);
     });
 
     // save everytime theres a change to settings
@@ -49,6 +64,6 @@
 </svelte:head>
 
 <div class="m-auto flex w-full max-w-[800px] flex-col items-center p-2 align-middle">
-    <Header bind:volume={settings.volume} {saveSettings} />
+    <Header bind:volume={settings.volume} bind:theme={settings.theme} {saveSettings} />
     {@render children()}
 </div>

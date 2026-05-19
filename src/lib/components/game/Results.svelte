@@ -88,11 +88,11 @@
 
 <div class="flex w-full flex-col items-center gap-6 px-1 sm:px-2">
     <div
-        class="flex w-full max-w-[500px] flex-col items-center justify-center gap-4 rounded-xl border border-white p-3 align-middle text-white sm:gap-6 sm:p-4"
+        class="flex w-full max-w-[500px] flex-col items-center justify-center gap-4 rounded-xl border border-theme-text bg-theme-bg p-3 align-middle text-theme-text sm:gap-6 sm:p-4"
     >
         <div class="flex flex-col text-center">
             <span class="text-xl font-bold sm:text-2xl">Results</span>
-            <span class="text-[10px] text-gray-500 sm:text-sm">{`Day #${day} - ${date}`}</span>
+            <span class="text-[10px] text-theme-muted sm:text-sm">{`Day #${day} - ${date}`}</span>
         </div>
         <div class="flex w-full flex-col gap-2">
             {#each { length: MAX_ROUNDS } as _, i (i)}
@@ -101,7 +101,7 @@
                     <div class="flex min-w-0 flex-row items-center gap-2">
                         <AlbumArt
                             albumName={song?.album}
-                            class="h-[20px] w-[20px] shrink-0 rounded-md border border-white sm:h-[24px] sm:w-[24px]"
+                            class="h-[20px] w-[20px] shrink-0 rounded-md border border-theme-text sm:h-[24px] sm:w-[24px]"
                         />
                         <span class="text-sm">{song?.title}</span>
                     </div>
@@ -116,7 +116,7 @@
                     </div>
                 </div>
                 {#if i < MAX_ROUNDS - 1}
-                    <hr class="text-gray-500" />
+                    <hr class="w-full border-theme-muted opacity-25" />
                 {/if}
             {/each}
         </div>
@@ -137,7 +137,7 @@
             </div>
             <div class="flex flex-col gap-1.5">
                 <button
-                    class="mt-2 flex shrink-0 flex-row items-center justify-around gap-1 rounded-full px-3 py-2 align-middle text-[10px] whitespace-nowrap text-white ring ring-white transition-all hover:bg-white/25 hover:ring-2 sm:mt-0 sm:text-[14px]"
+                    class="mt-2 flex shrink-0 flex-row items-center justify-around gap-1 rounded-full bg-theme-accent ring ring-theme-text px-3 py-2 align-middle text-[10px] whitespace-nowrap text-white transition-all hover:opacity-90 hover:ring-3 active:scale-95 sm:mt-0 sm:text-[14px]"
                     onclick={() => {
                         copyResults();
                     }}
@@ -152,7 +152,7 @@
         <TimerLeft />
     {/if}
     <a
-        class="flex flex-row items-center justify-center gap-0.5 text-white hover:underline"
+        class="flex flex-row items-center justify-center gap-0.5 text-theme-text hover:underline"
         href={resolve('/archive')}
     >
         <AngleLeftOutline class="h-4 w-4 shrink-0" />

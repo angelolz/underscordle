@@ -30,19 +30,19 @@
     }
 </script>
 
-<div class="flex w-full flex-col items-center gap-3 px-2 text-white">
+<div class="flex w-full flex-col items-center gap-3 px-2 text-theme-text">
     <h1 class="text-3xl font-bold">Archive</h1>
 
     {#if todayEntry}
         <div class="flex w-full flex-col gap-2">
-            <span class="text-xs font-bold tracking-widest text-gray-400 uppercase"
+            <span class="text-xs font-bold tracking-widest text-theme-muted uppercase"
                 >Today's Challenge</span
             >
             <a
                 href={resolve(`/${todayEntry.date}`)}
-                class="flex w-full flex-col items-center justify-center rounded-xl border border-white p-6 transition-all hover:bg-white/10 active:scale-[0.98]"
+                class="flex w-full flex-col items-center justify-center rounded-xl border border-theme-text p-6 transition-all hover:bg-theme-card active:scale-[0.98]"
             >
-                <span class="text-xs tracking-widest text-gray-400 uppercase"
+                <span class="text-xs tracking-widest text-theme-muted uppercase"
                     >Day #{todayEntry.day}</span
                 >
                 <span
@@ -55,18 +55,18 @@
 
     {#if pastEntries.length > 0}
         <div class="flex w-full flex-col gap-2">
-            <span class="text-xs font-bold tracking-widest text-gray-400 uppercase"
+            <span class="text-xs font-bold tracking-widest text-theme-muted uppercase"
                 >Past Challenges</span
             >
             <div
-                class="grid w-full grid-cols-2 gap-2 rounded-xl border border-white p-2 sm:grid-cols-4"
+                class="grid w-full grid-cols-2 gap-2 rounded-xl border border-theme-text p-2 sm:grid-cols-4"
             >
                 {#each pastEntries as entry (entry.date)}
                     <a
                         href={resolve(`/${entry.date}`)}
-                        class="flex flex-row items-center justify-center gap-2 rounded-xl p-2 transition-all hover:bg-white/10"
+                        class="flex flex-row items-center justify-center gap-2 rounded-xl p-2 transition-all hover:bg-theme-card active:scale-[0.98]"
                     >
-                        <span class="text-[10px] tracking-widest text-gray-400 uppercase"
+                        <span class="text-[10px] tracking-widest text-theme-muted uppercase"
                             >#{entry.day}</span
                         >
                         <span

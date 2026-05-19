@@ -13,9 +13,35 @@
     --color-primary-800: #1e40af;
     --color-primary-900: #1e3a8a;
     --color-primary-950: #172554;
+
+    --color-theme-bg: var(--bg-color);
+    --color-theme-text: var(--text-color);
+    --color-theme-accent: var(--accent-color);
+    --color-theme-card: var(--card-color);
+    --color-theme-muted: var(--muted-color);
+}
+
+:root, :root.dark {
+    --bg-color: #121212;
+    --text-color: #ffffff;
+    --accent-color: #3b82f6;
+    --card-color: rgba(255, 255, 255, 0.05);
+    --muted-color: #9ca3af;
+}
+
+:root.white {
+    --bg-color: #ffffff;
+    --text-color: #121212;
+    --accent-color: #2563eb;
+    --card-color: rgba(0, 0, 0, 0.05);
+    --muted-color: #4b5563;
 }
 
 body {
-    background-color: #121212;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
     font-family: 'Poppins', sans-serif;
 }

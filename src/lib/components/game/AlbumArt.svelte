@@ -13,5 +13,5 @@
 {#if src}
     <img {src} alt={albumName} class={className} />
 {:else}
-    <div class={`${className} bg-gray-800`}></div>
+    <div class={`${className} bg-theme-card`}></div>
 {/if}

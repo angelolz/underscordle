@@ -10,11 +10,12 @@
         class="animate-fade-in animate fixed inset-0 z-50 flex items-center justify-center bg-black/65"
     >
         <div
-            class="animate-fly-fade-in relative mx-3 w-full max-w-md rounded-lg border-2 border-white bg-[#121212] p-6 text-center sm:mx-0"
+            class="animate-fly-fade-in relative mx-3 w-full max-w-md rounded-lg border-2 border-theme-text bg-theme-bg p-6 text-center sm:mx-0"
+            style="box-shadow: 0 0 20px rgba(0,0,0,0.5);"
         >
             <button
                 onclick={onClose}
-                class="absolute top-2 right-2 text-gray-400 transition-colors hover:text-white"
+                class="absolute top-2 right-2 text-theme-muted transition-colors hover:text-theme-text"
                 title="close"
             >
                 <svg

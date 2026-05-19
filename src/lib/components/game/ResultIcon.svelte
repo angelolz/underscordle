@@ -25,8 +25,8 @@
     tabindex="0"
 >
     {#if showPlay && src}
-        <div in:fade={{ duration: 150 }} out:fade={{ duration: 150 }} class="absolute inset-0">
-            <PlaySolid class="h-6 w-6" color="white" />
+        <div in:fade={{ duration: 150 }} out:fade={{ duration: 150 }} class="absolute inset-0 text-theme-accent">
+            <PlaySolid class="h-6 w-6 text-theme-text" />
         </div>
     {:else}
         <div
@@ -35,13 +35,13 @@
             class="absolute inset-0 flex items-center justify-center"
         >
             {#if !status}
-                <MinusOutline class="h-6 w-6 shrink-0 text-gray-800" />
+                <MinusOutline class="h-6 w-6 shrink-0 text-theme-muted" />
             {:else if status === 'correct'}
                 <CheckOutline class="h-6 w-6 shrink-0 text-green-500" />
             {:else if status === 'wrong'}
                 <CloseOutline class="h-6 w-6 shrink-0 text-red-500" />
             {:else}
-                <ChevronDoubleRightOutline class="h-6 w-6 shrink-0" />
+                <ChevronDoubleRightOutline class="h-6 w-6 shrink-0 text-theme-text" />
             {/if}
         </div>
     {/if}

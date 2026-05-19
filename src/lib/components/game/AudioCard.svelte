@@ -26,7 +26,7 @@
     function getText() {
         switch (guessIndex) {
             case 0:
-                return '0.5 second';
+                return '0.5 seconds';
             case 1:
                 return '1 second';
             case 2:
@@ -45,7 +45,7 @@
     }
 
     function getBackgroundColor() {
-        if (!guesses[guessIndex]) return 'border-white';
+        if (!guesses[guessIndex]) return 'border-theme-text';
 
         switch (guesses[guessIndex].status) {
             case 'correct':
@@ -53,9 +53,9 @@
             case 'wrong':
                 return 'bg-red-700/30 border-red-500';
             case 'skip':
-                return 'bg-gray-700/50 border-gray-500';
+                return 'bg-theme-card border-theme-muted';
             default:
-                return 'border-white';
+                return 'border-theme-text';
         }
     }
 
@@ -78,20 +78,19 @@
     class={`relative flex shrink-0 items-center ${!isCurrentGuess() || result !== 'playing' ? 'border' : 'border-3'} h-[80px] w-full max-w-[400px] rounded-lg ${getBackgroundColor()} ${!isActive && result === 'playing' ? 'opacity-50' : ''}`}
 >
     <span class="flex w-full flex-row items-center gap-2 px-2">
-        <button onclick={playClue} class="shrink-0">
+        <button onclick={playClue} class="shrink-0 text-theme-text">
             <PlaySolid
                 class={`h-[42px] w-[42px] ${isActive || result !== 'playing' ? 'transition-all hover:scale-110 active:scale-95' : ''}`}
-                color="white"
             />
         </button>
         <div
-            class="relative flex min-w-0 flex-1 flex-row rounded-3xl border border-white focus-within:ring-2 focus-within:ring-white"
+            class="relative flex min-w-0 flex-1 flex-row rounded-3xl border border-theme-text focus-within:ring-2 focus-within:ring-theme-accent"
         >
             {#if isCurrentGuess()}
                 <SearchResults {results} {suggestionIndex} {submitGuess} />
             {/if}
             <input
-                class="text-md my-1 w-full min-w-0 border-none bg-transparent px-2 text-white outline-none focus:ring-0"
+                class="text-md my-1 w-full min-w-0 border-none bg-transparent px-2 text-theme-text outline-none focus:ring-0"
                 type="text"
                 autocomplete="off"
                 placeholder={isCurrentGuess() ? 'Guess the song...' : ''}
@@ -128,7 +127,7 @@
             />
             {#if isCurrentGuess() && result === 'playing'}
                 <button
-                    class="m-1 flex flex-row items-center rounded-full bg-gray-500 px-2 transition-colors hover:bg-white"
+                    class="m-1 flex flex-row items-center rounded-full bg-theme-muted px-2 transition-colors hover:bg-theme-text hover:text-theme-bg"
                     onclick={() => submitGuess('', '')}
                 >
                     <ChevronDoubleRightOutline class="h-4 w-4 shrink-0" />
@@ -137,7 +136,7 @@
             {/if}
         </div>
     </span>
-    <div class="absolute right-4 bottom-1 text-[8px] text-white opacity-50 sm:text-[10px]">
+    <div class="absolute right-4 bottom-1 text-[8px] text-theme-muted opacity-50 sm:text-[10px]">
         {getText()}
     </div>
 </div>
