@@ -39,7 +39,7 @@
     }
 </script>
 
-<div class="flex flex-col text-center text-white">
+<div class="flex flex-col text-center text-theme-text">
     <span>Next Challenge in:</span>
     <span class="text-2xl font-bold">{timeLeft}</span>
 </div>

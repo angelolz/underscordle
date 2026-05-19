@@ -137,13 +137,13 @@
             </div>
             <div class="flex flex-col gap-1.5">
                 <button
-                    class="mt-2 flex shrink-0 flex-row items-center justify-around gap-1 rounded-full bg-theme-accent ring ring-theme-text px-3 py-2 align-middle text-[10px] whitespace-nowrap text-white transition-all hover:opacity-90 hover:ring-3 active:scale-95 sm:mt-0 sm:text-[14px]"
+                    class="mt-2 flex shrink-0 flex-row items-center cursor-pointer justify-around gap-1 rounded-full bg-theme-accent ring ring-theme-text px-3 py-2 align-middle text-[10px] whitespace-nowrap text-white transition-all hover:opacity-80 hover:ring-2 active:scale-95 sm:mt-0 sm:text-[14px]"
                     onclick={() => {
                         copyResults();
                     }}
                 >
-                    <ShareNodesOutline class="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
-                    <span>{copyText}</span>
+                    <ShareNodesOutline class="h-4 w-4 shrink-0 sm:h-5 sm:w-5 text-theme-text" />
+                    <span class="text-theme-text">{copyText}</span>
                 </button>
             </div>
         </div>

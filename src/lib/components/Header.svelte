@@ -1,5 +1,4 @@
 <script lang="ts">
-    import logo from '$lib/assets/underscordle.svg';
     import icon128 from '$lib/assets/favicon-128x128.png';
     import { resolve } from '$app/paths';
     import {
@@ -9,6 +8,7 @@
         QuestionCircleOutline,
     } from 'flowbite-svelte-icons';
     import Modal from './Modal.svelte';
+    import Logo from './Logo.svelte';
     import { themes } from '$lib/themes';
 
     let { volume = $bindable(), theme = $bindable(), saveSettings } = $props();
@@ -23,7 +23,7 @@
 </script>
 
 <div class="flex w-full flex-col items-center justify-center gap-2 pt-4 align-middle">
-    <img src={logo} alt="underscordle" class="h-full w-auto sm:h-15 text-theme-text" />
+    <Logo class="h-full w-auto text-theme-text sm:h-15" />
     <span class="px-4 text-center">
         <p class="text-lg text-theme-text">A daily underscores song guessing game!</p>
         <p class="text-sm text-theme-text">
@@ -42,14 +42,14 @@
             ><button
                 onclick={() => {
                     showHelpModal = true;
-                }}><QuestionCircleOutline class="h-8 w-8 shrink-0" /></button
+                }}><QuestionCircleOutline class="h-8 w-8 shrink-0 cursor-pointer" /></button
             ></span
         >
         <span class="flex items-center transition-all hover:scale-105 active:scale-95"
             ><button
                 onclick={() => {
                     showSettingsModal = true;
-                }}><CogOutline class="h-8 w-8 shrink-0" /></button
+                }}><CogOutline class="h-8 w-8 shrink-0 cursor-pointer" /></button
             ></span
         >
     </div>
@@ -136,7 +136,7 @@
             {/if}
             </span>
             <input
-                class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-theme-card accent-theme-text"
+                class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-theme-accent accent-theme-text"
                 type="range"
                 min="1"
                 max="100"

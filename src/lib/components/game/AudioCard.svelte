@@ -106,9 +106,7 @@
                                 results[suggestionIndex].title,
                                 results[suggestionIndex].id
                             );
-                        } else {
-                            // Optional: handle enter with no results
-                        }
+                        } 
                         return;
                     }
                     if (event.key === 'ArrowUp') {
@@ -127,7 +125,7 @@
             />
             {#if isCurrentGuess() && result === 'playing'}
                 <button
-                    class="m-1 flex flex-row items-center rounded-full bg-theme-muted px-2 transition-colors hover:bg-theme-text hover:text-theme-bg"
+                    class="m-1 flex flex-row items-center rounded-full bg-theme-accent px-2 transition-colors hover:bg-theme-text hover:text-theme-bg"
                     onclick={() => submitGuess('', '')}
                 >
                     <ChevronDoubleRightOutline class="h-4 w-4 shrink-0" />
@@ -136,7 +134,7 @@
             {/if}
         </div>
     </span>
-    <div class="absolute right-4 bottom-1 text-[8px] text-theme-muted opacity-50 sm:text-[10px]">
+    <div class="absolute right-4 bottom-1 text-[8px] text-theme-muted opacity-75 sm:text-[10px]">
         {getText()}
     </div>
 </div>

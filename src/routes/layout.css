@@ -21,20 +21,12 @@
     --color-theme-muted: var(--muted-color);
 }
 
-:root, :root.dark {
+:root {
     --bg-color: #121212;
     --text-color: #ffffff;
     --accent-color: #3b82f6;
     --card-color: rgba(255, 255, 255, 0.05);
     --muted-color: #9ca3af;
-}
-
-:root.white {
-    --bg-color: #ffffff;
-    --text-color: #121212;
-    --accent-color: #2563eb;
-    --card-color: rgba(0, 0, 0, 0.05);
-    --muted-color: #4b5563;
 }
 
 body {

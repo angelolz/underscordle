@@ -32,15 +32,25 @@
             if (parsed.theme && parsed.theme in themes) {
                 settings.theme = parsed.theme;
             }
+        } else {
+            // No saved settings, check system preference
+            const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (prefersLight) {
+                settings.theme = 'white';
+            }
         }
     });
 
     $effect(() => {
+        const themeData = themes[settings.theme];
         const root = document.documentElement;
-        // Remove all possible theme classes
-        Object.keys(themes).forEach((t) => root.classList.remove(t));
-        // Add current theme class
-        root.classList.add(settings.theme);
+
+        Object.entries(themeData).forEach(([key, value]) => {
+            root.style.setProperty(`--${key}-color`, value);
+        });
+
+        document.body.style.backgroundColor = themeData.bg;
+        document.body.style.color = themeData.text;
     });
 
     // save everytime theres a change to settings
