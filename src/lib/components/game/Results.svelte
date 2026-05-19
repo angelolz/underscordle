@@ -145,16 +145,17 @@
                     <ShareNodesOutline class="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
                     <span>{copyText}</span>
                 </button>
-                
             </div>
-            
         </div>
     </div>
     {#if isToday}
         <TimerLeft />
     {/if}
-    <a class="hover:underline flex flex-row justify-center items-center gap-0.5 text-white" href={resolve('/archive')}>
+    <a
+        class="flex flex-row items-center justify-center gap-0.5 text-white hover:underline"
+        href={resolve('/archive')}
+    >
         <AngleLeftOutline class="h-4 w-4 shrink-0" />
-        <p>{isToday ? "Play past games" : "Back to archive"}</p>
+        <p>{isToday ? 'Play past games' : 'Back to archive'}</p>
     </a>
 </div>
