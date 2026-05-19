@@ -1,11 +1,12 @@
 <script lang="ts">
     import type { Guess, GuessStatus, RoundStatus, Song } from '$lib/interfaces';
     import { CHALLENGES_URL, GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
-    import { ShareNodesOutline } from 'flowbite-svelte-icons';
+    import { AngleLeftOutline, ShareNodesOutline } from 'flowbite-svelte-icons';
     import AlbumArt from './AlbumArt.svelte';
     import ResultIcon from './ResultIcon.svelte';
     import TimerLeft from './TimerLeft.svelte';
     import { getTodayDate } from '../../../params/date';
+    import { resolve } from '$app/paths';
 
     const { day, date, songList, dailyMeta, gameState, player } = $props();
     const SHARE_TEXT = 'Copy Results';
@@ -134,18 +135,26 @@
                 <span class="text-2xl font-bold">{(getPoints() / MAX_ROUNDS).toFixed(1)}</span>
                 <span class="text-sm">AVG. PTS</span>
             </div>
-            <button
-                class="mt-2 flex shrink-0 flex-row items-center justify-around gap-1 rounded-full px-3 py-2 align-middle text-[10px] whitespace-nowrap text-white ring ring-white transition-all hover:bg-white/25 hover:ring-2 sm:mt-0 sm:text-[14px]"
-                onclick={() => {
-                    copyResults();
-                }}
-            >
-                <ShareNodesOutline class="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
-                <span>{copyText}</span>
-            </button>
+            <div class="flex flex-col gap-1.5">
+                <button
+                    class="mt-2 flex shrink-0 flex-row items-center justify-around gap-1 rounded-full px-3 py-2 align-middle text-[10px] whitespace-nowrap text-white ring ring-white transition-all hover:bg-white/25 hover:ring-2 sm:mt-0 sm:text-[14px]"
+                    onclick={() => {
+                        copyResults();
+                    }}
+                >
+                    <ShareNodesOutline class="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
+                    <span>{copyText}</span>
+                </button>
+                
+            </div>
+            
         </div>
     </div>
     {#if isToday}
         <TimerLeft />
     {/if}
+    <a class="hover:underline flex flex-row justify-center items-center gap-0.5 text-white" href={resolve('/archive')}>
+        <AngleLeftOutline class="h-4 w-4 shrink-0" />
+        <p>{isToday ? "Play past games" : "Back to archive"}</p>
+    </a>
 </div>

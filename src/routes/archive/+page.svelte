@@ -7,11 +7,9 @@
 
     const todayEntry = $derived(data.archiveEntries[0] ?? null);
     const pastEntries = $derived(data.archiveEntries.slice(1));
-    let clearedDates = new SvelteSet<string>();
+    const clearedDates = new SvelteSet<string>();
 
     onMount(() => {
-        const nextClearedDates = new SvelteSet<string>();
-
         for (const entry of data.archiveEntries as ArchiveEntry[]) {
             const saved = localStorage.getItem(`underscordle-${entry.date}`);
             if (!saved) continue;
@@ -19,14 +17,12 @@
             try {
                 const parsed = JSON.parse(saved);
                 if (parsed.roundStatuses?.every((s: string) => s !== 'playing')) {
-                    nextClearedDates.add(entry.date);
+                    clearedDates.add(entry.date);
                 }
             } catch (e) {
                 console.error(`Failed to parse saved game for ${entry.date}:`, e);
             }
         }
-
-        clearedDates = nextClearedDates;
     });
 
     function isCleared(date: string) {
