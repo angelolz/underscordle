@@ -42,6 +42,7 @@ export interface AlbumArt {
 export type AppSettings = {
     volume: number;
     theme: ThemeName;
+    firstTimeHelp: boolean;
 };
 
 export type ArchiveEntry = {

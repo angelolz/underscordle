@@ -11,10 +11,16 @@
     import Logo from './Logo.svelte';
     import { themes } from '$lib/themes';
 
-    let { volume = $bindable(), theme = $bindable(), saveSettings } = $props();
+    let { volume = $bindable(), theme = $bindable(), firstTimeHelp = $bindable(), saveSettings } = $props();
     let showHelpModal = $state(false);
     let showSettingsModal = $state(false);
     let inputVolume = $derived(volume);
+
+    $effect(() => {
+        if (firstTimeHelp) {
+            showHelpModal = true;
+        }
+    });
 
     function setVolume(value: number) {
         inputVolume = value;
@@ -60,6 +66,10 @@
     revealed={showHelpModal}
     onClose={() => {
         showHelpModal = false;
+        if (firstTimeHelp) {
+            firstTimeHelp = false;
+            saveSettings();
+        }
     }}
 >
     <div class="flex flex-col items-center gap-3">

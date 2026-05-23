@@ -15,7 +15,7 @@
         >
             <button
                 onclick={onClose}
-                class="absolute top-2 right-2 text-theme-muted transition-colors hover:text-theme-text"
+                class="absolute top-2 right-2 text-theme-muted transition-colors hover:text-theme-text cursor-pointer"
                 title="close"
             >
                 <svg

@@ -1,4 +1,3 @@
-// src/lib/server/challenges.ts
 import type { DailyMeta, Song } from '$lib/interfaces';
 import { ASSETS_URL, CHALLENGES_URL, GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
 import type { DrizzleD1Database } from 'drizzle-orm/d1';

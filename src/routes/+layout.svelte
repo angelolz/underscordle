@@ -18,6 +18,7 @@
     let settings: AppSettings = $state({
         volume: 10,
         theme: 'dark',
+        firstTimeHelp: false
     });
     setSettingsContext(settings);
 
@@ -32,12 +33,20 @@
             if (parsed.theme && parsed.theme in themes) {
                 settings.theme = parsed.theme;
             }
+
+            settings.firstTimeHelp = parsed.firstTimeHelp || false;
         } else {
-            // No saved settings, check system preference
+            // No saved settings, this is a first-time user
+            settings.firstTimeHelp = true;
+
+            // Check system preference for theme
             const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
             if (prefersLight) {
                 settings.theme = 'white';
             }
+            
+            // Save the initial settings so it's not a "first time" anymore next refresh
+            saveSettings();
         }
     });
 
@@ -74,6 +83,6 @@
 </svelte:head>
 
 <div class="m-auto flex w-full max-w-[800px] flex-col items-center p-2 align-middle">
-    <Header bind:volume={settings.volume} bind:theme={settings.theme} {saveSettings} />
+    <Header bind:volume={settings.volume} bind:theme={settings.theme} bind:firstTimeHelp={settings.firstTimeHelp} {saveSettings} />
     {@render children()}
 </div>
