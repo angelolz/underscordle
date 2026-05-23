@@ -122,7 +122,7 @@
             if (gameState.roundStatuses[currentRound] !== 'won') {
                 gameState.roundStatuses[currentRound] = 'won';
             }
-        } else if (guesses.length === GUESSES_PER_ROUND) {
+        } else if (guesses.length >= GUESSES_PER_ROUND) {
             if (gameState.roundStatuses[currentRound] !== 'lost') {
                 gameState.roundStatuses[currentRound] = 'lost';
             }

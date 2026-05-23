@@ -1,6 +1,6 @@
 // src/lib/server/challenges.ts
 import type { DailyMeta, Song } from '$lib/interfaces';
-import { ASSETS_URL, CHALLENGES_URL } from '$lib/statics';
+import { ASSETS_URL, CHALLENGES_URL, GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
 import { challengeStats } from './db/schema';
 import { eq, sql } from 'drizzle-orm';
@@ -85,6 +85,10 @@ export async function updateGlobalData(
     date: string,
     points: number
 ) {
+    if (isFutureChallengeDate(date) || points < 0 || points > MAX_ROUNDS * GUESSES_PER_ROUND) {
+        return { success: false };
+    }
+
     await db
         .update(challengeStats)
         .set({

@@ -47,8 +47,11 @@
         text.push('');
 
         const grid = gameState.roundGuesses
+            .slice(0, MAX_ROUNDS)
             .map((round: Guess[]) => {
-                const emojis = round.map((r) => getResultEmoji(r.status));
+                const emojis = round
+                    .slice(0, GUESSES_PER_ROUND)
+                    .map((r) => getResultEmoji(r.status));
                 return emojis.join('');
             })
             .join('\n');

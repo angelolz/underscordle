@@ -40,7 +40,6 @@ export const actions = {
         }
 
         const db = drizzle(platform?.env?.DB, { schema });
-        await updateGlobalData(db, today, points);
-        return { success: true };
+        return await updateGlobalData(db, today, points);
     },
 };
