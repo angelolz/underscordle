@@ -10,6 +10,6 @@
             "database_name": "underscordle",
             "database_id": "c2b4eab7-5a65-4d93-b7c4-bf1f28159629",
             "migrations_dir": "./drizzle",
-        },
-    ],
+        }
+    ]
 }
