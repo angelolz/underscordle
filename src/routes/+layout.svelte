@@ -7,7 +7,7 @@
 
     import '@fontsource/poppins';
     import Header from '$lib/components/Header.svelte';
-    import { ASSETS_URL } from '$lib/statics.js';
+    import { ASSETS_URL, DESCRIPTION, NAME, SITE } from '$lib/statics.js';
     import { onMount } from 'svelte';
     import { setSettingsContext } from '$lib/settings.svelte';
     import { themes } from '$lib/themes';
@@ -70,11 +70,30 @@
 </script>
 
 <svelte:head>
+    <!-- Google / Search Engine Tags -->
+    <meta itemprop="name" content={NAME} />
+    <meta itemprop="description" content={DESCRIPTION} />
+    <meta itemprop="image" content={favicon192} />
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content={SITE} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={NAME} />
+    <meta property="og:description" content={DESCRIPTION} />
+    <meta property="og:image" content={favicon192} />
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={NAME} />
+    <meta name="twitter:description" content={DESCRIPTION} />
+    <meta name="twitter:image" content={favicon192} />
+
     <link rel="icon" href={favicon32} />
     <link rel="icon" type="image/png" sizes="32x32" href={favicon32} />
     <link rel="apple-touch-icon" sizes="180x180" href={favicon180} />
     <link rel="icon" type="image/png" sizes="192x192" href={favicon192} />
     <link rel="icon" type="image/png" sizes="512x512" href={favicon512} />
+    
     {#if data.albums && data.albums.length > 0}
         {#each data.albums as album (album.file)}
             <link rel="preload" as="image" href="{ASSETS_URL}/art/{album.file}" type="image/webp" />

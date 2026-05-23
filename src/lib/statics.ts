@@ -19,6 +19,9 @@ const ERROR_LINES = [
     "It's not the end of the world!",
     "Oh dear, that's rather alarming...",
 ];
+const NAME = 'underscordle';
+const DESCRIPTION = 'A daily underscores song guessing game!';
+const SITE = 'https://underscordle.org';
 
 export {
     MAX_ROUNDS,
@@ -28,4 +31,7 @@ export {
     ASSETS_URL,
     CHALLENGES_URL,
     ERROR_LINES,
+    NAME,
+    DESCRIPTION,
+    SITE,
 };
