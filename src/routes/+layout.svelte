@@ -18,7 +18,7 @@
     let settings: AppSettings = $state({
         volume: 10,
         theme: 'dark',
-        firstTimeHelp: false
+        firstTimeHelp: false,
     });
     setSettingsContext(settings);
 
@@ -44,7 +44,7 @@
             if (prefersLight) {
                 settings.theme = 'white';
             }
-            
+
             // Save the initial settings so it's not a "first time" anymore next refresh
             saveSettings();
         }
@@ -83,6 +83,11 @@
 </svelte:head>
 
 <div class="m-auto flex w-full max-w-[800px] flex-col items-center p-2 align-middle">
-    <Header bind:volume={settings.volume} bind:theme={settings.theme} bind:firstTimeHelp={settings.firstTimeHelp} {saveSettings} />
+    <Header
+        bind:volume={settings.volume}
+        bind:theme={settings.theme}
+        bind:firstTimeHelp={settings.firstTimeHelp}
+        {saveSettings}
+    />
     {@render children()}
 </div>

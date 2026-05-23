@@ -11,7 +11,12 @@
     import Logo from './Logo.svelte';
     import { themes } from '$lib/themes';
 
-    let { volume = $bindable(), theme = $bindable(), firstTimeHelp = $bindable(), saveSettings } = $props();
+    let {
+        volume = $bindable(),
+        theme = $bindable(),
+        firstTimeHelp = $bindable(),
+        saveSettings,
+    } = $props();
     let showHelpModal = $state(false);
     let showSettingsModal = $state(false);
     let inputVolume = $derived(volume);
