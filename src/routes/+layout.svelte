@@ -83,7 +83,7 @@
     <meta property="og:image" content={SITE + '/favicon.png'} />
 
     <!-- Twitter Meta Tags -->
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={NAME} />
     <meta name="twitter:description" content={DESCRIPTION} />
     <meta name="twitter:image" content={SITE + '/favicon.png'} />
