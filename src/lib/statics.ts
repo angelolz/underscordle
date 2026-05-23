@@ -20,7 +20,8 @@ const ERROR_LINES = [
     "Oh dear, that's rather alarming...",
 ];
 const NAME = 'underscordle';
-const DESCRIPTION = 'A daily underscores song guessing game!';
+const DESCRIPTION =
+    'A daily underscores song guessing game featuring five songs and three guesses per track. How many can you get right?';
 const SITE = 'https://underscordle.org';
 
 export {
