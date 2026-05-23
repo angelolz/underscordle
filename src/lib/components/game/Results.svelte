@@ -117,43 +117,50 @@
                 {/if}
             {/each}
         </div>
-        <div class="flex w-full flex-row flex-wrap items-center justify-center gap-6">
-            <div class="flex min-w-[50px] flex-col text-center">
-                <span class="text-2xl font-bold">{`${roundsCorrect}/${MAX_ROUNDS}`}</span>
-                <span class="text-sm">CORRECT</span>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <div class="flex flex-row flex-wrap items-center justify-center gap-6">
+                <div class="flex flex-col gap-2 items-center">
+                    <p class="text-theme-muted uppercase text-sm">Your Stats</p>
+                    <div class="flex flex-row gap-6">
+                        <div class="flex min-w-[50px] flex-col text-center">
+                            <span class="text-2xl font-bold">{`${roundsCorrect}/${MAX_ROUNDS}`}</span>
+                            <span class="whitespace-nowrap text-sm uppercase opacity-50">Correct</span>
+                        </div>
+                        <div class="flex min-w-[50px] flex-col text-center">
+                            <span class="text-2xl font-bold"
+                                >{`${points}/${MAX_ROUNDS * GUESSES_PER_ROUND}`}</span
+                            >
+                            <span class="whitespace-nowrap text-sm uppercase opacity-50">Points</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="flex min-w-[50px] flex-col text-center">
-                <span class="text-2xl font-bold"
-                    >{`${points}/${MAX_ROUNDS * GUESSES_PER_ROUND}`}</span
-                >
-                <span class="text-sm">POINTS</span>
-            </div>
-            <div class="flex min-w-[50px] flex-col text-center">
-                <span class="text-2xl font-bold">{(points / MAX_ROUNDS).toFixed(1)}</span>
-                <span class="text-sm">AVG. PTS</span>
+            <div class="flex w-full flex-row flex-wrap items-center justify-center gap-6">
+                <div class="flex flex-col gap-2 items-center">
+                    <p class="text-theme-muted uppercase text-sm">Community Stats</p>
+                    <div class="flex flex-row gap-6">
+                        <div class="flex min-w-[50px] flex-col text-center">
+                            <span class="text-2xl font-bold">{globalData?.totalGames || 0}</span>
+                            <span class="whitespace-nowrap text-sm uppercase opacity-50">Games</span>
+                        </div>
+                        <div class="flex min-w-[50px] flex-col text-center">
+                            <span class="text-2xl font-bold">{communityAvg}</span>
+                            <span class="whitespace-nowrap text-sm uppercase opacity-50">Avg. Pts.</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <hr class="w-full border-theme-text opacity-50" />
-        <div class="flex w-full flex-row items-center justify-around gap-4 text-center">
-            <div class="flex flex-col">
-                <span class="text-xl font-bold">{globalData?.totalGames || 0}</span>
-                <span class="text-[10px] opacity-70">GAMES PLAYED</span>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-xl font-bold">{communityAvg}</span>
-                <span class="text-[10px] opacity-70">COMMUNITY AVG</span>
-            </div>
-            <div class="flex flex-col">
-                <button
-                    class="flex shrink-0 cursor-pointer flex-row items-center justify-around gap-1 rounded-full bg-theme-accent px-3 py-2 align-middle text-[10px] whitespace-nowrap text-white ring ring-theme-text transition-all hover:opacity-80 hover:ring-2 active:scale-95 sm:text-[14px]"
-                    onclick={() => {
-                        copyResults();
-                    }}
-                >
-                    <ShareNodesOutline class="h-4 w-4 shrink-0 text-theme-text sm:h-5 sm:w-5" />
-                    <span class="text-theme-text">{copyText}</span>
-                </button>
-            </div>
+        <div class="flex flex-col">
+            <button
+                class="flex shrink-0 cursor-pointer flex-row items-center justify-around gap-1 rounded-full bg-theme-accent px-3 py-2 align-middle text-[10px] whitespace-nowrap text-white ring ring-theme-text transition-all hover:opacity-80 hover:ring-2 active:scale-95 sm:text-[14px]"
+                onclick={() => {
+                    copyResults();
+                }}
+            >
+                <ShareNodesOutline class="h-4 w-4 shrink-0 text-theme-text sm:h-5 sm:w-5" />
+                <span class="text-theme-text">{copyText}</span>
+            </button>
         </div>
     </div>
     {#if isToday}

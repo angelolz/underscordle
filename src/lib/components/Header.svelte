@@ -23,7 +23,7 @@
 </script>
 
 <div class="flex w-full flex-col items-center justify-center gap-2 pt-4 align-middle">
-    <Logo class="h-full w-auto text-theme-text sm:h-15" />
+    <Logo class="h-10 w-auto text-theme-text sm:h-15" />
     <span class="px-4 text-center">
         <p class="text-lg text-theme-text">A daily underscores song guessing game!</p>
         <p class="text-sm text-theme-text">
