@@ -1,0 +1,51 @@
+{
+    "version": "6",
+    "dialect": "sqlite",
+    "id": "1e7c73e1-e6fc-433d-9da3-aa6eff4a0963",
+    "prevId": "e15861ea-84de-4e89-a659-a5bd33bf0466",
+    "tables": {
+        "challengeStats": {
+            "name": "challengeStats",
+            "columns": {
+                "date": {
+                    "name": "date",
+                    "type": "text",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "autoincrement": false
+                },
+                "totalGames": {
+                    "name": "totalGames",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": 0
+                },
+                "totalPoints": {
+                    "name": "totalPoints",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "autoincrement": false,
+                    "default": 0
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "checkConstraints": {}
+        }
+    },
+    "views": {},
+    "enums": {},
+    "_meta": {
+        "schemas": {},
+        "tables": {},
+        "columns": {}
+    },
+    "internal": {
+        "indexes": {}
+    }
+}

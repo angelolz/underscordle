@@ -20,6 +20,7 @@ export interface GameState {
     currentRound: number;
     roundGuesses: Guess[][];
     roundStatuses: RoundStatus[];
+    hasSaved?: boolean;
 }
 
 export interface DailyMeta {

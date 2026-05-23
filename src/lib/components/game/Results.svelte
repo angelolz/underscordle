@@ -1,34 +1,31 @@
 <script lang="ts">
-    import type { Guess, GuessStatus, RoundStatus, Song } from '$lib/interfaces';
-    import { CHALLENGES_URL, GUESSES_PER_ROUND, MAX_ROUNDS } from '$lib/statics';
+    import type { Guess, GuessStatus, Song } from '$lib/interfaces';
+    import { CHALLENGES_URL, MAX_ROUNDS, GUESSES_PER_ROUND } from '$lib/statics';
     import { AngleLeftOutline, ShareNodesOutline } from 'flowbite-svelte-icons';
     import AlbumArt from './AlbumArt.svelte';
     import ResultIcon from './ResultIcon.svelte';
     import TimerLeft from './TimerLeft.svelte';
     import { getTodayDate } from '../../../params/date';
     import { resolve } from '$app/paths';
+    import { calculatePoints, calculateRoundsCorrect } from '$lib/gameUtils';
 
-    const { day, date, songList, dailyMeta, gameState, player } = $props();
+    const { day, date, songList, dailyMeta, gameState, player, globalData } = $props();
     const SHARE_TEXT = 'Copy Results';
     const isToday = $derived(date === getTodayDate());
     let copyText = $state(SHARE_TEXT);
 
+    const points = $derived(calculatePoints(gameState));
+    const roundsCorrect = $derived(calculateRoundsCorrect(gameState));
+
+    const communityAvg = $derived(
+        globalData?.totalGames > 0
+            ? (globalData.totalPoints / globalData.totalGames).toFixed(1)
+            : '0.0'
+    );
+
     function getSong(roundIndex: number) {
         const songId = dailyMeta.rounds[roundIndex].songId;
         return songList.find((song: Song) => song.id === songId);
-    }
-
-    function getRoundsCorrect() {
-        return gameState.roundStatuses.filter((s: RoundStatus) => s === 'won').length;
-    }
-
-    function getPoints() {
-        return gameState.roundStatuses.reduce((total: number, status: string, i: number) => {
-            if (status === 'won') {
-                return total + (GUESSES_PER_ROUND - (gameState.roundGuesses[i].length - 1));
-            }
-            return total;
-        }, 0);
     }
 
     function getResultEmoji(guessStatus: GuessStatus) {
@@ -46,7 +43,7 @@
 
     async function copyResults() {
         const text: string[] = [];
-        text.push(`underscordle #${day} - ${getPoints()}/${MAX_ROUNDS * GUESSES_PER_ROUND}`);
+        text.push(`underscordle #${day} - ${points}/${MAX_ROUNDS * GUESSES_PER_ROUND}`);
         text.push('');
 
         const grid = gameState.roundGuesses
@@ -122,22 +119,33 @@
         </div>
         <div class="flex w-full flex-row flex-wrap items-center justify-center gap-6">
             <div class="flex min-w-[50px] flex-col text-center">
-                <span class="text-2xl font-bold">{`${getRoundsCorrect()}/${MAX_ROUNDS}`}</span>
+                <span class="text-2xl font-bold">{`${roundsCorrect}/${MAX_ROUNDS}`}</span>
                 <span class="text-sm">CORRECT</span>
             </div>
             <div class="flex min-w-[50px] flex-col text-center">
                 <span class="text-2xl font-bold"
-                    >{`${getPoints()}/${MAX_ROUNDS * GUESSES_PER_ROUND}`}</span
+                    >{`${points}/${MAX_ROUNDS * GUESSES_PER_ROUND}`}</span
                 >
                 <span class="text-sm">POINTS</span>
             </div>
             <div class="flex min-w-[50px] flex-col text-center">
-                <span class="text-2xl font-bold">{(getPoints() / MAX_ROUNDS).toFixed(1)}</span>
+                <span class="text-2xl font-bold">{(points / MAX_ROUNDS).toFixed(1)}</span>
                 <span class="text-sm">AVG. PTS</span>
             </div>
-            <div class="flex flex-col gap-1.5">
+        </div>
+        <hr class="w-full border-theme-text opacity-50" />
+        <div class="flex w-full flex-row items-center justify-around gap-4 text-center">
+            <div class="flex flex-col">
+                <span class="text-xl font-bold">{globalData?.totalGames || 0}</span>
+                <span class="text-[10px] opacity-70">GAMES PLAYED</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xl font-bold">{communityAvg}</span>
+                <span class="text-[10px] opacity-70">COMMUNITY AVG</span>
+            </div>
+            <div class="flex flex-col">
                 <button
-                    class="mt-2 flex shrink-0 cursor-pointer flex-row items-center justify-around gap-1 rounded-full bg-theme-accent px-3 py-2 align-middle text-[10px] whitespace-nowrap text-white ring ring-theme-text transition-all hover:opacity-80 hover:ring-2 active:scale-95 sm:mt-0 sm:text-[14px]"
+                    class="flex shrink-0 cursor-pointer flex-row items-center justify-around gap-1 rounded-full bg-theme-accent px-3 py-2 align-middle text-[10px] whitespace-nowrap text-white ring ring-theme-text transition-all hover:opacity-80 hover:ring-2 active:scale-95 sm:text-[14px]"
                     onclick={() => {
                         copyResults();
                     }}

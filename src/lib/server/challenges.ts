@@ -1,6 +1,10 @@
 // src/lib/server/challenges.ts
 import type { DailyMeta, Song } from '$lib/interfaces';
 import { ASSETS_URL, CHALLENGES_URL } from '$lib/statics';
+import type { DrizzleD1Database } from 'drizzle-orm/d1';
+import { challengeStats } from './db/schema';
+import { eq, sql } from 'drizzle-orm';
+import * as schema from '$lib/server/db/schema';
 
 type AlbumEntry = {
     name: string;
@@ -54,4 +58,40 @@ export async function loadAlbumMap(fetchFn: typeof fetch): Promise<AlbumEntry[]>
     const res = await fetchFn(`${ASSETS_URL}/covers.json`);
     if (!res.ok) throw new Error('Failed to load album map');
     return res.json();
+}
+
+export async function getGlobalData(db: DrizzleD1Database<typeof schema>, date: string) {
+    const data = await db.select().from(challengeStats).where(eq(challengeStats.date, date));
+    console.log('found data: ' + JSON.stringify(data));
+
+    //if there's no data for the date yet
+    if (data.length === 0) {
+        console.log('did not find a date, creating a row');
+        return insertNewGlobalData(db, date);
+    }
+
+    return data[0];
+}
+
+async function insertNewGlobalData(db: DrizzleD1Database<typeof schema>, date: string) {
+    const newRow = await db.insert(challengeStats).values({ date: date }).returning();
+    console.log('created new row: ', JSON.stringify(newRow));
+
+    return newRow[0];
+}
+
+export async function updateGlobalData(
+    db: DrizzleD1Database<typeof schema>,
+    date: string,
+    points: number
+) {
+    await db
+        .update(challengeStats)
+        .set({
+            totalGames: sql`${challengeStats.totalGames} + 1`,
+            totalPoints: sql`${challengeStats.totalPoints} + ${points}`,
+        })
+        .where(eq(challengeStats.date, date));
+
+    return { success: true };
 }

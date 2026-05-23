@@ -9,6 +9,7 @@
     import { resolve } from '$app/paths';
     import { createSharedSnippetPlayer } from '$lib/player.svelte';
     import { getSettingsContext } from '$lib/settings.svelte';
+    import { calculatePoints } from '$lib/gameUtils';
 
     const { data } = $props();
 
@@ -16,6 +17,7 @@
     const dailyMeta = $derived(data.dailyMeta);
     const date = $derived(data.date);
     const day = $derived(data.day);
+    const globalData = $derived(data.globalData);
     const settings = getSettingsContext();
     const player = createSharedSnippetPlayer();
 
@@ -32,6 +34,7 @@
         currentRound: 0,
         roundGuesses: Array.from({ length: MAX_ROUNDS }, () => []),
         roundStatuses: Array(MAX_ROUNDS).fill('playing'),
+        hasSaved: false,
     });
 
     onMount(() => {
@@ -65,6 +68,7 @@
             gameState.currentRound = 0;
             gameState.roundGuesses = Array.from({ length: MAX_ROUNDS }, () => []);
             gameState.roundStatuses = Array(MAX_ROUNDS).fill('playing');
+            gameState.hasSaved = false;
 
             const saved = localStorage.getItem(`underscordle-${date}`);
             if (saved) {
@@ -77,6 +81,7 @@
 
                     gameState.roundGuesses = parsed.roundGuesses.slice(0, MAX_ROUNDS);
                     gameState.roundStatuses = parsed.roundStatuses.slice(0, MAX_ROUNDS);
+                    gameState.hasSaved = parsed.hasSaved || false;
 
                     if (
                         gameState.roundStatuses[gameState.currentRound] !== 'playing' &&
@@ -143,6 +148,37 @@
         }
     }
 
+    async function saveScoreToDb() {
+        if (!date || gameState.hasSaved) return;
+
+        const points = calculatePoints(gameState);
+        try {
+            const formData = new FormData();
+            formData.append('points', points.toString());
+
+            const response = await fetch('?/saveScore', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'x-sveltekit-action': 'true',
+                },
+            });
+
+            if (response.ok) {
+                gameState.hasSaved = true;
+                await invalidateAll();
+            }
+        } catch (e) {
+            console.error('Failed to save score:', e);
+        }
+    }
+
+    $effect(() => {
+        if (!loading && showResults) {
+            saveScoreToDb();
+        }
+    });
+
     function toggleResults() {
         showResults = !showResults;
     }
@@ -164,7 +200,7 @@
                 {player}
             />
         {:else}
-            <Results {day} {date} {songList} {dailyMeta} {gameState} {player} />
+            <Results {day} {date} {songList} {dailyMeta} {gameState} {player} {globalData} />
         {/if}
     </div>
 {:else if !loading && !dailyMeta}
