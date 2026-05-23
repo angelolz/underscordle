@@ -57,7 +57,7 @@
             .join('\n');
 
         text.push(grid);
-        text.push('<https://underscordle.com>');
+        text.push('<https://underscordle.org>');
         const fullText = text.join('\n');
 
         try {
