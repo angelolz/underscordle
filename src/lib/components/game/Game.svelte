@@ -10,6 +10,7 @@
     import { createSharedSnippetPlayer } from '$lib/player.svelte';
     import { getSettingsContext } from '$lib/settings.svelte';
     import { calculatePoints } from '$lib/gameUtils';
+    import { invalidateAll } from '$app/navigation';
 
     const { data } = $props();
 

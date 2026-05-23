@@ -117,35 +117,44 @@
                 {/if}
             {/each}
         </div>
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <div class="flex flex-col items-center justify-center gap-6 sm:flex-row">
             <div class="flex flex-row flex-wrap items-center justify-center gap-6">
-                <div class="flex flex-col gap-2 items-center">
-                    <p class="text-theme-muted uppercase text-sm">Your Stats</p>
+                <div class="flex flex-col items-center gap-2">
+                    <p class="text-sm text-theme-muted uppercase">Your Stats</p>
                     <div class="flex flex-row gap-6">
                         <div class="flex min-w-[50px] flex-col text-center">
-                            <span class="text-2xl font-bold">{`${roundsCorrect}/${MAX_ROUNDS}`}</span>
-                            <span class="whitespace-nowrap text-sm uppercase opacity-50">Correct</span>
+                            <span class="text-2xl font-bold"
+                                >{`${roundsCorrect}/${MAX_ROUNDS}`}</span
+                            >
+                            <span class="text-sm whitespace-nowrap uppercase opacity-50"
+                                >Correct</span
+                            >
                         </div>
                         <div class="flex min-w-[50px] flex-col text-center">
                             <span class="text-2xl font-bold"
                                 >{`${points}/${MAX_ROUNDS * GUESSES_PER_ROUND}`}</span
                             >
-                            <span class="whitespace-nowrap text-sm uppercase opacity-50">Points</span>
+                            <span class="text-sm whitespace-nowrap uppercase opacity-50"
+                                >Points</span
+                            >
                         </div>
                     </div>
                 </div>
             </div>
             <div class="flex w-full flex-row flex-wrap items-center justify-center gap-6">
-                <div class="flex flex-col gap-2 items-center">
-                    <p class="text-theme-muted uppercase text-sm">Community Stats</p>
+                <div class="flex flex-col items-center gap-2">
+                    <p class="text-sm text-theme-muted uppercase">Community Stats</p>
                     <div class="flex flex-row gap-6">
                         <div class="flex min-w-[50px] flex-col text-center">
                             <span class="text-2xl font-bold">{globalData?.totalGames || 0}</span>
-                            <span class="whitespace-nowrap text-sm uppercase opacity-50">Games</span>
+                            <span class="text-sm whitespace-nowrap uppercase opacity-50">Games</span
+                            >
                         </div>
                         <div class="flex min-w-[50px] flex-col text-center">
                             <span class="text-2xl font-bold">{communityAvg}</span>
-                            <span class="whitespace-nowrap text-sm uppercase opacity-50">Avg. Pts.</span>
+                            <span class="text-sm whitespace-nowrap uppercase opacity-50"
+                                >Avg. Pts.</span
+                            >
                         </div>
                     </div>
                 </div>
