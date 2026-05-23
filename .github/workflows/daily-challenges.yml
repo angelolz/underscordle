@@ -6,7 +6,15 @@ on:
     workflow_dispatch:
         inputs:
             target_date:
-                description: 'Date to generate (YYYY-MM-DD)'
+                description: 'Specific date to generate (YYYY-MM-DD)'
+                required: false
+                default: ''
+            start_date:
+                description: 'Start date for range (YYYY-MM-DD)'
+                required: false
+                default: ''
+            end_date:
+                description: 'End date for range (YYYY-MM-DD)'
                 required: false
                 default: ''
 
@@ -55,12 +63,25 @@ jobs:
 
             - name: Generate Snippets
               run: |
-                  DATE="${{ github.event.inputs.target_date }}"
-                  if [ -z "$DATE" ]; then
-                      DATE=$(date -d "tomorrow" +%Y-%m-%d)
+                  START_DATE="${{ github.event.inputs.start_date }}"
+                  END_DATE="${{ github.event.inputs.end_date }}"
+                  TARGET_DATE="${{ github.event.inputs.target_date }}"
+
+                  if [ -n "$START_DATE" ] && [ -n "$END_DATE" ]; then
+                      echo "Generating range: $START_DATE to $END_DATE"
+                      CURRENT="$START_DATE"
+                      while [[ "$CURRENT" <= "$END_DATE" ]]; do
+                          echo "Processing $CURRENT..."
+                          node scripts/generate-daily.js "$CURRENT"
+                          CURRENT=$(date -I -d "$CURRENT + 1 day")
+                      done
+                  else
+                      if [ -z "$TARGET_DATE" ]; then
+                          TARGET_DATE=$(date -d "tomorrow" +%Y-%m-%d)
+                      fi
+                      echo "Generating for date: $TARGET_DATE"
+                      node scripts/generate-daily.js "$TARGET_DATE"
                   fi
-                  echo "Generating for date: $DATE"
-                  node scripts/generate-daily.js $DATE
               env:
                   MASTERS_DIR: ./out/masters
                   DATA_DIR: ./out/data
