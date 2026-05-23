@@ -73,20 +73,14 @@
     <!-- Google / Search Engine Tags -->
     <meta itemprop="name" content={NAME} />
     <meta itemprop="description" content={DESCRIPTION} />
-    <meta itemprop="image" content={favicon192} />
+    <meta itemprop="image" content={favicon512} />
 
     <!-- Facebook Meta Tags -->
     <meta property="og:url" content={SITE} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={NAME} />
     <meta property="og:description" content={DESCRIPTION} />
-    <meta property="og:image" content={favicon192} />
-
-    <!-- Twitter Meta Tags -->
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content={NAME} />
-    <meta name="twitter:description" content={DESCRIPTION} />
-    <meta name="twitter:image" content={favicon192} />
+    <meta property="og:image" content={favicon512} />
 
     <link rel="icon" href={favicon32} />
     <link rel="icon" type="image/png" sizes="32x32" href={favicon32} />
