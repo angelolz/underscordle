@@ -70,7 +70,7 @@ jobs:
                   if [ -n "$START_DATE" ] && [ -n "$END_DATE" ]; then
                       echo "Generating range: $START_DATE to $END_DATE"
                       CURRENT="$START_DATE"
-                      while [[ "$CURRENT" <= "$END_DATE" ]]; do
+                      while [[ "$CURRENT" < "$END_DATE" || "$CURRENT" == "$END_DATE" ]]; do
                           echo "Processing $CURRENT..."
                           node scripts/generate-daily.js "$CURRENT"
                           CURRENT=$(date -I -d "$CURRENT + 1 day")

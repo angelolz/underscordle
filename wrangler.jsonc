@@ -2,14 +2,16 @@
     "$schema": "node_modules/wrangler/config-schema.json",
     "name": "underscordle",
     "compatibility_date": "2026-05-01",
-    "compatibility_flags": ["nodejs_compat"],
+    "compatibility_flags": [
+        "nodejs_compat"
+    ],
     "pages_build_output_dir": ".svelte-kit/cloudflare",
     "d1_databases": [
         {
             "binding": "DB",
             "database_name": "underscordle",
             "database_id": "c2b4eab7-5a65-4d93-b7c4-bf1f28159629",
-            "migrations_dir": "./drizzle",
+            "migrations_dir": "./drizzle"
         }
     ]
 }
