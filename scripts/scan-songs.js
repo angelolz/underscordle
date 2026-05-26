@@ -109,11 +109,13 @@ async function scanSongs() {
                 const contentHash = await getFileHash(fullPath);
 
                 let foundId = null;
+                let existingEntry = null;
 
                 // match file name
                 for (const [id, entry] of Object.entries(registry)) {
                     if (entry.filename === file) {
                         foundId = id;
+                        existingEntry = entry;
                         break;
                     }
                 }
@@ -123,6 +125,7 @@ async function scanSongs() {
                     for (const [id, entry] of Object.entries(registry)) {
                         if (entry.contentHash === contentHash) {
                             foundId = id;
+                            existingEntry = entry;
                             console.log(
                                 `  Detected rename (hash match): ${entry.filename} -> ${file}`
                             );
@@ -136,6 +139,7 @@ async function scanSongs() {
                     for (const [id, entry] of Object.entries(registry)) {
                         if (entry.title === title && entry.artist === artist) {
                             foundId = id;
+                            existingEntry = entry;
                             console.log(
                                 `  Detected rename/mod (metadata match): ${entry.filename} -> ${file}`
                             );
@@ -157,6 +161,7 @@ async function scanSongs() {
                     album: albumName,
                     duration,
                     contentHash,
+                    links: existingEntry?.links || {},
                 };
 
                 const slug = albumName.toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -179,6 +184,7 @@ async function scanSongs() {
                     title,
                     artist,
                     album: albumName,
+                    links: registry[foundId].links,
                 });
             }
         }
