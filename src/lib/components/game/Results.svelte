@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Guess, GuessStatus, Song } from '$lib/interfaces';
-    import { CHALLENGES_URL, MAX_ROUNDS, GUESSES_PER_ROUND } from '$lib/statics';
+    import { CHALLENGES_URL, MAX_ROUNDS, GUESSES_PER_ROUND, SITE } from '$lib/statics';
     import { AngleLeftOutline, ShareNodesOutline } from 'flowbite-svelte-icons';
     import AlbumArt from './AlbumArt.svelte';
     import ResultIcon from './ResultIcon.svelte';
@@ -8,6 +8,7 @@
     import { getTodayDate } from '../../../params/date';
     import { resolve } from '$app/paths';
     import { calculatePoints, calculateRoundsCorrect } from '$lib/gameUtils';
+    import StreamingLinks from './StreamingLinks.svelte';
 
     const { day, date, songList, dailyMeta, gameState, player, globalData } = $props();
     const SHARE_TEXT = 'Copy Results';
@@ -57,7 +58,7 @@
             .join('\n');
 
         text.push(grid);
-        text.push('<https://underscordle.org>');
+        text.push(`<${SITE}>`);
         const fullText = text.join('\n');
 
         try {
@@ -103,7 +104,10 @@
                             albumName={song?.album}
                             class="h-[20px] w-[20px] shrink-0 rounded-md border border-theme-text sm:h-[24px] sm:w-[24px]"
                         />
-                        <span class="text-sm">{song?.title}</span>
+                        <div class="flex flex-col gap-1">
+                            <span class="text-sm">{song?.title}</span>
+                            <StreamingLinks links={song.links} inGame={false} />
+                        </div>
                     </div>
                     <div class="flex shrink-0 flex-row items-center">
                         {#each { length: GUESSES_PER_ROUND } as _, j (j)}

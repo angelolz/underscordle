@@ -5,6 +5,7 @@ export interface Song {
     artist: string;
     title: string;
     album: string;
+    links: StreamingLinks;
 }
 
 export interface Guess {
@@ -48,4 +49,14 @@ export type AppSettings = {
 export type ArchiveEntry = {
     date: string;
     day: number;
+};
+
+export type StreamingLinks = {
+    appleMusic?: string;
+    bandcamp?: string;
+    soundcloud?: string;
+    spotify?: string;
+    tidal?: string;
+    youtube?: string;
+    youtubeMusic?: string;
 };
