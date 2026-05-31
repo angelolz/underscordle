@@ -11,8 +11,11 @@ const DATA_DIR = process.env.DATA_DIR || path.resolve(__dirname, '../out/data');
 const REGISTRY_FILE = path.join(DATA_DIR, 'song-registry.json');
 const MASTERS_DIR = process.env.MASTERS_DIR || path.resolve(__dirname, '../out/masters');
 const OUTPUT_BASE_DIR = process.env.OUTPUT_DIR || path.resolve(__dirname, '../out/dailies');
+const BUCKET_URL = 'https://challenges.underscordle.org';
 const VOLUME_THRESHOLD = -35;
 const MAX_RETRIES = 5;
+const DEDUPLICATE_DAYS = 5;
+const TODAY_DATE = new Date().toISOString().split('T')[0];
 
 function createSeededRandom(seed) {
     let hash = crypto.createHash('sha256').update(seed).digest('hex');
@@ -55,10 +58,52 @@ async function getMeanVolume(masterPath, startTime, duration) {
     });
 }
 
+function getPreviousDays(dateArg) {
+    const dates = [];
+
+    for (let i = 1; i <= DEDUPLICATE_DAYS; i++) {
+        const oldDate = new Date(dateArg);
+        oldDate.setDate(oldDate.getDate() - i);
+        dates.push(oldDate.toISOString().split('T')[0]);
+    }
+
+    return dates;
+}
+
+async function getPreviousSongIds(dateArg) {
+    const previousSongsSet = new Set();
+    const previousDates = getPreviousDays(dateArg);
+
+    await Promise.all(
+        previousDates.map(async (date) => {
+            try {
+                const metaResponse = await fetch(`${BUCKET_URL}/${date}/meta.json`);
+                if (!metaResponse.ok) {
+                    console.log(`   Failed to get meta.json for ${date}, response not ok`);
+                    return;
+                }
+
+                const metaResult = await metaResponse.json();
+
+                metaResult.rounds?.forEach((round) => {
+                    previousSongsSet.add(round.songId);
+                });
+            } catch (e) {
+                console.log(`   Failed to get meta.json for ${date}, ${e.message}`);
+            }
+        })
+    );
+
+    return previousSongsSet;
+}
+
 async function generateDaily() {
     try {
-        const dateArg = process.argv[2] || new Date().toISOString().split('T')[0];
+        const dateArg = process.argv[2] || TODAY_DATE;
         console.log(`Generating challenge for: ${dateArg}`);
+
+        console.log(`Retrieving songs for last ${DEDUPLICATE_DAYS} days of challenges...`);
+        const previousSongsSet = await getPreviousSongIds(dateArg);
 
         const registry = JSON.parse(await fs.readFile(REGISTRY_FILE, 'utf-8'));
         const songIds = Object.keys(registry);
@@ -78,10 +123,14 @@ async function generateDaily() {
             const idx = Math.floor(random() * availableIds.length);
             const songId = availableIds.splice(idx, 1)[0];
             const song = registry[songId];
+
+            if (previousSongsSet.has(songId)) {
+                console.log(`  - [${song.title}] Skipping since it was used previously`);
+                continue;
+            }
+
             const masterPath = path.join(MASTERS_DIR, song.filename);
-
             const songRandom = createSeededRandom(dateArg + songId);
-
             const snippetConfigs = [
                 { id: 1, duration: 0.5, type: 'random' },
                 { id: 2, duration: 1.0, type: 'random' },
