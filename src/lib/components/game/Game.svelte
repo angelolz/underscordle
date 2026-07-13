@@ -42,8 +42,8 @@
 
     let stats = $state({
         currentStreak: 0,
-        bestStreak:0, 
-        lastChallengeCompletedDate: ""
+        bestStreak: 0,
+        lastChallengeCompletedDate: '',
     });
 
     onMount(() => {
@@ -80,15 +80,15 @@
             gameState.hasSaved = false;
 
             //get stats
-            const savedStats = localStorage.getItem("underscordle-stats");
-            if(savedStats) {
+            const savedStats = localStorage.getItem('underscordle-stats');
+            if (savedStats) {
                 const statsParsed = JSON.parse(savedStats);
                 stats.currentStreak = statsParsed.currentStreak ?? 0;
                 stats.bestStreak = statsParsed.bestStreak ?? 0;
                 if (stats.currentStreak > stats.bestStreak) {
                     stats.bestStreak = stats.currentStreak;
                 }
-                stats.lastChallengeCompletedDate = statsParsed.lastChallengeCompletedDate ?? "";
+                stats.lastChallengeCompletedDate = statsParsed.lastChallengeCompletedDate ?? '';
             }
 
             //get save data for current date
@@ -133,10 +133,10 @@
     // save every time there changes to the stats
     $effect(() => {
         const statsToSave = JSON.stringify(stats);
-        if(!loading) {
-            localStorage.setItem("underscordle-stats", statsToSave);
+        if (!loading) {
+            localStorage.setItem('underscordle-stats', statsToSave);
         }
-    })
+    });
 
     // round logic (win/loss detection)
     $effect(() => {
@@ -259,7 +259,17 @@
                 {player}
             />
         {:else}
-            <Results {day} {isToday} {date} {songList} {dailyMeta} {gameState} {player} {globalData} {stats} />
+            <Results
+                {day}
+                {isToday}
+                {date}
+                {songList}
+                {dailyMeta}
+                {gameState}
+                {player}
+                {globalData}
+                {stats}
+            />
         {/if}
     </div>
 {:else if !loading && !dailyMeta}

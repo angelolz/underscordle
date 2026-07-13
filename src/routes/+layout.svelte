@@ -25,16 +25,21 @@
     onMount(() => {
         const settingsJson = localStorage.getItem(`underscordle-settings`);
         if (settingsJson) {
-            const parsed = JSON.parse(settingsJson);
-            const volumeNumber = Number(parsed.volume);
-            if (!isNaN(volumeNumber) && volumeNumber >= 1 && volumeNumber <= 100) {
-                settings.volume = volumeNumber;
+            try {
+                const parsed = JSON.parse(settingsJson);
+                if (parsed && typeof parsed === 'object') {
+                    const volumeNumber = Number(parsed.volume);
+                    if (!isNaN(volumeNumber) && volumeNumber >= 1 && volumeNumber <= 100) {
+                        settings.volume = volumeNumber;
+                    }
+                    if (parsed.theme && parsed.theme in themes) {
+                        settings.theme = parsed.theme;
+                    }
+                    settings.firstTimeHelp = !!parsed.firstTimeHelp;
+                }
+            } catch (e) {
+                console.error('Failed to parse settings:', e);
             }
-            if (parsed.theme && parsed.theme in themes) {
-                settings.theme = parsed.theme;
-            }
-
-            settings.firstTimeHelp = parsed.firstTimeHelp || false;
         } else {
             // No saved settings, this is a first-time user
             settings.firstTimeHelp = true;

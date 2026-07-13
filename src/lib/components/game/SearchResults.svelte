@@ -7,7 +7,7 @@
 {#if results.length > 0}
     <div
         transition:fly={{ y: 10, duration: 250 }}
-        class="absolute top-full left-0 z-[100] mt-2 w-full overflow-hidden rounded-md border border-theme-text bg-theme-bg"
+        class="absolute top-full left-0 z-100 mt-2 w-full overflow-hidden rounded-md border border-theme-text bg-theme-bg"
     >
         <div class="flex flex-col">
             {#each results as result, i (result.id)}
