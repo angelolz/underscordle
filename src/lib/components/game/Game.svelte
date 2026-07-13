@@ -82,39 +82,56 @@
             //get stats
             const savedStats = localStorage.getItem('underscordle-stats');
             if (savedStats) {
-                const statsParsed = JSON.parse(savedStats);
-                stats.currentStreak = statsParsed.currentStreak ?? 0;
-                stats.bestStreak = statsParsed.bestStreak ?? 0;
-                if (stats.currentStreak > stats.bestStreak) {
-                    stats.bestStreak = stats.currentStreak;
+                try {
+                    const statsParsed = JSON.parse(savedStats);
+                    if (statsParsed && typeof statsParsed === 'object') {
+                        const current = Number(statsParsed.currentStreak);
+                        const best = Number(statsParsed.bestStreak);
+                        
+                        stats.currentStreak = !isNaN(current) && current >= 0 ? current : 0;
+                        stats.bestStreak = !isNaN(best) && best >= 0 ? best : 0;
+                        
+                        if (stats.currentStreak > stats.bestStreak) {
+                            stats.bestStreak = stats.currentStreak;
+                        }
+                        
+                        stats.lastChallengeCompletedDate = typeof statsParsed.lastChallengeCompletedDate === 'string'
+                            ? statsParsed.lastChallengeCompletedDate
+                            : '';
+                    }
+                } catch (e) {
+                    console.error('Failed to parse stats:', e);
                 }
-                stats.lastChallengeCompletedDate = statsParsed.lastChallengeCompletedDate ?? '';
             }
 
             //get save data for current date
             const savedGameData = localStorage.getItem(`underscordle-${date}`);
             if (savedGameData) {
-                const parsed = JSON.parse(savedGameData);
-                if (parsed.roundGuesses && parsed.roundStatuses) {
-                    gameState.currentRound =
-                        parsed.currentRound >= 0 && parsed.currentRound < MAX_ROUNDS
-                            ? parsed.currentRound
-                            : 0;
+                try {
+                    const parsed = JSON.parse(savedGameData);
+                    if (parsed && typeof parsed === 'object' && Array.isArray(parsed.roundGuesses) && Array.isArray(parsed.roundStatuses)) {
+                        gameState.currentRound =
+                            typeof parsed.currentRound === 'number' && parsed.currentRound >= 0 && parsed.currentRound < MAX_ROUNDS
+                                ? parsed.currentRound
+                                : 0;
 
-                    gameState.roundGuesses = parsed.roundGuesses.slice(0, MAX_ROUNDS);
-                    gameState.roundStatuses = parsed.roundStatuses.slice(0, MAX_ROUNDS);
-                    gameState.hasSaved = parsed.hasSaved || false;
+                        gameState.roundGuesses = parsed.roundGuesses.slice(0, MAX_ROUNDS);
+                        gameState.roundStatuses = parsed.roundStatuses.slice(0, MAX_ROUNDS);
+                        gameState.hasSaved = !!parsed.hasSaved;
 
-                    if (
-                        gameState.roundStatuses[gameState.currentRound] !== 'playing' &&
-                        gameState.currentRound !== MAX_ROUNDS - 1
-                    ) {
-                        gameState.currentRound = gameState.currentRound + 1;
+                        if (
+                            gameState.roundStatuses[gameState.currentRound] !== 'playing' &&
+                            gameState.currentRound !== MAX_ROUNDS - 1
+                        ) {
+                            gameState.currentRound = gameState.currentRound + 1;
+                        }
+
+                        if (gameState.roundStatuses.every((s) => s !== 'playing')) {
+                            showResults = true;
+                        }
                     }
-
-                    if (gameState.roundStatuses.every((s) => s !== 'playing')) {
-                        showResults = true;
-                    }
+                } catch (e) {
+                    console.error(`Failed to parse game data for ${date}:`, e);
                 }
             }
         });
