@@ -12,7 +12,7 @@
 
     const { day, isToday, date, songList, dailyMeta, gameState, player, globalData, stats } =
         $props();
-    const SHARE_TEXT = 'Copy Results';
+    const SHARE_TEXT = 'Copy Score';
     let copyText = $state(SHARE_TEXT);
 
     let expandedSongs = $state<boolean[]>(Array(MAX_ROUNDS).fill(false));
@@ -51,7 +51,7 @@
     async function copyResults() {
         const text: string[] = [];
         text.push(
-            `underscordle #${day} - ${points === MAX_ROUNDS * GUESSES_PER_ROUND ? '👑' : `${points}/${MAX_ROUNDS * GUESSES_PER_ROUND}`}`
+            `underscordle #${day} - ${points === MAX_ROUNDS * GUESSES_PER_ROUND ? '👑' : `${points}/${MAX_ROUNDS * GUESSES_PER_ROUND}${stats.currentStreak >= 3 ? " - 🔥 " + stats.currentStreak : ""}`}`
         );
         text.push('');
 
