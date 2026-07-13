@@ -1,6 +1,7 @@
 <script lang="ts">
     import './layout.css';
     import favicon32 from '$lib/assets/favicon-32x32.png';
+    import favicon128 from '$lib/assets/favicon-128x128.png';
     import favicon180 from '$lib/assets/favicon-180x180.png';
     import favicon192 from '$lib/assets/favicon-192x192.png';
     import favicon512 from '$lib/assets/favicon-512x512.png';
@@ -78,20 +79,20 @@
     <!-- Google / Search Engine Tags -->
     <meta itemprop="name" content={NAME} />
     <meta itemprop="description" content={DESCRIPTION} />
-    <meta itemprop="image" content={SITE + '/favicon-128x128.png'} />
+    <meta itemprop="image" content={favicon128} />
 
     <!-- Facebook Meta Tags -->
     <meta property="og:url" content={SITE} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={NAME} />
     <meta property="og:description" content={DESCRIPTION} />
-    <meta property="og:image" content={SITE + '/favicon-128x128.png'} />
+    <meta property="og:image" content={favicon128} />
 
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={NAME} />
     <meta name="twitter:description" content={DESCRIPTION} />
-    <meta name="twitter:image" content={SITE + '/favicon.png'} />
+    <meta name="twitter:image" content={favicon128} />
 
     <link rel="icon" href={SITE + '/favicon.png'} />
     <link rel="icon" type="image/png" sizes="32x32" href={favicon32} />
