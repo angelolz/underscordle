@@ -11,6 +11,7 @@
     import { getSettingsContext } from '$lib/settings.svelte';
     import { calculatePoints } from '$lib/gameUtils';
     import { invalidateAll } from '$app/navigation';
+    import { calculateDays, getTodayDate } from '../../../params/date';
 
     const { data } = $props();
 
@@ -21,6 +22,7 @@
     const globalData = $derived(data.globalData);
     const settings = getSettingsContext();
     const player = createSharedSnippetPlayer();
+    const isToday = $derived(date === getTodayDate());
 
     const searcher = $derived(
         new Searcher(songList, {
@@ -36,6 +38,12 @@
         roundGuesses: Array.from({ length: MAX_ROUNDS }, () => []),
         roundStatuses: Array(MAX_ROUNDS).fill('playing'),
         hasSaved: false,
+    });
+
+    let stats = $state({
+        currentStreak: 0,
+        bestStreak:0, 
+        lastChallengeCompletedDate: ""
     });
 
     onMount(() => {
@@ -71,9 +79,22 @@
             gameState.roundStatuses = Array(MAX_ROUNDS).fill('playing');
             gameState.hasSaved = false;
 
-            const saved = localStorage.getItem(`underscordle-${date}`);
-            if (saved) {
-                const parsed = JSON.parse(saved);
+            //get stats
+            const savedStats = localStorage.getItem("underscordle-stats");
+            if(savedStats) {
+                const statsParsed = JSON.parse(savedStats);
+                stats.currentStreak = statsParsed.currentStreak ?? 0;
+                stats.bestStreak = statsParsed.bestStreak ?? 0;
+                if (stats.currentStreak > stats.bestStreak) {
+                    stats.bestStreak = stats.currentStreak;
+                }
+                stats.lastChallengeCompletedDate = statsParsed.lastChallengeCompletedDate ?? "";
+            }
+
+            //get save data for current date
+            const savedGameData = localStorage.getItem(`underscordle-${date}`);
+            if (savedGameData) {
+                const parsed = JSON.parse(savedGameData);
                 if (parsed.roundGuesses && parsed.roundStatuses) {
                     gameState.currentRound =
                         parsed.currentRound >= 0 && parsed.currentRound < MAX_ROUNDS
@@ -109,6 +130,14 @@
         }
     });
 
+    // save every time there changes to the stats
+    $effect(() => {
+        const statsToSave = JSON.stringify(stats);
+        if(!loading) {
+            localStorage.setItem("underscordle-stats", statsToSave);
+        }
+    })
+
     // round logic (win/loss detection)
     $effect(() => {
         if (!dailyMeta || loading) return;
@@ -126,6 +155,35 @@
             if (gameState.roundStatuses[currentRound] !== 'lost') {
                 gameState.roundStatuses[currentRound] = 'lost';
             }
+        }
+    });
+
+    // update streak upon finishing the last round
+    $effect(() => {
+        if (!isToday || loading) return;
+
+        const isGameFinished = gameState.roundStatuses[MAX_ROUNDS - 1] !== 'playing';
+        if (isGameFinished && stats.lastChallengeCompletedDate !== date) {
+            const lastDate = stats.lastChallengeCompletedDate;
+            if (lastDate === '') {
+                // First game ever completed
+                stats.currentStreak = 1;
+            } else {
+                const diff = Math.round(calculateDays(lastDate, date));
+                if (diff === 2) {
+                    // Completed yesterday, increment streak
+                    stats.currentStreak += 1;
+                } else if (diff > 2) {
+                    // Missed a day or more, reset streak to 1
+                    stats.currentStreak = 1;
+                }
+            }
+
+            if (stats.currentStreak > stats.bestStreak) {
+                stats.bestStreak = stats.currentStreak;
+            }
+
+            stats.lastChallengeCompletedDate = date;
         }
     });
 
@@ -201,7 +259,7 @@
                 {player}
             />
         {:else}
-            <Results {day} {date} {songList} {dailyMeta} {gameState} {player} {globalData} />
+            <Results {day} {isToday} {date} {songList} {dailyMeta} {gameState} {player} {globalData} {stats} />
         {/if}
     </div>
 {:else if !loading && !dailyMeta}

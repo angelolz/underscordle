@@ -10,11 +10,15 @@ export const match: ParamMatcher = (param) => {
 };
 
 export function calculateDays(startDate: string, endDate: string) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    const startPart = startDate.split('T')[0];
+    const endPart = endDate.split('T')[0];
+
+    const start = new Date(`${startPart}T00:00:00Z`);
+    const end = new Date(`${endPart}T00:00:00Z`);
+
     const timeDifference = end.valueOf() - start.valueOf();
     const daysDifference = timeDifference / (1000 * 3600 * 24);
-    return daysDifference + 1;
+    return Math.round(daysDifference) + 1;
 }
 
 export function getTodayDate() {
