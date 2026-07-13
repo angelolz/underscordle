@@ -66,7 +66,7 @@
             .join('\n');
 
         text.push(grid);
-        text.push(`<${SITE}>`);
+        text.push(SITE);
         const fullText = text.join('\n');
 
         try {
