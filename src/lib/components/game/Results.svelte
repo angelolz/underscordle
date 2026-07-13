@@ -5,14 +5,12 @@
     import AlbumArt from './AlbumArt.svelte';
     import ResultIcon from './ResultIcon.svelte';
     import TimerLeft from './TimerLeft.svelte';
-    import { getTodayDate } from '../../../params/date';
     import { resolve } from '$app/paths';
     import { calculatePoints, calculateRoundsCorrect } from '$lib/gameUtils';
     import StreamingLinks from './StreamingLinks.svelte';
 
-    const { day, date, songList, dailyMeta, gameState, player, globalData } = $props();
+    const { day, isToday, date, songList, dailyMeta, gameState, player, globalData, stats } = $props();
     const SHARE_TEXT = 'Copy Results';
-    const isToday = $derived(date === getTodayDate());
     let copyText = $state(SHARE_TEXT);
 
     const points = $derived(calculatePoints(gameState));
@@ -44,7 +42,7 @@
 
     async function copyResults() {
         const text: string[] = [];
-        text.push(`underscordle #${day} - ${points}/${MAX_ROUNDS * GUESSES_PER_ROUND}`);
+        text.push(`underscordle #${day} - ${points === MAX_ROUNDS * GUESSES_PER_ROUND ? "👑" : `${points}/${MAX_ROUNDS * GUESSES_PER_ROUND}`}`);
         text.push('');
 
         const grid = gameState.roundGuesses
@@ -87,6 +85,24 @@
     }
 </script>
 
+{#snippet statGroup(heading: string, val1: string | number, label1: string, val2: string | number, label2: string, extraClass: string = '')}
+<div class="flex flex-row items-center justify-center gap-6 {extraClass}">
+    <div class="flex flex-col items-center gap-2">
+        <p class="text-sm text-theme-text uppercase">{heading}</p>
+        <div class="flex flex-row justify-center gap-6">
+            <div class="flex min-w-[50px] flex-col text-center">
+                <span class="text-2xl font-bold">{val1}</span>
+                <span class="text-sm whitespace-nowrap uppercase opacity-50">{label1}</span>
+            </div>
+            <div class="flex min-w-[50px] flex-col text-center">
+                <span class="text-2xl font-bold">{val2}</span>
+                <span class="text-sm whitespace-nowrap uppercase opacity-50">{label2}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{/snippet}
+
 <div class="flex w-full flex-col items-center gap-6 px-1 sm:px-2">
     <div
         class="flex w-full max-w-[500px] flex-col items-center justify-center gap-4 rounded-xl border border-theme-text bg-theme-bg p-3 align-middle text-theme-text sm:gap-6 sm:p-4"
@@ -124,48 +140,21 @@
                 {/if}
             {/each}
         </div>
-        <div class="flex flex-col items-center justify-center gap-6 sm:flex-row">
-            <div class="flex flex-row flex-wrap items-center justify-center gap-6">
-                <div class="flex flex-col items-center gap-2">
-                    <p class="text-sm text-theme-muted uppercase">Your Stats</p>
-                    <div class="flex flex-row gap-6">
-                        <div class="flex min-w-[50px] flex-col text-center">
-                            <span class="text-2xl font-bold"
-                                >{`${roundsCorrect}/${MAX_ROUNDS}`}</span
-                            >
-                            <span class="text-sm whitespace-nowrap uppercase opacity-50"
-                                >Correct</span
-                            >
-                        </div>
-                        <div class="flex min-w-[50px] flex-col text-center">
-                            <span class="text-2xl font-bold"
-                                >{`${points}/${MAX_ROUNDS * GUESSES_PER_ROUND}`}</span
-                            >
-                            <span class="text-sm whitespace-nowrap uppercase opacity-50"
-                                >Points</span
-                            >
-                        </div>
+        <div class="flex flex-col gap-4 w-full">
+            <span class="flex items-center justify-evenly gap-6 flex-row">
+                {@render statGroup('Your Stats', `${roundsCorrect}/${MAX_ROUNDS}`, 'Correct', `${points}/${MAX_ROUNDS * GUESSES_PER_ROUND}`, 'Points')}
+                {@render statGroup('Community Stats', globalData?.totalGames || 0, 'Games', communityAvg, 'Avg. Pts.')}
+            </span>
+            {#if isToday}
+                <span class="flex items-center justify-evenly gap-6 flex-row">
+                    {#if stats}
+                        {@render statGroup('Your Streak', `${stats.currentStreak}`, 'Streak', stats.bestStreak, 'Best')}
+                    {/if}
+                    <div class="flex flex-row items-center justify-center gap-6">
+                        <TimerLeft />
                     </div>
-                </div>
-            </div>
-            <div class="flex w-full flex-row flex-wrap items-center justify-center gap-6">
-                <div class="flex flex-col items-center gap-2">
-                    <p class="text-sm text-theme-muted uppercase">Community Stats</p>
-                    <div class="flex flex-row gap-6">
-                        <div class="flex min-w-[50px] flex-col text-center">
-                            <span class="text-2xl font-bold">{globalData?.totalGames || 0}</span>
-                            <span class="text-sm whitespace-nowrap uppercase opacity-50">Games</span
-                            >
-                        </div>
-                        <div class="flex min-w-[50px] flex-col text-center">
-                            <span class="text-2xl font-bold">{communityAvg}</span>
-                            <span class="text-sm whitespace-nowrap uppercase opacity-50"
-                                >Avg. Pts.</span
-                            >
-                        </div>
-                    </div>
-                </div>
-            </div>
+                </span>
+            {/if}
         </div>
         <div class="flex flex-col">
             <button
@@ -179,9 +168,6 @@
             </button>
         </div>
     </div>
-    {#if isToday}
-        <TimerLeft />
-    {/if}
     <a
         class="flex flex-row items-center justify-center gap-0.5 text-theme-text hover:underline"
         href={resolve('/archive')}

@@ -39,7 +39,10 @@
     }
 </script>
 
-<div class="flex flex-col text-center text-theme-text">
-    <span>Next Challenge in:</span>
-    <span class="text-2xl font-bold">{timeLeft}</span>
+<div class="flex flex-col items-center gap-2">
+    <p class="text-sm text-theme-text uppercase">Next Challenge</p>
+    <div class="flex min-w-[50px] flex-col text-center">
+        <span class="text-2xl font-bold">{timeLeft}</span>
+        <span class="text-sm whitespace-nowrap uppercase opacity-50">Remaining</span>
+    </div>
 </div>
