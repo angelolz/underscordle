@@ -5,6 +5,7 @@
     import AlbumArt from './AlbumArt.svelte';
     import ResultIcon from './ResultIcon.svelte';
     import TimerLeft from './TimerLeft.svelte';
+    import { slide, fade } from 'svelte/transition';
     import { resolve } from '$app/paths';
     import { calculatePoints, calculateRoundsCorrect } from '$lib/gameUtils';
     import StreamingLinks from './StreamingLinks.svelte';
@@ -12,6 +13,12 @@
     const { day, isToday, date, songList, dailyMeta, gameState, player, globalData, stats } = $props();
     const SHARE_TEXT = 'Copy Results';
     let copyText = $state(SHARE_TEXT);
+
+    let expandedSongs = $state<boolean[]>(Array(MAX_ROUNDS).fill(false));
+
+    function toggleSong(index: number) {
+        expandedSongs[index] = !expandedSongs[index];
+    }
 
     const points = $derived(calculatePoints(gameState));
     const roundsCorrect = $derived(calculateRoundsCorrect(gameState));
@@ -121,11 +128,35 @@
                             class="h-[20px] w-[20px] shrink-0 rounded-md border border-theme-text sm:h-[24px] sm:w-[24px]"
                         />
                         <div class="flex flex-col gap-1">
-                            <span class="text-sm">{song?.title}</span>
-                            <StreamingLinks links={song.links} inGame={false} />
+                            <button
+                                class="flex items-center gap-1 text-left cursor-pointer hover:opacity-80 hover:underline transition-opacity focus:outline-none"
+                                onclick={() => toggleSong(i)}
+                                aria-expanded={expandedSongs[i]}
+                            >
+                                <svg
+                                    class="h-3 w-3 shrink-0 text-theme-muted transition-transform duration-200"
+                                    class:rotate-90={expandedSongs[i]}
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                                <span class="text-sm font-semibold">{song?.title}</span>
+                            </button>
+                            {#if expandedSongs[i]}
+                                <div transition:slide={{ duration: 200 }} class="overflow-hidden">
+                                    <div transition:fade={{ duration: 150 }} class="pt-0.5">
+                                        <StreamingLinks links={song.links} inGame={false} />
+                                    </div>
+                                </div>
+                            {/if}
                         </div>
                     </div>
-                    <div class="flex shrink-0 flex-row items-center">
+                    <div class="flex shrink-0 flex-row items-center mt-0.5">
                         {#each { length: GUESSES_PER_ROUND } as _, j (j)}
                             <ResultIcon
                                 status={gameState.roundGuesses[i][j]?.status}
