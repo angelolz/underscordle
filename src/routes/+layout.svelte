@@ -78,17 +78,17 @@
     <!-- Google / Search Engine Tags -->
     <meta itemprop="name" content={NAME} />
     <meta itemprop="description" content={DESCRIPTION} />
-    <meta itemprop="image" content={SITE + '/favicon.png'} />
+    <meta itemprop="image" content={SITE + '/favicon-128x128.png'} />
 
     <!-- Facebook Meta Tags -->
     <meta property="og:url" content={SITE} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={NAME} />
     <meta property="og:description" content={DESCRIPTION} />
-    <meta property="og:image" content={SITE + '/favicon.png'} />
+    <meta property="og:image" content={SITE + '/favicon-128x128.png'} />
 
     <!-- Twitter Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={NAME} />
     <meta name="twitter:description" content={DESCRIPTION} />
     <meta name="twitter:image" content={SITE + '/favicon.png'} />

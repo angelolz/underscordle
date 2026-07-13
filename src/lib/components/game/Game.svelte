@@ -87,17 +87,28 @@
                     if (statsParsed && typeof statsParsed === 'object') {
                         const current = Number(statsParsed.currentStreak);
                         const best = Number(statsParsed.bestStreak);
-                        
+
                         stats.currentStreak = !isNaN(current) && current >= 0 ? current : 0;
                         stats.bestStreak = !isNaN(best) && best >= 0 ? best : 0;
-                        
+
                         if (stats.currentStreak > stats.bestStreak) {
                             stats.bestStreak = stats.currentStreak;
                         }
-                        
-                        stats.lastChallengeCompletedDate = typeof statsParsed.lastChallengeCompletedDate === 'string'
-                            ? statsParsed.lastChallengeCompletedDate
-                            : '';
+
+                        stats.lastChallengeCompletedDate =
+                            typeof statsParsed.lastChallengeCompletedDate === 'string'
+                                ? statsParsed.lastChallengeCompletedDate
+                                : '';
+
+                        if (stats.lastChallengeCompletedDate !== '') {
+                            const today = getTodayDate();
+                            const diff = Math.round(
+                                calculateDays(stats.lastChallengeCompletedDate, today)
+                            );
+                            if (diff > 2) {
+                                stats.currentStreak = 0;
+                            }
+                        }
                     }
                 } catch (e) {
                     console.error('Failed to parse stats:', e);
@@ -109,9 +120,16 @@
             if (savedGameData) {
                 try {
                     const parsed = JSON.parse(savedGameData);
-                    if (parsed && typeof parsed === 'object' && Array.isArray(parsed.roundGuesses) && Array.isArray(parsed.roundStatuses)) {
+                    if (
+                        parsed &&
+                        typeof parsed === 'object' &&
+                        Array.isArray(parsed.roundGuesses) &&
+                        Array.isArray(parsed.roundStatuses)
+                    ) {
                         gameState.currentRound =
-                            typeof parsed.currentRound === 'number' && parsed.currentRound >= 0 && parsed.currentRound < MAX_ROUNDS
+                            typeof parsed.currentRound === 'number' &&
+                            parsed.currentRound >= 0 &&
+                            parsed.currentRound < MAX_ROUNDS
                                 ? parsed.currentRound
                                 : 0;
 

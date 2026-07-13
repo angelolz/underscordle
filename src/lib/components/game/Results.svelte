@@ -51,7 +51,7 @@
     async function copyResults() {
         const text: string[] = [];
         text.push(
-            `underscordle #${day} - ${points === MAX_ROUNDS * GUESSES_PER_ROUND ? '👑' : `${points}/${MAX_ROUNDS * GUESSES_PER_ROUND}${stats.currentStreak >= 3 ? " - 🔥 " + stats.currentStreak : ""}`}`
+            `underscordle #${day} - ${points === MAX_ROUNDS * GUESSES_PER_ROUND ? '👑' : `${points}/${MAX_ROUNDS * GUESSES_PER_ROUND}${isToday && stats.currentStreak >= 3 ? ' - 🔥 ' + stats.currentStreak : ''}`}`
         );
         text.push('');
 
