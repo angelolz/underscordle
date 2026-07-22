@@ -3,6 +3,7 @@
     "tabWidth": 4,
     "singleQuote": true,
     "trailingComma": "es5",
+    "endOfLine": "lf",
     "plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
     "overrides": [
         {
