@@ -22,6 +22,19 @@ function getOldId(filename) {
 
 async function bootstrap() {
     try {
+        try {
+            await fs.access(REGISTRY_FILE);
+            console.error(`\n❌ Error: Registry file already exists at:\n   ${REGISTRY_FILE}`);
+            console.error(
+                '\nRunning bootstrap again would overwrite all existing song IDs, contents, and streaming links.'
+            );
+            console.error('- To add new songs, run: pnpm scan');
+            console.error('- To force-reinitialize, manually delete the registry file first.\n');
+            process.exit(1);
+        } catch (_) {
+            //ignored
+        }
+
         console.log(`Bootstrapping registry from: ${MASTERS_DIR}`);
 
         // check if out/data exists

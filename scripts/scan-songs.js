@@ -38,7 +38,8 @@ async function extractArt(songPath, albumName, metadata) {
             const picture = metadata.common.picture[0];
             console.log(`  Extracting art from metadata for ${albumName}...`);
 
-            const tempInput = path.join(path.dirname(outputPath), `temp-${slug}`);
+            const imgExt = picture.format === 'image/png' ? '.png' : '.jpg';
+            const tempInput = path.join(path.dirname(outputPath), `temp-${slug}${imgExt}`);
             await fs.writeFile(tempInput, picture.data);
 
             return new Promise((resolve) => {
@@ -59,20 +60,8 @@ async function extractArt(songPath, albumName, metadata) {
             });
         }
 
-        return new Promise((resolve) => {
-            ffmpeg(songPath)
-                .output(outputPath)
-                .frames(1)
-                .size('80x80')
-                .on('end', () => resolve(`/art/${slug}.webp`))
-                .on('error', (err) => {
-                    console.warn(
-                        `  Could not extract art via ffmpeg for ${albumName}: ${err.message}`
-                    );
-                    resolve(null);
-                })
-                .run();
-        });
+        console.log(`  No embedded cover art found for ${albumName}.`);
+        return null;
     }
 }
 

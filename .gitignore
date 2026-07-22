@@ -26,3 +26,7 @@ vite.config.ts.timestamp-*
 out
 masters/
 todo.md
+
+# static assets/directories (should be just used for local development)
+static/assets
+static/challenges

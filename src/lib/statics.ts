@@ -1,10 +1,13 @@
+import { dev } from '$app/environment';
+
 const MAX_ROUNDS = 5;
 const GUESSES_PER_ROUND = 3;
 const ANGELOLZ_SITE = 'https://angelolz.one';
 const START_DATE_STRING = '2026-04-21';
-const ASSETS_URL = 'https://assets.underscordle.org';
-const CHALLENGES_URL = 'https://challenges.underscordle.org';
+const ASSETS_URL = dev ? '/assets' : 'https://assets.underscordle.org';
+const CHALLENGES_URL = dev ? '/challenges' : 'https://challenges.underscordle.org';
 const ERROR_LINES = [
+    //seen when hitting a 404 page
     "Stop me if you've heard this one before...",
     'Bozo, bozo, bozo...',
     'Stupid, stupid, stupid...',
