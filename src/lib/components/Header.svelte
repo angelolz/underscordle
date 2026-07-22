@@ -5,6 +5,7 @@
         ArchiveOutline,
         CogOutline,
         ExclamationCircleOutline,
+        GithubSolid,
         QuestionCircleOutline,
     } from 'flowbite-svelte-icons';
     import Modal from './Modal.svelte';
@@ -61,6 +62,11 @@
                 onclick={() => {
                     showSettingsModal = true;
                 }}><CogOutline class="h-8 w-8 shrink-0 cursor-pointer" /></button
+            ></span
+        >
+        <span class="flex items-center transition-all hover:scale-105 active:scale-95"
+            ><a href="https://github.com/angelolz/underscordle" target="_blank" rel="noreferrer"
+                ><GithubSolid class="h-8 w-8 shrink-0" /></a
             ></span
         >
     </div>
