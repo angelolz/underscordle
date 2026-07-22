@@ -59,3 +59,7 @@ out
 masters/
 todo.md
 drizzle/*.sql.bak
+
+# static assets/directories (should be just used for local development)
+static/assets
+static/challenges
