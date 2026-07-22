@@ -104,3 +104,5 @@ To maintain code formatting and quality:
 - Keep all type definitions in `src/app.d.ts` or corresponding `$lib/interfaces.ts`.
 
 ## License
+
+GPL-3.0 license
