@@ -315,6 +315,32 @@
         class="flex flex-col items-center justify-center gap-4 p-10 text-center align-middle text-white"
     >
         <p>No challenge found for this date. Please let Angel know about this!</p>
+
+        <span class="flex flex-col items-center">
+            <p>Find him in these places:</p>
+            <span class="flex flex-row gap-3">
+                <a class="hover:underline" target="_blank" href="http://twitter.com/angelolz1">
+                    Twitter
+                </a>
+                ·
+                <a
+                    class="hover:underline"
+                    target="_blank"
+                    href="https://bsky.app/profile/angelolz.one"
+                >
+                    Bluesky
+                </a>
+                ·
+                <a
+                    class="hover:underline"
+                    target="_blank"
+                    href="https://github.com/angelolz/underscordle/issues"
+                >
+                    GitHub
+                </a>
+            </span>
+        </span>
+
         <a
             class="flex flex-row items-center gap-1 text-sm hover:underline"
             href={resolve('/archive')}

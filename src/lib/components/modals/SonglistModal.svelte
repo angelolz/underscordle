@@ -114,13 +114,12 @@
                                     {result.album}
                                 </span>
                             {/if}
-                            <div class="sm:hidden block pt-1">
+                            <div class="block pt-1 sm:hidden">
                                 <StreamingLinks links={result.links} inGame={false} />
                             </div>
                         </div>
-                        
                     </div>
-                    <div class="sm:block hidden">
+                    <div class="hidden sm:block">
                         <StreamingLinks links={result.links} inGame={false} />
                     </div>
                 </div>
