@@ -12,13 +12,13 @@
 </script>
 
 <div
-    class="flex w-full max-w-[400px] flex-col gap-2 rounded-xl border border-theme-text bg-theme-bg p-3"
+    class="flex w-full max-w-100 flex-col gap-2 rounded-xl border border-theme-text bg-theme-bg p-3"
 >
     <div class="flex flex-row items-center justify-between gap-4">
         <div class="flex min-w-0 flex-1 flex-row items-center gap-2">
             <AlbumArtComponent
                 albumName={song?.album}
-                class="h-[60px] w-[60px] shrink-0 rounded-xl border border-theme-text"
+                class="h-15 w-15 shrink-0 rounded-xl border border-theme-text"
             />
             <div class="flex min-w-0 flex-col overflow-hidden">
                 <span class="text-[14px] font-bold text-theme-text">{song?.title || 'title'}</span>

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { fly } from 'svelte/transition';
 
-    const { children, revealed, onClose } = $props();
+    const { children, revealed, onClose, maxWidth = 'max-w-md' } = $props();
 </script>
 
 {#if revealed}
@@ -10,7 +10,7 @@
         class="animate-fade-in animate fixed inset-0 z-50 flex items-center justify-center bg-black/65"
     >
         <div
-            class="animate-fly-fade-in relative mx-3 w-full max-w-md rounded-lg border-2 border-theme-text bg-theme-bg p-6 text-center sm:mx-0"
+            class={`animate-fly-fade-in relative mx-3 w-full ${maxWidth} rounded-lg border-2 border-theme-text bg-theme-bg p-6 text-center sm:mx-0`}
             style="box-shadow: 0 0 20px rgba(0,0,0,0.5);"
         >
             <button

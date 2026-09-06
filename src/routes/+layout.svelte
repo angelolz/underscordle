@@ -107,11 +107,12 @@
     {/if}
 </svelte:head>
 
-<div class="m-auto flex w-full max-w-[800px] flex-col items-center p-2 align-middle">
+<div class="m-auto flex w-full max-w-200 flex-col items-center p-2 align-middle">
     <Header
         bind:volume={settings.volume}
         bind:theme={settings.theme}
         bind:firstTimeHelp={settings.firstTimeHelp}
+        songList={data.songList}
         {saveSettings}
     />
     {@render children()}

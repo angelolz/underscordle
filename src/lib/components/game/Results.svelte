@@ -107,11 +107,11 @@
         <div class="flex flex-col items-center gap-2">
             <p class="text-sm text-theme-text uppercase">{heading}</p>
             <div class="flex flex-row justify-center gap-6">
-                <div class="flex min-w-[50px] flex-col text-center">
+                <div class="flex min-w-12.5 flex-col text-center">
                     <span class="text-2xl font-bold">{val1}</span>
                     <span class="text-sm whitespace-nowrap uppercase opacity-50">{label1}</span>
                 </div>
-                <div class="flex min-w-[50px] flex-col text-center">
+                <div class="flex min-w-12.5 flex-col text-center">
                     <span class="text-2xl font-bold">{val2}</span>
                     <span class="text-sm whitespace-nowrap uppercase opacity-50">{label2}</span>
                 </div>
@@ -122,7 +122,7 @@
 
 <div class="flex w-full flex-col items-center gap-6 px-1 sm:px-2">
     <div
-        class="flex w-full max-w-[500px] flex-col items-center justify-center gap-4 rounded-xl border border-theme-text bg-theme-bg p-3 align-middle text-theme-text sm:gap-6 sm:p-4"
+        class="flex w-full max-w-125 flex-col items-center justify-center gap-4 rounded-xl border border-theme-text bg-theme-bg p-3 align-middle text-theme-text sm:gap-6 sm:p-4"
     >
         <div class="flex flex-col text-center">
             <span class="text-xl font-bold sm:text-2xl">Results</span>
@@ -135,7 +135,7 @@
                     <div class="flex min-w-0 flex-row items-center gap-2">
                         <AlbumArt
                             albumName={song?.album}
-                            class="h-[20px] w-[20px] shrink-0 rounded-md border border-theme-text sm:h-[24px] sm:w-[24px]"
+                            class="h-5 w-5 shrink-0 rounded-md border border-theme-text sm:h-6 sm:w-6"
                         />
                         <div class="flex flex-col gap-1">
                             <button

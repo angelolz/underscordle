@@ -17,7 +17,7 @@
                         submitGuess(result.title, result.id);
                     }}
                 >
-                    <AlbumArt albumName={result?.album} class="h-[28px] rounded-md sm:h-[24px]" />
+                    <AlbumArt albumName={result?.album} class="h-7 rounded-md sm:h-6" />
                     {result.title}
                 </button>
             {/each}

@@ -1,37 +1,35 @@
 <script lang="ts">
-    import icon128 from '$lib/assets/favicon-128x128.png';
     import { resolve } from '$app/paths';
     import {
         ArchiveOutline,
         CogOutline,
-        ExclamationCircleOutline,
         GithubSolid,
+        ListMusicOutline,
         QuestionCircleOutline,
     } from 'flowbite-svelte-icons';
-    import Modal from './Modal.svelte';
     import Logo from './Logo.svelte';
-    import { themes } from '$lib/themes';
+
+    import HelpModal from './modals/HelpModal.svelte';
+    import SettingsModal from './modals/SettingsModal.svelte';
+    import SonglistModal from './modals/SonglistModal.svelte';
 
     let {
         volume = $bindable(),
         theme = $bindable(),
         firstTimeHelp = $bindable(),
         saveSettings,
+        songList,
+        albums,
     } = $props();
     let showHelpModal = $state(false);
     let showSettingsModal = $state(false);
-    let inputVolume = $derived(volume);
+    let showSongListModal = $state(false);
 
     $effect(() => {
         if (firstTimeHelp) {
             showHelpModal = true;
         }
     });
-
-    function setVolume(value: number) {
-        inputVolume = value;
-        volume = value;
-    }
 </script>
 
 <div class="flex w-full flex-col items-center justify-center gap-2 pt-4 align-middle">
@@ -46,124 +44,50 @@
             >
         </p>
     </span>
-    <div class="flex flex-row items-center gap-2 text-theme-text">
-        <span class="flex items-center transition-all hover:scale-105 active:scale-95"
-            ><a href={resolve('/archive')}><ArchiveOutline class="h-8 w-8 shrink-0" /></a></span
-        >
-        <span class="flex items-center transition-all hover:scale-105 active:scale-95"
-            ><button
+    <div class="flex cursor-pointer flex-row items-center gap-3 text-theme-text select-none">
+        <span class="flex flex-col items-center transition-all hover:scale-105 active:scale-95">
+            <a href={resolve('/archive')}><ArchiveOutline class="h-8 w-8 shrink-0" /></a>
+            Archive
+        </span>
+        <span class="flex flex-col items-center transition-all hover:scale-105 active:scale-95">
+            <button
                 onclick={() => {
                     showHelpModal = true;
-                }}><QuestionCircleOutline class="h-8 w-8 shrink-0 cursor-pointer" /></button
-            ></span
-        >
-        <span class="flex items-center transition-all hover:scale-105 active:scale-95"
-            ><button
+                }}
+            >
+                <QuestionCircleOutline class="h-8 w-8 shrink-0 cursor-pointer" />
+            </button>
+            Help
+        </span>
+        <span class="flex flex-col items-center transition-all hover:scale-105 active:scale-95">
+            <button
+                onclick={() => {
+                    showSongListModal = true;
+                }}
+                ><ListMusicOutline class="h-8 w-8 shrink-0 cursor-pointer" />
+            </button>
+            Songlist
+        </span>
+        <span class="flex flex-col items-center transition-all hover:scale-105 active:scale-95">
+            <button
                 onclick={() => {
                     showSettingsModal = true;
                 }}><CogOutline class="h-8 w-8 shrink-0 cursor-pointer" /></button
-            ></span
-        >
-        <span class="flex items-center transition-all hover:scale-105 active:scale-95"
-            ><a href="https://github.com/angelolz/underscordle" target="_blank" rel="noreferrer"
-                ><GithubSolid class="h-8 w-8 shrink-0" /></a
-            ></span
-        >
+            >
+            Settings
+        </span>
+        <span class="flex flex-col items-center transition-all hover:scale-105 active:scale-95">
+            <a href="https://github.com/angelolz/underscordle" target="_blank" rel="noreferrer">
+                <GithubSolid class="h-8 w-8 shrink-0" />
+            </a>
+            GitHub
+        </span>
     </div>
-    <hr class="h-3 w-full max-w-[280px] border-theme-muted sm:max-w-sm" />
+    <hr class="h-3 w-full max-w-70 border-theme-muted sm:max-w-sm" />
 </div>
 
-<Modal
-    revealed={showHelpModal}
-    onClose={() => {
-        showHelpModal = false;
-        if (firstTimeHelp) {
-            firstTimeHelp = false;
-            saveSettings();
-        }
-    }}
->
-    <div class="flex flex-col items-center gap-3">
-        <span class="text-xl font-bold text-theme-text">How to Play:</span>
-        <ul class="list-outside list-disc space-y-2 pl-4 text-left text-theme-text">
-            <li>Each day you will have 5 songs to guess, with 3 guesses each.</li>
-            <li>Click the play button to hear the clue and type in the box to make your guess.</li>
-            <li>Feel free to come back later, progress is always saved.</li>
-        </ul>
-        <hr class="h-3 w-full max-w-[280px] border-theme-muted sm:max-w-sm" />
-        <span class="text-xl font-bold text-theme-text">Credits</span>
-        <div class="flex flex-col items-center justify-center">
-            <img src={icon128} alt="underscordle icon" class="h-[100px]" />
-            <p class="text-theme-text">
-                Icon created by <a
-                    class="hover:underline"
-                    target="_blank"
-                    href="https://youtube.com/@augeagora">douglas</a
-                >!
-            </p>
-        </div>
-        <p class="text-theme-text">
-            <b>underscordle</b> is heavily inspired by
-            <a class="hover:underline" target="_blank" href="https://twitch.tv/ottomated"
-                >Ottomated</a
-            >'s
-            <a class="hover:underline" target="_blank" href="https://porterrobinsle.com/"
-                ><i>PORTER ROBINSONLE</i></a
-            >.
-        </p>
-    </div>
-</Modal>
+<HelpModal bind:showHelpModal bind:firstTimeHelp {saveSettings} />
 
-<Modal
-    revealed={showSettingsModal}
-    onClose={() => {
-        showSettingsModal = false;
-    }}
->
-    <div class="flex flex-col gap-4 text-theme-text">
-        <span class="text-xl font-bold">Settings</span>
+<SettingsModal bind:showSettingsModal bind:volume bind:theme {saveSettings} />
 
-        <div class="flex flex-col gap-2">
-            <label for="theme-select" class="text-sm font-bold">Theme</label>
-            <select
-                id="theme-select"
-                class="w-full rounded-lg border border-theme-text bg-theme-bg p-2 text-sm text-theme-text outline-none focus:ring-2 focus:ring-theme-accent"
-                bind:value={theme}
-                onchange={saveSettings}
-            >
-                {#each Object.keys(themes) as t (t)}
-                    <option value={t}>
-                        {t.charAt(0).toUpperCase() + t.slice(1)}
-                    </option>
-                {/each}
-            </select>
-        </div>
-
-        <div class="flex flex-col items-center justify-around gap-2 align-middle">
-            <span class="flex w-full flex-row gap-1 text-sm font-bold">
-                <p>Volume: <b>{inputVolume}%</b></p>
-                {#if inputVolume > 35}
-                    <span
-                        class="flex flex-row items-center justify-between gap-1 text-[10px] text-red-500"
-                    >
-                        <ExclamationCircleOutline class="h-4 w-4 shrink-0" /> This may be too loud, please
-                        take caution.
-                    </span>
-                {/if}
-            </span>
-            <input
-                class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-theme-accent accent-theme-text"
-                type="range"
-                min="1"
-                max="100"
-                value={inputVolume}
-                oninput={(e) => {
-                    setVolume(Number(e.currentTarget.value));
-                }}
-                onchange={() => {
-                    saveSettings();
-                }}
-            />
-        </div>
-    </div>
-</Modal>
+<SonglistModal bind:showSongListModal {songList} {albums} />

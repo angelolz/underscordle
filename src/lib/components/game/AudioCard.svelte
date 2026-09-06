@@ -75,12 +75,12 @@
 </script>
 
 <div
-    class={`relative flex shrink-0 items-center ${!isCurrentGuess() || result !== 'playing' ? 'border' : 'border-3'} h-[80px] w-full max-w-[400px] rounded-lg ${getBackgroundColor()} ${!isActive && result === 'playing' ? 'opacity-50' : ''}`}
+    class={`relative flex shrink-0 items-center ${!isCurrentGuess() || result !== 'playing' ? 'border' : 'border-3'} h-20 w-full max-w-100 rounded-lg ${getBackgroundColor()} ${!isActive && result === 'playing' ? 'opacity-50' : ''}`}
 >
     <span class="flex w-full flex-row items-center gap-2 px-2">
         <button onclick={playClue} class="shrink-0 text-theme-text">
             <PlaySolid
-                class={`h-[42px] w-[42px] ${isActive || result !== 'playing' ? 'transition-all hover:scale-110 active:scale-95' : ''}`}
+                class={`h-10.5 w-10.5 ${isActive || result !== 'playing' ? 'transition-all hover:scale-110 active:scale-95' : ''}`}
             />
         </button>
         <div
