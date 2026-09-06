@@ -66,7 +66,10 @@
     });
 
     $effect(() => {
-        if (!date) return;
+        if (!date) {
+            loading = false;
+            return;
+        }
 
         loading = true;
 
