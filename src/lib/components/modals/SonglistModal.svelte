@@ -61,6 +61,7 @@
     maxWidth="max-w-2xl"
     onClose={() => {
         showSongListModal = false;
+        results = songList;
     }}
 >
     <div class="flex flex-col gap-4 text-theme-text">
