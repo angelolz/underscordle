@@ -60,3 +60,20 @@ export type StreamingLinks = {
     youtube?: string;
     youtubeMusic?: string;
 };
+
+export type Theme = {
+    bg: string;
+    text: string;
+    accent: string;
+    card: string;
+    muted: string;
+};
+
+export type SharedSnippetPlayer = {
+    mount(): void;
+    destroy(): void;
+    play(src: string): Promise<void>;
+    stop(): void;
+    setVolume(volume: number): void;
+    getCurrentSrc(): string | null;
+};

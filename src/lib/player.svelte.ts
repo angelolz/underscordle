@@ -1,11 +1,4 @@
-export type SharedSnippetPlayer = {
-    mount(): void;
-    destroy(): void;
-    play(src: string): Promise<void>;
-    stop(): void;
-    setVolume(volume: number): void;
-    getCurrentSrc(): string | null;
-};
+import type { SharedSnippetPlayer } from "./interfaces";
 
 export function createSharedSnippetPlayer(): SharedSnippetPlayer {
     let audio: HTMLAudioElement | null = null;
