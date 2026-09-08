@@ -77,3 +77,13 @@ export type SharedSnippetPlayer = {
     setVolume(volume: number): void;
     getCurrentSrc(): string | null;
 };
+
+export type TipSegment = {
+    text: string;
+    href?: string;
+    bold?: boolean;
+};
+
+export type Tip = {
+    segments: TipSegment[];
+};

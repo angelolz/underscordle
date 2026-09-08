@@ -126,5 +126,15 @@
                 </div>
             {/each}
         </div>
+        <div class="border-t border-theme-muted pt-2 text-sm">
+            <p>
+                You can listen to all the songs in this list through this Soundcloud <a
+                    class="underline"
+                    href="https://soundcloud.com/angelolz1/sets/underscordle"
+                    rel="external noopener noreferrer">playlist</a
+                >.
+            </p>
+            <p class="text-theme-muted"><i>Last updated: 09/07/2026</i></p>
+        </div>
     </div>
 </Modal>

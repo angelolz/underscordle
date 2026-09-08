@@ -1,7 +1,7 @@
 <script lang="ts">
-    import type { Guess, GuessStatus, Song } from '$lib/interfaces';
+    import type { Guess, GuessStatus, Song, Tip } from '$lib/interfaces';
     import { CHALLENGES_URL, MAX_ROUNDS, GUESSES_PER_ROUND, SITE } from '$lib/statics';
-    import { AngleLeftOutline, ShareNodesOutline } from 'flowbite-svelte-icons';
+    import { AngleLeftOutline, LightbulbOutline, ShareNodesOutline } from 'flowbite-svelte-icons';
     import AlbumArt from './AlbumArt.svelte';
     import ResultIcon from './ResultIcon.svelte';
     import TimerLeft from './TimerLeft.svelte';
@@ -9,26 +9,31 @@
     import { resolve } from '$app/paths';
     import { calculatePoints, calculateRoundsCorrect } from '$lib/gameUtils';
     import StreamingLinks from './StreamingLinks.svelte';
+    import { onMount } from 'svelte';
+    import { chooseTip } from '$lib/tipChooser';
 
     const { day, isToday, date, songList, dailyMeta, gameState, player, globalData, stats } =
         $props();
     const SHARE_TEXT = 'Copy Score';
-    let copyText = $state(SHARE_TEXT);
-
-    let expandedSongs = $state<boolean[]>(Array(MAX_ROUNDS).fill(false));
-
-    function toggleSong(index: number) {
-        expandedSongs[index] = !expandedSongs[index];
-    }
-
     const points = $derived(calculatePoints(gameState));
     const roundsCorrect = $derived(calculateRoundsCorrect(gameState));
-
     const communityAvg = $derived(
         globalData?.totalGames > 0
             ? (globalData.totalPoints / globalData.totalGames).toFixed(1)
             : '0.0'
     );
+
+    let copyText = $state(SHARE_TEXT);
+    let selectedTip: Tip | null = $state(null);
+    let expandedSongs = $state<boolean[]>(Array(MAX_ROUNDS).fill(false));
+
+    onMount(() => {
+        selectedTip = chooseTip();
+    });
+
+    function toggleSong(index: number) {
+        expandedSongs[index] = !expandedSongs[index];
+    }
 
     function getSong(roundIndex: number) {
         const songId = dailyMeta.rounds[roundIndex].songId;
@@ -215,6 +220,29 @@
                 </span>
             {/if}
         </div>
+        {#if selectedTip}
+            <div class="flex flex-col items-center">
+                <span class="flex flex-row items-center gap-1">
+                    <LightbulbOutline class="h-5 w-5 shrink-0" />
+                    <span class="font-bold">Did you know?</span>
+                </span>
+                <p class="text-center text-sm">
+                    {#each selectedTip.segments as segment (segment)}
+                        {#if segment.href}
+                            <a
+                                class="underline"
+                                class:font-bold={segment.bold}
+                                href={segment.href}
+                                target="_blank"
+                                rel="external noopener noreferrer">{segment.text}</a
+                            >
+                        {:else}
+                            <span class:font-bold={segment.bold}>{segment.text}</span>
+                        {/if}
+                    {/each}
+                </p>
+            </div>
+        {/if}
         <div class="flex flex-col">
             <button
                 class="flex shrink-0 cursor-pointer flex-row items-center justify-around gap-1 rounded-full bg-theme-accent px-3 py-2 align-middle text-[10px] whitespace-nowrap text-white ring ring-theme-text transition-all hover:opacity-80 hover:ring-2 active:scale-95 sm:text-[14px]"
