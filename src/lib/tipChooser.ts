@@ -12,17 +12,17 @@ export const TIPS: Tip[] = [
             { text: '!' },
         ],
     },
-    // {
-    //     segments: [
-    //         {text: "Are you a "},
-    //         {text: "Jane Remover", bold: true},
-    //         {text: " fan? Check out "},
-    //         {text: "removedle", href: "https://removedle.org/", bold: true},
-    //         {text: " by "},
-    //         {text: "mewdini", href: "https://github.com/mewdini/removedle"},
-    //         {text: "!"}
-    //     ],
-    // },
+    {
+        segments: [
+            { text: 'Are you a ' },
+            { text: 'Jane Remover', bold: true },
+            { text: ' fan? Check out ' },
+            { text: 'removedle', href: 'https://removedle.org/', bold: true },
+            { text: ' by ' },
+            { text: 'mewdini', href: 'https://github.com/mewdini/removedle' },
+            { text: '!' },
+        ],
+    },
     {
         segments: [
             { text: 'You can ' },
