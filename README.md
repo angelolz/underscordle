@@ -26,7 +26,7 @@
 
 Before you start, make sure you have the following installed on your machine:
 
-1. **Node.js** (v20+ recommended, check `.nvmrc`)
+1. **Node.js** (v20+ recommended)
 2. **pnpm** (preferred package manager, check `package.json`'s `packageManager` field)
 3. **FFmpeg** (Required for the daily audio snippet generation scripts):
     - **macOS**: `brew install ffmpeg`
