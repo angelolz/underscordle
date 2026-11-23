@@ -86,13 +86,14 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content={NAME} />
     <meta property="og:description" content={DESCRIPTION} />
-    <meta property="og:image" content={favicon128} />
+    <meta property="og:image" content={`${SITE}/favicon.png`} />
 
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={NAME} />
     <meta name="twitter:description" content={DESCRIPTION} />
-    <meta name="twitter:image" content={favicon128} />
+    <meta name="twitter:image" content={`${SITE}/favicon.png`} />
+    <meta name="twitter:image:alt" content="underscordle logo" />
 
     <link rel="icon" href={SITE + '/favicon.png'} />
     <link rel="icon" type="image/png" sizes="32x32" href={favicon32} />
