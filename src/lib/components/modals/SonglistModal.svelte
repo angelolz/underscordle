@@ -134,7 +134,7 @@
                     rel="external noopener noreferrer">playlist</a
                 >.
             </p>
-            <p class="text-theme-muted"><i>Last updated: 09/07/2026</i></p>
+            <p class="text-theme-muted"><i>Last updated: 11/24/2026</i></p>
         </div>
     </div>
 </Modal>
