@@ -16,7 +16,8 @@
         "scan": "node scripts/scan-songs.js",
         "generate": "node scripts/generate-daily.js",
         "convert": "node scripts/convert-masters.js",
-        "bootstrap": "node scripts/bootstrap-registry.js"
+        "bootstrap": "node scripts/bootstrap-registry.js",
+        "r2": "node scripts/sync-r2.js"
     },
     "devDependencies": {
         "@eslint/compat": "^2.0.3",

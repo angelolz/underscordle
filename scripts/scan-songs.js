@@ -20,6 +20,146 @@ const COVERS_OUTPUT_FILE = path.join(DATA_DIR, 'covers.json');
 const COVERS_MIN_OUTPUT_FILE = path.join(DATA_DIR, 'covers.min.json');
 
 const SUPPORTED_EXTENSIONS = ['.mp3', '.wav', '.m4a', '.flac', '.ogg'];
+const STREAMING_PLATFORMS = [
+    'appleMusic',
+    'bandcamp',
+    'soundcloud',
+    'spotify',
+    'tidal',
+    'youtube',
+    'youtubeMusic',
+];
+
+const MUSICBRAINZ_USER_AGENT = 'underscordle/1.0 (https://underscordle.org)';
+let lastMusicBrainzRequestAt = 0;
+
+function normalizeText(value) {
+    return value
+        .toLowerCase()
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim();
+}
+
+function mergeLinks(existingLinks, discoveredLinks) {
+    const links = { ...existingLinks };
+
+    for (const platform of STREAMING_PLATFORMS) {
+        if (!links[platform] && discoveredLinks[platform]) {
+            links[platform] = discoveredLinks[platform];
+        }
+    }
+
+    return links;
+}
+
+async function fetchJson(url, options = {}) {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+    }
+    return response.json();
+}
+
+async function fetchMusicBrainz(url) {
+    const wait = Math.max(0, 1100 - (Date.now() - lastMusicBrainzRequestAt));
+    if (wait > 0) {
+        await new Promise((resolve) => setTimeout(resolve, wait));
+    }
+
+    lastMusicBrainzRequestAt = Date.now();
+    return fetchJson(url, { headers: { 'User-Agent': MUSICBRAINZ_USER_AGENT } });
+}
+
+function getAppleMusicLink(results, title, artist) {
+    const normalizedTitle = normalizeText(title);
+    const normalizedArtist = normalizeText(artist);
+
+    const match = results.find((result) => {
+        const resultTitle = normalizeText(result.trackName || '');
+        const resultArtist = normalizeText(result.artistName || '');
+        return (
+            resultTitle === normalizedTitle &&
+            (resultArtist === normalizedArtist ||
+                resultArtist.includes(normalizedArtist) ||
+                normalizedArtist.includes(resultArtist))
+        );
+    });
+
+    return match?.trackViewUrl;
+}
+
+function getMusicBrainzLink(relationUrl) {
+    if (!relationUrl) return null;
+
+    const url = relationUrl.toLowerCase();
+    if (url.includes('open.spotify.com/track/')) return ['spotify', relationUrl];
+    if (url.includes('music.youtube.com/')) return ['youtubeMusic', relationUrl];
+    if (url.includes('youtube.com/') || url.includes('youtu.be/')) {
+        return ['youtube', relationUrl];
+    }
+    if (url.includes('soundcloud.com/')) return ['soundcloud', relationUrl];
+    if (url.includes('bandcamp.com/')) return ['bandcamp', relationUrl];
+    if (url.includes('tidal.com/')) return ['tidal', relationUrl];
+    if (url.includes('music.apple.com/') || url.includes('itunes.apple.com/')) {
+        return ['appleMusic', relationUrl];
+    }
+
+    return null;
+}
+
+async function lookupStreamingLinks(title, artist) {
+    const links = {};
+    const searchTerm = encodeURIComponent(`${artist} ${title}`);
+
+    try {
+        const data = await fetchJson(
+            `https://itunes.apple.com/search?term=${searchTerm}&entity=song&limit=10`
+        );
+        const appleMusicLink = getAppleMusicLink(data.results || [], title, artist);
+        if (appleMusicLink) links.appleMusic = appleMusicLink;
+    } catch (error) {
+        console.warn(`  Apple Music lookup failed: ${error.message}`);
+    }
+
+    try {
+        const query = encodeURIComponent(`recording:"${title}" AND artist:"${artist}"`);
+        const search = await fetchMusicBrainz(
+            `https://musicbrainz.org/ws/2/recording/?query=${query}&fmt=json&limit=5`
+        );
+        const normalizedTitle = normalizeText(title);
+        const normalizedArtist = normalizeText(artist);
+        const recording = (search.recordings || []).find((candidate) => {
+            const candidateTitle = normalizeText(candidate.title || '');
+            const candidateArtist = normalizeText(
+                candidate['artist-credit']?.map((credit) => credit.name).join(' ') || ''
+            );
+            return (
+                candidateTitle === normalizedTitle &&
+                (candidateArtist.includes(normalizedArtist) ||
+                    normalizedArtist.includes(candidateArtist))
+            );
+        });
+
+        if (recording?.id) {
+            const details = await fetchMusicBrainz(
+                `https://musicbrainz.org/ws/2/recording/${recording.id}?inc=url-rels&fmt=json`
+            );
+
+            for (const relation of details.relations || []) {
+                const match = getMusicBrainzLink(relation.url?.resource);
+                if (match && !links[match[0]]) {
+                    links[match[0]] = match[1];
+                }
+            }
+        }
+    } catch (error) {
+        console.warn(`  MusicBrainz lookup failed: ${error.message}`);
+    }
+
+    return links;
+}
 
 async function getFileHash(filePath) {
     const content = await fs.readFile(filePath);
@@ -137,10 +277,18 @@ async function scanSongs() {
                     }
                 }
 
+                const isNewSong = !foundId;
+
                 // it is a new song
-                if (!foundId) {
+                if (isNewSong) {
                     foundId = crypto.randomBytes(6).toString('hex');
                     console.log(`  New song detected. Assigned ID: ${foundId}`);
+                }
+
+                let links = existingEntry?.links || {};
+                if (isNewSong) {
+                    console.log(`  Looking up streaming links for ${title}...`);
+                    links = mergeLinks(links, await lookupStreamingLinks(title, artist));
                 }
 
                 registry[foundId] = {
@@ -150,7 +298,7 @@ async function scanSongs() {
                     album: albumName,
                     duration,
                     contentHash,
-                    links: existingEntry?.links || {},
+                    links,
                 };
 
                 const slug = albumName.toLowerCase().replace(/[^a-z0-9]/g, '-');

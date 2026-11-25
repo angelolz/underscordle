@@ -88,6 +88,17 @@ pnpm db:generate
         ./scripts/link-assets.sh
         ```
 
+### Adding new songs to the registry
+
+Adding new songs to the registry is similar to preparing your assets. Here's a simplified version:
+
+1. Add your new songs to your `masters` directory, ensuring they're properly tagged with artwork.
+2. `pnpm convert` to convert them to m4a.
+3. `pnpm scan` to add new songs to registry
+4. `pnpm r2 push-data` to finalize updates.
+
+I thought about putting this into a single script but I left it as separate steps so that I can ensure each step is processed properly.
+
 ### Run the Development Server
 
 - **Note: Before running the development server, change the `START_DATE_STRING` inside `src/lib/statics.ts` to today's date, or the earliest generated challenge date.**

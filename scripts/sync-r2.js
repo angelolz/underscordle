@@ -1,4 +1,4 @@
-import { syncPull, syncPush } from './lib/r2.js';
+import { snapshotDir, syncPull, syncPush } from './lib/r2.js';
 import path from 'path';
 
 const command = process.argv[2];
@@ -14,6 +14,7 @@ const DIRS = {
     data: path.resolve('out/data'),
     art: path.resolve('out/covers'),
     dailies: path.resolve('out/dailies'),
+    challenges: path.resolve('out/challenges'),
 };
 
 async function main() {
@@ -24,14 +25,25 @@ async function main() {
                 break;
 
             case 'pull-data':
-                await syncPull(BUCKETS.data, '', DIRS.data, 'art/');
+                await syncPull(BUCKETS.data, '', DIRS.data, ['art/', 'history/']);
                 break;
 
             case 'pull-art':
                 await syncPull(BUCKETS.data, 'art/', DIRS.art);
                 break;
 
+            case 'pull-challenges':
+                await syncPull(BUCKETS.challenges, '', DIRS.challenges);
+                break;
+
             case 'push-data':
+                {
+                    const snapshotId = new Date().toISOString().replace(/[.:]/g, '-');
+                    await snapshotDir(DIRS.data, BUCKETS.data, `history/data/${snapshotId}`, '', [
+                        'art/',
+                        'history/',
+                    ]);
+                }
                 await syncPush(DIRS.data, BUCKETS.data, '');
                 await syncPush(DIRS.art, BUCKETS.data, 'art');
                 break;
@@ -42,7 +54,7 @@ async function main() {
 
             default:
                 console.log(
-                    'Usage: node scripts/sync-r2.js [pull-masters|pull-data|pull-art|push-data|push-challenges]'
+                    'Usage: node scripts/sync-r2.js [pull-masters|pull-data|pull-art|pull-challenges|push-data|push-challenges]'
                 );
                 process.exit(1);
         }

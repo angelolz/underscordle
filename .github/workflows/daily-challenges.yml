@@ -52,7 +52,6 @@ jobs:
                   restore-keys: underscordle-cache-
 
             - name: Pull Masters & Data from R2
-              if: steps.cache-restore.outputs.cache-matched-key == ''
               run: |
                   node scripts/sync-r2.js pull-masters
                   node scripts/sync-r2.js pull-data
